@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[System.Serializable]
 public enum Emotion
 {
   None,
@@ -9,20 +10,23 @@ public enum Emotion
   Curious,
   Fearful
 }
-
+[System.Serializable]
 public enum Behavior
 {
     None,
     Talking,
     Action
 }
-
+[System.Serializable]
 public struct ActionValues
 {
-    
+    public Emotion _emotion;
+    public Behavior _behavior;
 }
 
 public interface IInteraction
 {
-    ActionValues Values { get; }
+    public void Interact(ActionValues _action);
+
+    public void RegisterMission();
 }
