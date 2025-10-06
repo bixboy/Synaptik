@@ -10,11 +10,24 @@ public struct Mission
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] 
-    private List<Mission> UfoList { get; set; } = new List<Mission>();
+    public static GameManager Instance { get; private set; }
+
+    
+    [SerializeField] private List<Mission> UfoList { get; set; } = new List<Mission>();
     
     private float Mistrust { get; set; } = 0f;
     private float MaxMistrust = 0f;
+    
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
 
     public void ClearAll()
     {
