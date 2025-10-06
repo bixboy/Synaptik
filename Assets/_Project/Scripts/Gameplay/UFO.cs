@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public struct Task
@@ -12,13 +11,16 @@ public class UFO : MonoBehaviour, IInteraction
 {
     [SerializeField]
     private Task _task;
+    
+    public delegate void UfoInteractHandler(UFO ufo, ActionValues action);
+    public event UfoInteractHandler OnUfoInteract;
 
     private void Start()
     {
         Mission mission;
-        mission.Name     = _task.Name;
-        mission.IsFinish = false;
-        mission.UfoRef   = this;
+        mission.Name       = _task.Name;
+        mission.IsFinished = false;
+        mission.UfoRef     = this;
         
         GameManager.Instance.RegisterMission(mission);       
     }
@@ -33,7 +35,7 @@ public class UFO : MonoBehaviour, IInteraction
 
         if (_task.Behavior == _action._behavior &&  _task.Emotion == _action._emotion)
         {
-            print("Test interact" + transform.parent.name);
+            OnUfoInteract?.Invoke(this, _action);
         }
     }
 
