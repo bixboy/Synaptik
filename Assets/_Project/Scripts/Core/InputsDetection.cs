@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// Système de détection combinée : émotion + action
@@ -26,15 +27,41 @@ public class InputsDetection : MonoBehaviour
         new KeyActionBinding(KeyCode.F6, Behavior.Action)
     };
 
+    public List<KeyMovementBinding> movementBindings = new List<KeyMovementBinding>()
+    {
+        new KeyMovementBinding(KeyCode.DownArrow, Vector2.down),
+        new KeyMovementBinding(KeyCode.UpArrow, Vector2.up),
+        new KeyMovementBinding(KeyCode.LeftArrow, Vector2.left),
+        new KeyMovementBinding(KeyCode.RightArrow, Vector2.right)
+    };
+
     public delegate void EmotionActionDelegate(Emotion emotion, Behavior action);
     public event EmotionActionDelegate OnEmotionAction;
 
     private Dictionary<KeyCode, Emotion> _emotionMap;
     private Dictionary<KeyCode, Behavior> _actionMap;
+    private Dictionary<KeyCode, Vector2> _movementMap;
 
     private HashSet<KeyCode> _pressedEmotionKeys = new HashSet<KeyCode>();
     private HashSet<KeyCode> _pressedActionKeys = new HashSet<KeyCode>();
+    private HashSet<KeyCode> _pressedMovementKeys = new HashSet<KeyCode>();
 
+    public Vector2 MoveVector
+    {
+        get
+        {
+            Vector2 moveVector = Vector2.zero;
+            
+            foreach (KeyCode key in _pressedMovementKeys)
+            {
+                if (_movementMap.TryGetValue(key, out Vector2 dir))
+                    moveVector += dir;
+            }
+
+            return moveVector.normalized;
+        }
+    }
+    
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -58,6 +85,10 @@ public class InputsDetection : MonoBehaviour
         foreach (var a in actionBindings)
             if (!_actionMap.ContainsKey(a.key))
                 _actionMap.Add(a.key, a.action);
+        
+        foreach (var a in movementBindings)
+            if (!_movementMap.ContainsKey(a.key))
+                _movementMap.Add(a.key, a.direction);
 
         Debug.Log($"[InputsDetection] {_emotionMap.Count} émotions / {_actionMap.Count} actions configurées.");
     }
@@ -89,6 +120,19 @@ public class InputsDetection : MonoBehaviour
             if (Input.GetKeyUp(kvp.Key))
             {
                 _pressedActionKeys.Remove(kvp.Key);
+            }
+        }
+
+        foreach (var kvp in _movementMap)
+        {
+            if (Input.GetKeyDown(kvp.Key))
+            {
+                _pressedMovementKeys.Add(kvp.Key);
+            }
+
+            if (Input.GetKeyUp(kvp.Key))
+            {
+                _pressedMovementKeys.Remove(kvp.Key);
             }
         }
     }
@@ -143,6 +187,19 @@ public class InputsDetection : MonoBehaviour
         {
             this.key = key;
             this.action = action;
+        }
+    }
+
+    [System.Serializable]
+    public class KeyMovementBinding
+    {
+        public KeyCode key;
+        public Vector2 direction;
+
+        public KeyMovementBinding(KeyCode key, Vector2 dir)
+        {
+            this.key = key;
+            this.direction = dir.normalized;
         }
     }
 }

@@ -1,16 +1,10 @@
 using UnityEngine;
 
-public class PLayerBehavior : MonoBehaviour
+public class PlayerBehavior : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    [SerializeField]
+    private float _speed = 1.0f;
+    
+    [SerializeField]
+    
 }
