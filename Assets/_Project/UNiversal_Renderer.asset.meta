@@ -1,8 +1,14 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/_Project/UNiversal_Renderer.asset.meta
 guid: 5d454b2a5f3597545b19325ce2cb3b9e
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000
+========
+guid: b364a4a963c385946923d92643017f96
+PrefabImporter:
+  externalObjects: {}
+>>>>>>>> main/pierre:Assets/_Project/Prefabs/DialogueBubble.prefab.meta
   userData: 
   assetBundleName: 
   assetBundleVariant: 
