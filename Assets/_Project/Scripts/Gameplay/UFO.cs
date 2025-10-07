@@ -10,7 +10,10 @@ public struct Task
 
 public class UFO : MonoBehaviour, IInteraction
 {
- 
+    public delegate void UfoInteractHandler(UFO ufo, ActionValues action);
+    public event UfoInteractHandler OnUfoInteract;
+
+    
     [SerializeField] private Task _task;
     [SerializeField] private GameObject dialoguePrefab;
     [SerializeField] private Transform bubbleAnchor; 
@@ -29,6 +32,8 @@ public class UFO : MonoBehaviour, IInteraction
     {
         if (_task.Behavior == action._behavior &&  _task.Emotion == action._emotion)
         {
+            OnUfoInteract?.Invoke(this, action);
+            
             print("Test interact" + transform.parent.name);
             SpawnDialogueBubble("Mission accomplie !");
         }
