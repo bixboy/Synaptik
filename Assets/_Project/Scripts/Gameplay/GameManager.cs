@@ -15,6 +15,8 @@ public struct Mission
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+    public bool IsInitialized { get; private set; } = false;
+
 
     // --- Données des missions ---
     [SerializeField] 
@@ -26,6 +28,10 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] 
     private float _maxMistrust = 100f;
+    
+    
+    public delegate void TaskEndHandler(Mission mission);
+    public event TaskEndHandler OnTaskEnd;
 
     private void Awake()
     {
@@ -37,6 +43,11 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
+        IsInitialized = true;
     }
 
     // --- Gestion des missions ---
@@ -55,6 +66,8 @@ public class GameManager : MonoBehaviour
 
         if (mission.UfoRef is UFO ufo)
             ufo.OnUfoInteract += HandleUfoInteract;
+        
+        Debug.LogWarning($"Mission '{mission.Name}' registered.");
 
         return true;
     }
@@ -68,6 +81,8 @@ public class GameManager : MonoBehaviour
                 var mission = _missions[i];
                 mission.IsFinished = true;
                 _missions[i] = mission;
+                
+                OnTaskEnd?.Invoke(mission);
 
                 Debug.Log($"Mission '{missionName}' terminée !");
                 return;
@@ -106,5 +121,10 @@ public class GameManager : MonoBehaviour
     private void HandleUfoInteract(UFO ufo, ActionValues action)
     {
         Debug.Log($"[GameManager] Interaction détectée avec : {ufo.transform.parent.name}");
+    }
+
+    public List<Mission> GetMissions()
+    {
+        return _missions;
     }
 }
