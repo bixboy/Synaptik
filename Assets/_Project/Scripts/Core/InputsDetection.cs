@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -27,12 +28,18 @@ public class InputsDetection : MonoBehaviour
         new KeyActionBinding(KeyCode.F6, Behavior.Action)
     };
 
-    public List<KeyMovementBinding> movementBindings = new List<KeyMovementBinding>()
+    [Header("Configuration des touches ↔ mouvement")]
+    public List<KeyMovementBinding> movementBindings = new()
     {
-        new KeyMovementBinding(KeyCode.DownArrow, Vector2.down),
-        new KeyMovementBinding(KeyCode.UpArrow, Vector2.up),
-        new KeyMovementBinding(KeyCode.LeftArrow, Vector2.left),
-        new KeyMovementBinding(KeyCode.RightArrow, Vector2.right)
+        new KeyMovementBinding(KeyCode.UpArrow,    Vector2.up),
+        new KeyMovementBinding(KeyCode.DownArrow,  Vector2.down),
+        new KeyMovementBinding(KeyCode.LeftArrow,  Vector2.left),
+        new KeyMovementBinding(KeyCode.RightArrow, Vector2.right),
+        
+        new KeyMovementBinding(KeyCode.W, Vector2.up),
+        new KeyMovementBinding(KeyCode.S, Vector2.down),
+        new KeyMovementBinding(KeyCode.A, Vector2.left),
+        new KeyMovementBinding(KeyCode.D, Vector2.right),
     };
 
     public delegate void EmotionActionDelegate(Emotion emotion, Behavior action);
@@ -40,27 +47,15 @@ public class InputsDetection : MonoBehaviour
 
     private Dictionary<KeyCode, Emotion> _emotionMap;
     private Dictionary<KeyCode, Behavior> _actionMap;
-    private Dictionary<KeyCode, Vector2> _movementMap;
 
     private HashSet<KeyCode> _pressedEmotionKeys = new HashSet<KeyCode>();
     private HashSet<KeyCode> _pressedActionKeys = new HashSet<KeyCode>();
-    private HashSet<KeyCode> _pressedMovementKeys = new HashSet<KeyCode>();
+    private KeyCode[] _moveKeys;
+    private Vector2[] _moveDirs;
+    
+    [SerializeField] private Vector2 _moveVector; // debug visible Inspector
+    public Vector2 MoveVector => _moveVector;
 
-    public Vector2 MoveVector
-    {
-        get
-        {
-            Vector2 moveVector = Vector2.zero;
-            
-            foreach (KeyCode key in _pressedMovementKeys)
-            {
-                if (_movementMap.TryGetValue(key, out Vector2 dir))
-                    moveVector += dir;
-            }
-
-            return moveVector.normalized;
-        }
-    }
     
     void Awake()
     {
@@ -77,6 +72,8 @@ public class InputsDetection : MonoBehaviour
     {
         _emotionMap = new Dictionary<KeyCode, Emotion>();
         _actionMap = new Dictionary<KeyCode, Behavior>();
+        _moveKeys = new KeyCode[movementBindings.Count];
+        _moveDirs = new Vector2[movementBindings.Count];
 
         foreach (var e in emotionBindings)
             if (!_emotionMap.ContainsKey(e.key))
@@ -85,16 +82,25 @@ public class InputsDetection : MonoBehaviour
         foreach (var a in actionBindings)
             if (!_actionMap.ContainsKey(a.key))
                 _actionMap.Add(a.key, a.action);
-        
-        foreach (var a in movementBindings)
-            if (!_movementMap.ContainsKey(a.key))
-                _movementMap.Add(a.key, a.direction);
+
+        for (int i = 0; i < movementBindings.Count; i++)
+        {
+            _moveKeys[i] = movementBindings[i].key;
+            _moveDirs[i] = movementBindings[i].direction;
+        }
 
         Debug.Log($"[InputsDetection] {_emotionMap.Count} émotions / {_actionMap.Count} actions configurées.");
     }
 
     void Update()
     {
+        // --- Détection du mouvement ---
+        Vector2 sum = Vector2.zero;
+        for (int i = 0; i < _moveKeys.Length; i++)
+            if (Input.GetKey(_moveKeys[i])) sum += _moveDirs[i];
+
+        if (sum.sqrMagnitude > 1f) sum.Normalize(); // diagonale = même vitesse
+        _moveVector = sum;
         // --- Détection des émotions ---
         foreach (var kvp in _emotionMap)
         {
@@ -123,18 +129,7 @@ public class InputsDetection : MonoBehaviour
             }
         }
 
-        foreach (var kvp in _movementMap)
-        {
-            if (Input.GetKeyDown(kvp.Key))
-            {
-                _pressedMovementKeys.Add(kvp.Key);
-            }
-
-            if (Input.GetKeyUp(kvp.Key))
-            {
-                _pressedMovementKeys.Remove(kvp.Key);
-            }
-        }
+        
     }
 
     private void TryTriggerCombos(Emotion emotion = Emotion.None, Behavior action = Behavior.None)
