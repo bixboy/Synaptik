@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using NaughtyAttributes;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 /// <summary>
 /// Système de détection combinée : émotion + action
@@ -41,9 +39,7 @@ public class InputsDetection : MonoBehaviour
         new KeyMovementBinding(KeyCode.A, Vector2.left),
         new KeyMovementBinding(KeyCode.D, Vector2.right),
     };
-
-    public delegate void EmotionActionDelegate(Emotion emotion, Behavior action);
-    public event EmotionActionDelegate OnEmotionAction;
+    
 
     private Dictionary<KeyCode, Emotion> _emotionMap;
     private Dictionary<KeyCode, Behavior> _actionMap;
@@ -55,7 +51,21 @@ public class InputsDetection : MonoBehaviour
     
     [SerializeField] private Vector2 _moveVector;
     public Vector2 MoveVector => _moveVector;
-
+    
+    
+    public delegate void EmotionActionDelegate(Emotion emotion, Behavior action);
+    public event EmotionActionDelegate OnEmotionAction;
+    
+    public delegate void EmotionDelegate(Emotion emotion, bool keyUp);
+    public event EmotionDelegate OnEmotion;
+    
+    public delegate void ActionDelegate(Behavior action, bool keyUp);
+    public event ActionDelegate OnAction;
+    
+    public delegate void TowActionPressedDelegate(bool towPressed);
+    public event TowActionPressedDelegate OnTowActionPressed;
+    
+    private int actionInputPressed = 0;
     
     void Awake()
     {
@@ -99,19 +109,22 @@ public class InputsDetection : MonoBehaviour
         for (int i = 0; i < _moveKeys.Length; i++)
             if (Input.GetKey(_moveKeys[i])) sum += _moveDirs[i];
 
-        if (sum.sqrMagnitude > 1f) sum.Normalize(); // diagonale = même vitesse
-        _moveVector = sum;
-        // --- Détection des émotions ---
+        if (sum.sqrMagnitude > 1f) sum.Normalize();
+            _moveVector = sum;
+        
         foreach (var kvp in _emotionMap)
         {
             if (Input.GetKeyDown(kvp.Key))
             {
                 _pressedEmotionKeys.Add(kvp.Key);
                 TryTriggerCombos(kvp.Value);
+                
+                OnEmotion?.Invoke(kvp.Value, false);
             }
             if (Input.GetKeyUp(kvp.Key))
             {
                 _pressedEmotionKeys.Remove(kvp.Key);
+                OnEmotion?.Invoke(kvp.Value, true);
             }
         }
 
@@ -122,10 +135,20 @@ public class InputsDetection : MonoBehaviour
             {
                 _pressedActionKeys.Add(kvp.Key);
                 TryTriggerCombos(action: kvp.Value);
+                
+                OnAction?.Invoke(kvp.Value, false);
+                
+                actionInputPressed++;
+                if ( actionInputPressed >= 2)
+                    OnTowActionPressed?.Invoke(true);
             }
             if (Input.GetKeyUp(kvp.Key))
             {
                 _pressedActionKeys.Remove(kvp.Key);
+                
+                actionInputPressed--;
+                OnTowActionPressed?.Invoke(false);
+                OnAction?.Invoke(kvp.Value, true);
             }
         }
 
