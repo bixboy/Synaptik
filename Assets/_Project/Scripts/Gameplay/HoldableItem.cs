@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Rigidbody))]
@@ -13,16 +15,34 @@ public class HoldableItem : MonoBehaviour
     
     [SerializeField] private string _itemId;
     public string ItemId => _itemId;
+    
+    [Header("Respawn")]
+    private Vector3 _spawnLocation;
+    private Quaternion _spawnRotation;
+    private Vector3 _spawnScale;
+    [Space(7)]
+    [SerializeField] private float _respawnDelay = 5.0f;
+    private float _delayCurrent;
+    [Space(5)]
+    [SerializeField] private float _despawnTime = 0.5f;
+    [SerializeField] private AnimationCurve _despawnAnim = AnimationCurve.Linear(0, 0, 1, 1);
+    private Coroutine _respawnCoroutine;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
         _colliders = GetComponentsInChildren<Collider>(true);
+        
+        _spawnLocation = transform.position;
+        _spawnRotation = transform.rotation;
+        _spawnScale = transform.localScale;
     }
 
     public void Pick(Transform handSocket)
     {
         if (IsHeld) return;
+        
+        StopCoroutine(_respawnCoroutine);
 
         IsHeld = true;
         _originalParent = transform.parent;
@@ -41,7 +61,9 @@ public class HoldableItem : MonoBehaviour
     public void Drop(Vector3 inheritVelocity)
     {
         if (!IsHeld) return;
-
+        
+        _respawnCoroutine = StartCoroutine(Respawn());
+        
         // détache et réactive la physique
         transform.SetParent(_originalParent, worldPositionStays: true);
         foreach (var c in _colliders) c.enabled = true;
@@ -51,5 +73,36 @@ public class HoldableItem : MonoBehaviour
         _rb.linearVelocity = inheritVelocity;
 
         IsHeld = false;
+    }
+
+    private IEnumerator Respawn(float a_time = -1.0f)
+    {
+        if (a_time < 0)
+            _delayCurrent = _respawnDelay;
+        else
+            _delayCurrent = a_time;
+
+        while (_delayCurrent > 0)
+        {
+            _delayCurrent -= Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+        
+        _delayCurrent = _despawnTime;
+        Vector3 startScale = transform.localScale;
+
+        while (_delayCurrent > 0)
+        {
+            _delayCurrent -= Time.fixedDeltaTime;
+            transform.localScale = Vector3.Lerp(startScale, Vector3.zero, _despawnAnim.Evaluate(_delayCurrent));
+            yield return new WaitForFixedUpdate();
+        }
+        
+        //Spawn VFX
+        
+        _rb.linearVelocity = Vector3.zero;
+        transform.position = _spawnLocation;
+        transform.rotation = _spawnRotation;
+        transform.localScale = _spawnScale;
     }
 }
