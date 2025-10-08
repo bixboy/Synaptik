@@ -4,15 +4,15 @@
 [RequireComponent(typeof(Rigidbody))]
 public class HoldableItem : MonoBehaviour
 {
-    [Header("Pose dans la main (offsets locaux au socket)")]
-    public Vector3 _localPositionInHand = Vector3.zero;
-    public Vector3 _localEulerInHand    = Vector3.zero;
-
+    
     private Rigidbody _rb;
     private Collider[] _colliders;
     private Transform _originalParent;
 
     public bool IsHeld { get; private set; }
+    
+    [SerializeField] private string _itemId;
+    public string ItemId => _itemId;
 
     private void Awake()
     {
@@ -36,8 +36,6 @@ public class HoldableItem : MonoBehaviour
 
         // attache à la main (pose exacte via offsets)
         transform.SetParent(handSocket, worldPositionStays: false);
-        transform.localPosition = _localPositionInHand;
-        transform.localRotation = Quaternion.Euler(_localEulerInHand);
     }
 
     public void Drop(Vector3 inheritVelocity)

@@ -5,7 +5,6 @@ public enum Emotion
   None,
   Anger,
   Friendly,
-  Sad,
   Curious,
   Fearful
 }
@@ -15,6 +14,18 @@ public enum Behavior
     None,
     Talking,
     Action
+}
+
+
+[System.Serializable]
+public enum AlienVerb
+{
+    Ask,
+    Compliment,
+    Insult,
+    Yield,
+    Hit,
+    Give,
 }
 [System.Serializable]
 public struct ActionValues
