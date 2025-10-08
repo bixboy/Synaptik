@@ -13,6 +13,9 @@ public class HoldableItem : MonoBehaviour
     private Transform _originalParent;
 
     public bool IsHeld { get; private set; }
+    
+    [SerializeField] private string _itemId;
+    public string ItemId => _itemId;
 
     private void Awake()
     {
