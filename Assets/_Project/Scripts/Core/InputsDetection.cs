@@ -53,7 +53,7 @@ public class InputsDetection : MonoBehaviour
     private KeyCode[] _moveKeys;
     private Vector2[] _moveDirs;
     
-    [SerializeField] private Vector2 _moveVector; // debug visible Inspector
+    [SerializeField] private Vector2 _moveVector;
     public Vector2 MoveVector => _moveVector;
 
     
