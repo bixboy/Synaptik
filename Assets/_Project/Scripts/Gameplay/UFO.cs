@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[System.Serializable]
 public struct Task
 {
     public string Name;
@@ -9,11 +10,13 @@ public struct Task
 
 public class UFO : MonoBehaviour, IInteraction
 {
-    [SerializeField]
-    private Task _task;
-    
     public delegate void UfoInteractHandler(UFO ufo, ActionValues action);
     public event UfoInteractHandler OnUfoInteract;
+
+    
+    [SerializeField] private Task _task;
+    [SerializeField] private GameObject dialoguePrefab;
+    [SerializeField] private Transform bubbleAnchor; 
 
     private void Start()
     {
@@ -25,18 +28,27 @@ public class UFO : MonoBehaviour, IInteraction
         GameManager.Instance.RegisterMission(mission);       
     }
 
-    public void Interact(ActionValues _action)
+    public void Interact(ActionValues action)
     {
-        if (_action._behavior != Behavior.None)
-            return;
-        
-        if (_action._emotion !=  Emotion.None)
-            return;
-
-        if (_task.Behavior == _action._behavior &&  _task.Emotion == _action._emotion)
+        if (_task.Behavior == action._behavior &&  _task.Emotion == action._emotion)
         {
-            OnUfoInteract?.Invoke(this, _action);
+            OnUfoInteract?.Invoke(this, action);
+            
+            print("Test interact" + transform.parent.name);
+            SpawnDialogueBubble("Mission accomplie !");
         }
+    }
+    
+    private void SpawnDialogueBubble(string text)
+    {
+        if (dialoguePrefab == null || bubbleAnchor == null)
+        {
+            Debug.LogWarning("Dialogue prefab ou anchor non assigné sur " + name);
+            return;
+        }
+
+        GameObject bubble = Instantiate(dialoguePrefab, bubbleAnchor.position, Quaternion.identity);
+        bubble.GetComponent<DialogueBubble>().SetText(text);
     }
 
     public void RegisterMission()
