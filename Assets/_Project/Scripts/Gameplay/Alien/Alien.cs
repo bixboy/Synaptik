@@ -29,7 +29,7 @@ namespace Synaptik.Game
             }
 
             Emotion = _def != null ? _def.StartEmotion : Emotion.Curious;
-
+            Debug.Log("Emotion at start: " + Emotion);
             ApplyAnimFromEmotion();
         }
 
@@ -64,6 +64,7 @@ namespace Synaptik.Game
                 {
                     Emotion = rule.NewEmotion;
                     ApplyAnimFromEmotion();
+                    Debug.Log(rule.NewEmotion);
                 }
 
                 if (_def.Dialogue != null && _def.Dialogue.TryGet(Emotion, channel, out var entry))

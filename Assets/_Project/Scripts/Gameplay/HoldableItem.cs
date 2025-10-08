@@ -36,6 +36,7 @@ public class HoldableItem : MonoBehaviour
 
         // attache à la main (pose exacte via offsets)
         transform.SetParent(handSocket, worldPositionStays: false);
+        transform.localPosition = handSocket.localPosition;
     }
 
     public void Drop(Vector3 inheritVelocity)

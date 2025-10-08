@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Synaptik.Game
@@ -20,7 +21,11 @@ namespace Synaptik.Game
         [SerializeField] private float _interactRadius = 2f;
         [SerializeField] private float _interactHalfFov = 45f;
         [SerializeField] private LayerMask _alienMask;
-        
+
+        private void Start()
+        {
+            InputsDetection.Instance.OnEmotionAction += HandleEmotionAction;
+        }
 
         private void OnEnable()
         {
@@ -40,6 +45,7 @@ namespace Synaptik.Game
 
         private void HandleEmotionAction(Emotion emotion, Behavior behavior)
         {
+            Debug.Log($"HandleEmotionAction: {emotion} + {behavior}");
             Transform origin = _aim != null ? _aim : transform;
             Alien alien = TargetingUtil.FindAlienInFront(origin, _interactRadius, _interactHalfFov, _alienMask);
             if (alien == null)
@@ -53,6 +59,7 @@ namespace Synaptik.Game
 
         public void PickUp()
         {
+            Debug.Log("PickUp: tenter de ramasser un objet");
             Vector3 origin = _handSocket ? _handSocket.position : transform.position;
             Collider[] hits = Physics.OverlapSphere(origin, _pickupRadius, _pickupMask, QueryTriggerInteraction.Ignore);
 
@@ -109,6 +116,23 @@ namespace Synaptik.Game
                 }
             }
             _held = null;
+        }
+
+        public void OnDrawGizmos()
+        {
+            if (_handSocket != null)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireSphere(_handSocket.position, _pickupRadius);
+            }
+
+            if (_aim != null)
+            {
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawWireSphere(_aim.position, _interactRadius);
+                Gizmos.DrawLine(_aim.position, _aim.position + Quaternion.Euler(0f, _interactHalfFov, 0f) * _aim.forward * _interactRadius);
+                Gizmos.DrawLine(_aim.position, _aim.position + Quaternion.Euler(0f, -_interactHalfFov, 0f) * _aim.forward * _interactRadius);
+            }
         }
 
         public void Interact(Emotion e, Behavior b)
