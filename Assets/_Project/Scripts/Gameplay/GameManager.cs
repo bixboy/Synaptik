@@ -64,10 +64,8 @@ public class GameManager : MonoBehaviour
 
         _missions.Add(mission);
 
-        if (mission.UfoRef is UFO ufo)
-            ufo.OnUfoInteract += HandleUfoInteract;
-        
-        Debug.LogWarning($"Mission '{mission.Name}' registered.");
+        // if (mission.UfoRef is UFO ufo)
+        //     ufo.OnUfoInteract += HandleUfoInteract;
 
         return true;
     }
@@ -96,8 +94,8 @@ public class GameManager : MonoBehaviour
     {
         foreach (var mission in _missions)
         {
-            if (mission.UfoRef is UFO ufo)
-                ufo.OnUfoInteract -= HandleUfoInteract;
+            // if (mission.UfoRef is UFO ufo)
+            //     ufo.OnUfoInteract -= HandleUfoInteract;
         }
 
         _missions.Clear();
@@ -118,13 +116,8 @@ public class GameManager : MonoBehaviour
     }
 
     // --- Gestion des interactions UFO ---
-    private void HandleUfoInteract(UFO ufo, ActionValues action)
-    {
-        Debug.Log($"[GameManager] Interaction détectée avec : {ufo.transform.parent.name}");
-    }
-
-    public List<Mission> GetMissions()
-    {
-        return _missions;
-    }
+    // private void HandleUfoInteract(UFO ufo, ActionValues action)
+    // {
+    //     Debug.Log($"[GameManager] Interaction détectée avec : {ufo.transform.parent.name}");
+    // }
 }

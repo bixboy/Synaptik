@@ -19,7 +19,7 @@ public class NoteBook : MonoBehaviour
         yield return new WaitUntil(() => GameManager.Instance != null && GameManager.Instance.IsInitialized);
 
         GameManager.Instance.OnTaskEnd += HandleTaskEnd;
-        _missions = GameManager.Instance.GetMissions();
+        //_missions = GameManager.Instance.GetMissions();
         RefreshNotebookUI();
     }
 
@@ -31,7 +31,7 @@ public class NoteBook : MonoBehaviour
 
     private void HandleTaskEnd(Mission mission)
     {
-        _missions = GameManager.Instance.GetMissions();
+       // _missions = GameManager.Instance.GetMissions();
         RefreshNotebookUI();
     }
 
