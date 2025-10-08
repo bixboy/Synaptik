@@ -16,22 +16,8 @@ public enum Behavior
     Talking,
     Action
 }
-[System.Serializable]
-public enum AlienEmotion
-{
-    Curious,
-    Friendly,
-    Fearful,
-    Angry
-}
-[System.Serializable]
-public enum AlienState
-{
-    Idle,
-    Wander,
-    Talk,
-    ChatWithAlien
-}
+
+
 [System.Serializable]
 public enum AlienVerb
 {

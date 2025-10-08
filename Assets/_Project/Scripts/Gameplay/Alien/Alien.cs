@@ -10,8 +10,8 @@ namespace Synaptik.Game
         public AlienDefinition Definition => _def;
         [SerializeField] private float _receiveRadius = 1.3f;
         [SerializeField] private DialogueBubble _dialogueBubblePrefab;
-        public AlienState State { get; private set; }
-        public AlienEmotion Emotion { get; private set; }
+
+        public Emotion Emotion { get; private set; }
 
         private Animator _anim;
         private static readonly int EmotionHash = Animator.StringToHash("Emotion");
@@ -28,8 +28,7 @@ namespace Synaptik.Game
                 _anim.runtimeAnimatorController = _def.Animator;
             }
 
-            Emotion = _def != null ? _def.StartEmotion : AlienEmotion.Curious;
-            State = AlienState.Idle;
+            Emotion = _def != null ? _def.StartEmotion : Emotion.Curious;
 
             ApplyAnimFromEmotion();
         }
@@ -52,15 +51,13 @@ namespace Synaptik.Game
             }
         }
 
-        public void OnPlayerCombo(Emotion playerEmotion, Behavior channel, AlienVerb verb, GameObject playerGO)
+        public void OnPlayerCombo(Emotion playerEmotion, Behavior channel)
         {
             if (_def == null || _def.Reactions == null)
             {
                 return;
             }
-
-            AlienVerb resolvedVerb = verb;
-
+            
             if (_def.Reactions.TryFindRule(channel, playerEmotion, out var rule))
             {
                 if (rule.SetNewEmotion)
@@ -69,9 +66,9 @@ namespace Synaptik.Game
                     ApplyAnimFromEmotion();
                 }
 
-                if (_def.Dialogue != null && _def.Dialogue.TryGet(Emotion, resolvedVerb, out var entry))
+                if (_def.Dialogue != null && _def.Dialogue.TryGet(Emotion, channel, out var entry))
                 {
-                    DialogueBubble.ShowFor(this, entry.EmojiLine, entry.Duration);
+                    _dialogueBubblePrefab.ShowFor(entry.EmojiLine, entry.Duration);
                 }
                 
             }
@@ -99,11 +96,10 @@ namespace Synaptik.Game
                     Emotion = rule.NewEmotionIfGoodItem;
                     ApplyAnimFromEmotion();
                 }
-            
-
-                if (_def.Dialogue != null && _def.Dialogue.TryGet(Emotion, rule.Verb, out var entry))
+                
+                if (_def.Dialogue != null && _def.Dialogue.TryGet(Emotion, Behavior.Action, out var entry)) // On reçoit un item, donc on utilise le channel Action forcémment (le joueur ne peut pas donner un objet en parlant)
                 {
-                    DialogueBubble.ShowFor(this, entry.EmojiLine, entry.Duration);
+                    _dialogueBubblePrefab.ShowFor(entry.EmojiLine, entry.Duration);
                 }
             }
             
@@ -114,6 +110,12 @@ namespace Synaptik.Game
         {
             var diff = transform.position - position;
             return diff.sqrMagnitude <= _receiveRadius * _receiveRadius;
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(transform.position, _receiveRadius);
         }
     }
 }

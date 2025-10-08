@@ -47,10 +47,8 @@ namespace Synaptik.Game
                 PickUp();
                 return;
             }
-
-            AlienVerb verb = MapToVerb(emotion, behavior);
             
-            alien.OnPlayerCombo(emotion, behavior, verb, gameObject);
+            alien.OnPlayerCombo(emotion, behavior);
         }
 
         public void PickUp()
@@ -158,28 +156,6 @@ namespace Synaptik.Game
                         break;    
                 }
             }
-        }
-
-        private static AlienVerb MapToVerb(Emotion e, Behavior b)
-        {
-            if (b == Behavior.Talking)
-            {
-                return e switch
-                {
-                    Emotion.Curious => AlienVerb.Ask,
-                    Emotion.Friendly => AlienVerb.Compliment,
-                    Emotion.Fearful => AlienVerb.Yield,
-                    Emotion.Anger => AlienVerb.Insult,
-                    _ => AlienVerb.Ask
-                };
-            }
-
-            return e switch
-            {
-                Emotion.Anger => AlienVerb.Hit,
-                Emotion.Friendly => AlienVerb.Give,
-                _ => AlienVerb.Give
-            };
         }
     }
 }

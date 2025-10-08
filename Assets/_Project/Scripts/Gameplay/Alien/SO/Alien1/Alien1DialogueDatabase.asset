@@ -10,10 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f51f73ad4fe47a418864255c2f02c7c, type: 3}
-  m_Name: DialogueDatabase
+  m_Name: Alien1DialogueDatabase
   m_EditorClassIdentifier: 
   _entries:
   - _emotion: 1
-    _verb: 0
-    _emojiLine: 
-    _duration: 10
+    _behavior: 1
+    _emojiLine: "\U0001F620\U0001F4A2"
+    _duration: 3
+  - _emotion: 3
+    _behavior: 1
+    _emojiLine: "\u2753\U0001F440"
+    _duration: 3
+  - _emotion: 2
+    _behavior: 1
+    _emojiLine: "\U0001F33C\U0001F642"
+    _duration: 3
+  - _emotion: 4
+    _behavior: 1
+    _emojiLine: "\U0001F60A\u2728"
+    _duration: 3

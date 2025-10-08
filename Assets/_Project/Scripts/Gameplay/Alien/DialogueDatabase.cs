@@ -9,25 +9,25 @@ namespace Synaptik.Game
         [Serializable]
         public struct Entry
         {
-            [SerializeField] private AlienEmotion _emotion;
-            [SerializeField] private AlienVerb _verb;
+            [SerializeField] private Emotion _emotion;
+            [SerializeField] private Behavior _behavior;
             [SerializeField] private string _emojiLine;
             [SerializeField] private float _duration;
 
-            public AlienEmotion Emotion => _emotion;
-            public AlienVerb Verb => _verb;
+            public Emotion Emotion => _emotion;
+            public Behavior Behavior => _behavior;
             public string EmojiLine => _emojiLine;
             public float Duration => _duration <= 0f ? 2f : _duration;
         }
 
         [SerializeField] private Entry[] _entries = Array.Empty<Entry>();
 
-        public bool TryGet(AlienEmotion emotion, AlienVerb verb, out Entry entry)
+        public bool TryGet(Emotion emotion, Behavior behavior, out Entry entry)
         {
             var entries = _entries;
             for (int i = 0; i < entries.Length; i++)
             {
-                if (entries[i].Emotion == emotion && entries[i].Verb == verb)
+                if (entries[i].Emotion == emotion && entries[i].Behavior == behavior)
                 {
                     entry = entries[i];
                     return true;

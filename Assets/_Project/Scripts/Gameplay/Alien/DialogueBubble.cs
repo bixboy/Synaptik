@@ -1,3 +1,5 @@
+using System;
+using NaughtyAttributes;
 using TMPro;
 using UnityEngine;
 
@@ -5,104 +7,67 @@ namespace Synaptik.Game
 {
     public class DialogueBubble : MonoBehaviour
     {
-        [SerializeField] private RectTransform _root;
+        [SerializeField] private GameObject _bubbleGameObject;
         [SerializeField] private TextMeshProUGUI _label;
-        [SerializeField] private Vector3 _offset = new Vector3(0f, 2f, 0f);
-
-        private static DialogueBubble _instance;
-        private Alien _target;
         private float _remainingTime;
-        private Camera _camera;
+        [SerializeField] private bool _lookAtCamera = true;
+        [SerializeField, ShowIf("_lookAtCamera")] private Camera _camera;
 
         private void Awake()
         {
-            if (_instance != null && _instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            _instance = this;
-            if (_root == null)
-            {
-                _root = GetComponent<RectTransform>();
-            }
+            
             _camera = Camera.main;
             Hide();
         }
 
-        private void Update()
+        private void Start()
         {
-            if (_target == null || _remainingTime <= 0f)
-            {
-                if (_root.gameObject.activeSelf)
-                {
-                    Hide();
-                }
-
-                return;
-            }
-
-            _remainingTime -= Time.deltaTime;
-
-            if (_remainingTime <= 0f)
-            {
-                Hide();
-                return;
-            }
-
             if (_camera == null)
             {
                 _camera = Camera.main;
-                if (_camera == null)
+            }
+        }
+
+        private void Update()
+        {
+            if (_bubbleGameObject != null && _bubbleGameObject.activeSelf)
+            {
+                if (_remainingTime <= 0f)
                 {
-                    return;
+                    Hide();
+                }
+                else
+                {
+                    _remainingTime -= Time.deltaTime;
+                    if (_lookAtCamera && _camera != null)
+                    {
+                        transform.LookAt(transform.position + _camera.transform.rotation * Vector3.forward,
+                            _camera.transform.rotation * Vector3.up);
+                    }
                 }
             }
-
-            var worldPos = _target.transform.position + _offset;
-            var screenPos = _camera.WorldToScreenPoint(worldPos);
-            _root.position = screenPos;
+            
         }
 
-        public static void ShowFor(Alien alien, string emojiLine, float duration)
+        public void ShowFor(string emojiLine, float duration)
         {
-            if (alien == null || string.IsNullOrEmpty(emojiLine))
+            if (string.IsNullOrEmpty(emojiLine) || duration <= 0f)
             {
                 return;
             }
-
-            if (_instance == null)
-            {
-                return;
-            }
-
-            _instance.Show(alien, emojiLine, duration);
-        }
-
-        private void Show(Alien alien, string emojiLine, float duration)
-        {
-            _target = alien;
-            _remainingTime = duration;
             if (_label != null)
             {
                 _label.text = emojiLine;
             }
-
-            if (_root != null && !_root.gameObject.activeSelf)
-            {
-                _root.gameObject.SetActive(true);
-            }
+            _bubbleGameObject?.SetActive(true);
+            _remainingTime = duration;
+            
         }
 
         private void Hide()
         {
-            _target = null;
+            _bubbleGameObject?.SetActive(false);
             _remainingTime = 0f;
-            if (_root != null)
-            {
-                _root.gameObject.SetActive(false);
-            }
         }
     }
 }

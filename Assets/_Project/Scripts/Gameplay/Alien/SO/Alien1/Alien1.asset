@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Alien1
   m_EditorClassIdentifier: 
   _alienId: 1
-  _startEmotion: 0
-  _startSuspicion: 10
-  _animator: {fileID: 0}
+  _startEmotion: 2
+  _animator: {fileID: 9100000, guid: 63ee86efd213bf34285c95f33e79dc6c, type: 2}
   _reactions: {fileID: 11400000, guid: 73d53233d08b9ba49be514744243debc, type: 2}
   _dialogue: {fileID: 0}
