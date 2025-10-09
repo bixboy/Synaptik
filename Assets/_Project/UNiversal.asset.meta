@@ -1,8 +1,15 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/_Project/UNiversal.asset.meta
 guid: 2c239296648fca643a0c4e952a7a2a4c
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000
+========
+guid: f54d1bd14bd3ca042bd867b519fee8cc
+folderAsset: yes
+DefaultImporter:
+  externalObjects: {}
+>>>>>>>> main/pierre:Assets/TextMesh Pro.meta
   userData: 
   assetBundleName: 
   assetBundleVariant: 
