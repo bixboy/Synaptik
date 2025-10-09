@@ -1,16 +1,19 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 
 [CreateAssetMenu(menuName = "Synaptik/Alien/Reaction Matrix", fileName = "ReactionMatrix")]
 public class ReactionMatrix : ScriptableObject
 {
 
-    [SerializeField] private Rule[] _rules = Array.Empty<Rule>();
+    [SerializeField] private InterractionRule[] _interrationRules = Array.Empty<InterractionRule>();
+    [SerializeField] private ItemRule[] _itemRules = Array.Empty<ItemRule>();
+    
 
-    public bool TryFindRule(Behavior channel, Emotion playerEmotion, out Rule rule)
+    public bool TryFindRule(Behavior channel, Emotion playerEmotion, out InterractionRule rule)
     {
-        var rules = _rules;
+        var rules = _interrationRules;
         for (int i = 0; i < rules.Length; i++)
         {
             if (rules[i].Channel == channel && rules[i].PlayerEmotion == playerEmotion)
@@ -24,7 +27,7 @@ public class ReactionMatrix : ScriptableObject
         return false;
     }
 
-    public bool TryFindItemRule(string itemId, out Rule rule)
+    public bool TryFindItemRule(string itemId, out ItemRule rule)
     {
         if (string.IsNullOrEmpty(itemId))
         {
@@ -32,10 +35,10 @@ public class ReactionMatrix : ScriptableObject
             return false;
         }
 
-        var rules = _rules;
+        var rules = _itemRules;
         for (int i = 0; i < rules.Length; i++)
         {
-            if (rules[i].DependsOnItem && rules[i].ExpectedItemId == itemId)
+            if (_itemRules[i].ExpectedItemId == itemId)
             {
                 rule = rules[i];
                 return true;

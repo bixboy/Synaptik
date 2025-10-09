@@ -1002,7 +1002,7 @@ Transform:
   m_GameObject: {fileID: 715469667}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.83, y: 0, z: 0}
+  m_LocalPosition: {x: 0.731, y: 0, z: 0.391}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1517,7 +1517,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1460663262}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 0}
   m_CullingMode: 0
@@ -1643,7 +1643,7 @@ Transform:
   m_GameObject: {fileID: 1460663262}
   serializedVersion: 2
   m_LocalRotation: {x: 0.008703665, y: -0, z: -0, w: 0.9999622}
-  m_LocalPosition: {x: -3.5, y: -2.33, z: -14.14}
+  m_LocalPosition: {x: 3.8, y: -1.79, z: 0.18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2020,8 +2020,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _dropForwardSpeed: 0
-  _aim: {fileID: 715469668}
-  _interactRadius: 2
+  _aimZone: {fileID: 715469668}
+  _interactRadius: 2.94
   _interactHalfFov: 45
   _alienMask:
     serializedVersion: 2
