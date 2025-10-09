@@ -77,12 +77,12 @@ namespace Synaptik.Game
                             alien.TryReceiveItem(_heldItemId);
                             DropItem(true);
                             Debug.Log($"Give item {itemRule.ExpectedItemId} to alien {alien.Definition.name}");
-                            break;
+                            return;
                         }
                         DropItem();
                         
                         Debug.Log("Drop item in front of alien");
-                        break;
+                        return;
                     }
                         
                 }
