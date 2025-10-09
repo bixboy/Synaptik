@@ -15,37 +15,37 @@ MonoBehaviour:
   _entries:
   - _emotion: 1
     _behavior: 1
-    _emojiLine: pas bien
+    _emojiLine: encore + triste
     _duration: 3
   - _emotion: 3
     _behavior: 1
-    _emojiLine: Triste parce
+    _emojiLine: 'Triste veut fleur '
     _duration: 3
   - _emotion: 2
     _behavior: 1
-    _emojiLine: Friendly Talking
+    _emojiLine: ta grosse darone cette pute
     _duration: 3
   - _emotion: 4
     _behavior: 1
-    _emojiLine: Fearful Talking
+    _emojiLine: quoi ?
     _duration: 3
   - _emotion: 1
     _behavior: 2
-    _emojiLine: Anger Action
+    _emojiLine: violent, je suis encore + triste
     _duration: 3
   - _emotion: 2
     _behavior: 2
-    _emojiLine: Friendly Action
+    _emojiLine: 
     _duration: 3
   - _emotion: 3
     _behavior: 2
-    _emojiLine: Curious Action
+    _emojiLine: quoi ?
     _duration: 3
   - _emotion: 4
     _behavior: 2
-    _emojiLine: Fearful Action
+    _emojiLine: quoi ?
     _duration: 3
   _itemEntries:
   - _itemID: Fleur
-    _emojiLine: "J'ai bien r\xE9cup la fleur bg"
+    _emojiLine: MERCI BEAUCOUP ! JE SUIS CONTENT MAINTENANT
     _duration: 4

@@ -13,11 +13,22 @@ MonoBehaviour:
   m_Name: Alien2
   m_EditorClassIdentifier: 
   _alienId: 1
-  _startEmotion: 2
+  _startEmotion: 3
   _animator: {fileID: 9100000, guid: 63ee86efd213bf34285c95f33e79dc6c, type: 2}
-  _reactions: {fileID: 11400000, guid: 73d53233d08b9ba49be514744243debc, type: 2}
+  _reactions: {fileID: 11400000, guid: d08319f4d0ad493449e5e4bb66bfb3f6, type: 2}
   _dialogue: {fileID: 0}
   _quests:
-  - QuestId: test
-    Title: Faire vomir un alien
-    Description: "d\xE9merdez vous"
+  - _questId: vomi
+    _title: vomi
+    _description: 
+    _autoRegisterMission: 1
+    _autoCompleteMissionOnQuestEnd: 0
+    _steps:
+    - _stepId: 0
+      _stepType: 0
+      _completesQuest: 0
+      _nextStepId: 1
+    - _stepId: 1
+      _stepType: 0
+      _completesQuest: 1
+      _nextStepId: 2
