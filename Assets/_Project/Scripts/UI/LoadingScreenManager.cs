@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Collections.Generic;
+using NUnit.Framework;
 
 public class LoadingScreenManager : MonoBehaviour
 {
@@ -11,8 +13,11 @@ public class LoadingScreenManager : MonoBehaviour
 
     [Header("Paramètres")]
     [SerializeField] private float fadeDuration = 1f;
-    [SerializeField] private float holdDurationBeforeLoad = 0.5f;  // temps avant de commencer le chargement
-    [SerializeField] private float holdDurationAfterSceneLoaded = 0.5f; // temps après activation de la nouvelle scène avant le fade-out
+    [SerializeField] private float holdDurationBeforeLoad = 0.5f;
+    [SerializeField] private float holdDurationAfterSceneLoaded = 0.5f;
+    
+    [Header("Text")]
+    public List<string> TextFiller = new List<string>();
 
     private CanvasGroup currentCanvasGroup;
     private GameObject currentLoadingInstance;
@@ -37,9 +42,8 @@ public class LoadingScreenManager : MonoBehaviour
 
     private IEnumerator LoadSceneRoutine(string sceneName)
     {
-        // --- Instanciation du prefab ---
         currentLoadingInstance = Instantiate(loadingScreenPrefab);
-        DontDestroyOnLoad(currentLoadingInstance); // 👈 garder l’écran de loading pendant le changement de scène
+        DontDestroyOnLoad(currentLoadingInstance);
         currentCanvasGroup = currentLoadingInstance.GetComponentInChildren<CanvasGroup>();
 
         if (!currentCanvasGroup)
@@ -50,13 +54,12 @@ public class LoadingScreenManager : MonoBehaviour
 
         currentCanvasGroup.alpha = 0f;
 
-        // --- FADE-IN ---
         yield return StartCoroutine(Fade(0f, 1f));
+        
+        
 
-        // --- MAINTIEN avant de commencer le chargement ---
         yield return new WaitForSeconds(holdDurationBeforeLoad);
 
-        // --- CHARGEMENT ASYNCHRONE ---
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
         asyncLoad.allowSceneActivation = false;
 
@@ -65,19 +68,14 @@ public class LoadingScreenManager : MonoBehaviour
             yield return null;
         }
 
-        // --- ACTIVER LA NOUVELLE SCÈNE ---
         asyncLoad.allowSceneActivation = true;
 
-        // Attendre que la nouvelle scène soit effectivement chargée et active
         yield return new WaitUntil(() => SceneManager.GetActiveScene().name == sceneName);
 
-        // --- MAINTIEN APRÈS LE CHARGEMENT ---
         yield return new WaitForSeconds(holdDurationAfterSceneLoaded);
 
-        // --- FADE-OUT une fois la nouvelle scène affichée ---
         yield return StartCoroutine(Fade(1f, 0f));
 
-        // --- DÉTRUIRE le prefab ---
         Destroy(currentLoadingInstance);
         currentLoadingInstance = null;
         currentCanvasGroup = null;
