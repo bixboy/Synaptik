@@ -13,11 +13,60 @@ MonoBehaviour:
   m_Name: 1ReactionMatrix
   m_EditorClassIdentifier: 
   _interactionRules:
-  - _channel: 0
-    _playerEmotion: 0
+  - _channel: 1
+    _playerEmotion: 1
+    _questId: 
+    _questStepId: 
+    _suspicionDelta: 3
+    _setNewEmotion: 0
+    _newEmotion: 0
+  - _channel: 1
+    _playerEmotion: 2
     _questId: 
     _questStepId: 
     _suspicionDelta: 0
+    _setNewEmotion: 0
+    _newEmotion: 0
+  - _channel: 1
+    _playerEmotion: 3
+    _questId: 
+    _questStepId: 
+    _suspicionDelta: 0
+    _setNewEmotion: 0
+    _newEmotion: 0
+  - _channel: 1
+    _playerEmotion: 4
+    _questId: 
+    _questStepId: 
+    _suspicionDelta: 0
+    _setNewEmotion: 0
+    _newEmotion: 0
+  - _channel: 2
+    _playerEmotion: 4
+    _questId: 
+    _questStepId: 
+    _suspicionDelta: 3
+    _setNewEmotion: 0
+    _newEmotion: 0
+  - _channel: 2
+    _playerEmotion: 3
+    _questId: 
+    _questStepId: 
+    _suspicionDelta: 0
+    _setNewEmotion: 0
+    _newEmotion: 0
+  - _channel: 2
+    _playerEmotion: 2
+    _questId: 
+    _questStepId: 
+    _suspicionDelta: 0
+    _setNewEmotion: 0
+    _newEmotion: 0
+  - _channel: 2
+    _playerEmotion: 1
+    _questId: 
+    _questStepId: 
+    _suspicionDelta: 5
     _setNewEmotion: 0
     _newEmotion: 0
   _itemRules:
