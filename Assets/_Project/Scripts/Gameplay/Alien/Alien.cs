@@ -57,7 +57,7 @@ namespace Synaptik.Game
 
                 if (quest.HasSteps && hasQuestId && !_questRuntimes.ContainsKey(quest.QuestId))
                 {
-                    _questRuntimes.Add(quest.QuestId, new AlienQuestRuntime(this, quest));
+                    _questRuntimes.Add(quest.QuestId, new AlienQuestRuntime(quest));
                 }
             }
         }
@@ -151,20 +151,17 @@ namespace Synaptik.Game
 
         private void HandleInteractionRule(InterractionRule rule, Behavior channel)
         {
-            var questResult = ProcessQuestStep(rule.QuestId, rule.QuestStepId);
+            var handled = ProcessQuestStep(rule.QuestId, rule.QuestStepId, QuestStepType.Talk);
 
-            if (!questResult.OverrideDefaultReaction)
+            if (rule.SetNewEmotion)
             {
-                if (rule.SetNewEmotion)
-                {
-                    SetEmotion(rule.NewEmotion);
-                }
-
-                TryShowDialogue(Emotion, channel);
-                ApplySuspicionDelta(rule.SuspicionDelta);
+                SetEmotion(rule.NewEmotion);
             }
 
-            if (!questResult.Handled && !string.IsNullOrWhiteSpace(rule.QuestId))
+            TryShowDialogue(Emotion, channel);
+            ApplySuspicionDelta(rule.SuspicionDelta);
+
+            if (!handled && !string.IsNullOrWhiteSpace(rule.QuestId))
             {
                 GameManager.Instance?.SetMissionFinished(rule.QuestId);
             }
@@ -172,20 +169,17 @@ namespace Synaptik.Game
 
         private void HandleItemRule(ItemRule rule, string itemId)
         {
-            var questResult = ProcessQuestStep(rule.QuestId, rule.QuestStepId);
+            var handled = ProcessQuestStep(rule.QuestId, rule.QuestStepId, QuestStepType.GiveItem);
 
-            if (!questResult.OverrideDefaultReaction)
+            if (rule.SetIfGoodItem)
             {
-                if (rule.SetIfGoodItem)
-                {
-                    SetEmotion(rule.NewEmotionIfGoodItem);
-                }
-
-                TryShowItemDialogue(itemId);
-                ApplySuspicionDelta(rule.SuspicionDelta);
+                SetEmotion(rule.NewEmotionIfGoodItem);
             }
 
-            if (!questResult.Handled && !string.IsNullOrWhiteSpace(rule.QuestId))
+            TryShowItemDialogue(itemId);
+            ApplySuspicionDelta(rule.SuspicionDelta);
+
+            if (!handled && !string.IsNullOrWhiteSpace(rule.QuestId))
             {
                 GameManager.Instance?.SetMissionFinished(rule.QuestId);
             }
@@ -234,19 +228,19 @@ namespace Synaptik.Game
             }
         }
 
-        private QuestStepRuntimeResult ProcessQuestStep(string questId, string questStepId)
+        private bool ProcessQuestStep(string questId, string questStepId, QuestStepType triggerType)
         {
             if (string.IsNullOrWhiteSpace(questId) || string.IsNullOrWhiteSpace(questStepId))
             {
-                return QuestStepRuntimeResult.NotHandled;
+                return false;
             }
 
             if (_questRuntimes.TryGetValue(questId, out var runtime))
             {
-                return runtime.TryHandleStep(questStepId);
+                return runtime.TryHandleStep(questStepId, triggerType);
             }
 
-            return QuestStepRuntimeResult.NotHandled;
+            return false;
         }
 
         private int GetUpdatedItemQuantity(string itemId)

@@ -12,8 +12,6 @@ namespace Synaptik.Game
         [SerializeField, TextArea] private string _description;
         [SerializeField] private bool _autoRegisterMission = true;
         [SerializeField] private bool _autoCompleteMissionOnQuestEnd = true;
-        [SerializeField] private bool _enforceStepOrder = true;
-        [SerializeField] private bool _autoCompleteOnLastStep = true;
         [SerializeField] private QuestStep[] _steps;
 
         public string QuestId => _questId;
@@ -21,8 +19,6 @@ namespace Synaptik.Game
         public string Description => _description;
         public bool AutoRegisterMission => _autoRegisterMission;
         public bool AutoCompleteMissionOnQuestEnd => _autoCompleteMissionOnQuestEnd;
-        public bool EnforceStepOrder => _enforceStepOrder;
-        public bool AutoCompleteOnLastStep => _autoCompleteOnLastStep;
         public IReadOnlyList<QuestStep> Steps => _steps ?? Array.Empty<QuestStep>();
         public bool HasSteps => _steps != null && _steps.Length > 0;
 
@@ -36,24 +32,14 @@ namespace Synaptik.Game
     public struct QuestStep
     {
         [SerializeField] private string _stepId;
-        [SerializeField] private string _displayName;
-        [SerializeField, TextArea] private string _description;
-        [SerializeField] private bool _allowMultipleTriggers;
-        [SerializeField] private bool _autoAdvanceToNext = true;
-        [SerializeField] private string _nextStepId;
-        [SerializeField] private bool _overrideDefaultReaction;
+        [SerializeField] private QuestStepType _stepType;
         [SerializeField] private bool _completesQuest;
-        [SerializeField] private QuestAction[] _actions;
+        [SerializeField] private string _nextStepId;
 
         public string StepId => _stepId;
-        public string DisplayName => _displayName;
-        public string Description => _description;
-        public bool AllowMultipleTriggers => _allowMultipleTriggers;
-        public bool AutoAdvanceToNext => _autoAdvanceToNext;
-        public string NextStepId => _nextStepId;
-        public bool OverrideDefaultReaction => _overrideDefaultReaction;
+        public QuestStepType StepType => _stepType;
         public bool CompletesQuest => _completesQuest;
-        public IReadOnlyList<QuestAction> Actions => _actions ?? Array.Empty<QuestAction>();
+        public string NextStepId => _nextStepId;
 
         public string ResolveStepId(int index)
         {
@@ -61,34 +47,9 @@ namespace Synaptik.Game
         }
     }
 
-    public enum QuestActionType
+    public enum QuestStepType
     {
-        ChangeEmotion,
-        AdjustMistrust,
-        ShowDialogue,
-        RegisterMission,
-        CompleteMission
-    }
-
-    [Serializable]
-    public struct QuestAction
-    {
-        [SerializeField] private QuestActionType _actionType;
-        [SerializeField] private Emotion _emotion;
-        [SerializeField] private int _intValue;
-        [SerializeField] private string _missionId;
-        [SerializeField] private string _missionTitle;
-        [SerializeField, TextArea] private string _missionDescription;
-        [SerializeField, TextArea] private string _dialogueLine;
-        [SerializeField] private float _dialogueDuration;
-
-        public QuestActionType ActionType => _actionType;
-        public Emotion EmotionValue => _emotion;
-        public int IntValue => _intValue;
-        public string MissionId => _missionId;
-        public string MissionTitle => _missionTitle;
-        public string MissionDescription => _missionDescription;
-        public string DialogueLine => _dialogueLine;
-        public float DialogueDuration => _dialogueDuration <= 0f ? 2f : _dialogueDuration;
+        Talk = 0,
+        GiveItem = 1
     }
 }
