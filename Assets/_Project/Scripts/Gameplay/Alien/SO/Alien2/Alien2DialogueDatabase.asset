@@ -15,11 +15,11 @@ MonoBehaviour:
   _entries:
   - _emotion: 1
     _behavior: 1
-    _emojiLine: pas bien
+    _emojiLine: Pas content
     _duration: 3
   - _emotion: 3
     _behavior: 1
-    _emojiLine: Indice
+    _emojiLine: quand content vomit
     _duration: 3
   - _emotion: 2
     _behavior: 1

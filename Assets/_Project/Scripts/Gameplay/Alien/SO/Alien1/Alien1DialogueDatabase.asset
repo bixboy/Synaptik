@@ -19,11 +19,11 @@ MonoBehaviour:
     _duration: 3
   - _emotion: 3
     _behavior: 1
-    _emojiLine: 'Triste veut fleur '
+    _emojiLine: Triste veut fleur
     _duration: 3
   - _emotion: 2
     _behavior: 1
-    _emojiLine: ta grosse darone cette pute
+    _emojiLine: "Je suis quand m\xEAme triste"
     _duration: 3
   - _emotion: 4
     _behavior: 1
