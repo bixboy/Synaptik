@@ -18,6 +18,7 @@ namespace Synaptik.Game
         
         
         private int itemQuantity = 0;
+        public int ItemQuantity => itemQuantity;
 
         private void Awake()
         {
@@ -29,7 +30,7 @@ namespace Synaptik.Game
             }
 
             Emotion = _def != null ? _def.StartEmotion : Emotion.Curious;
-
+            Debug.Log("Emotion at start: " + Emotion);
             ApplyAnimFromEmotion();
         }
 
@@ -45,6 +46,7 @@ namespace Synaptik.Game
 
         private void ApplyAnimFromEmotion()
         {
+            return;
             if (_anim != null)
             {
                 _anim.SetInteger(EmotionHash, (int)Emotion);
@@ -55,6 +57,7 @@ namespace Synaptik.Game
         {
             if (_def == null || _def.Reactions == null)
             {
+                Debug.Log("No definition or reactions");
                 return;
             }
             
@@ -64,12 +67,15 @@ namespace Synaptik.Game
                 {
                     Emotion = rule.NewEmotion;
                     ApplyAnimFromEmotion();
+                    Debug.Log(rule.NewEmotion);
                 }
 
                 if (_def.Dialogue != null && _def.Dialogue.TryGet(Emotion, channel, out var entry))
                 {
                     _dialogueBubblePrefab.ShowFor(entry.EmojiLine, entry.Duration);
                 }
+                
+                MistrustManager.Instance.AddMistrust(rule.SuspicionDelta);
                 
             }
             
@@ -79,14 +85,17 @@ namespace Synaptik.Game
         {
             if (_def == null || _def.Reactions == null)
             {
+                Debug.Log("No definition or reactions");
                 return false;
             }
 
             if (!_def.Reactions.TryFindItemRule(itemId, out var rule))
             {
+                Debug.Log($"No rule for item {itemId}");
                 return false;
             }
             
+            Debug.Log($"Rule found for item {itemId}: expected {rule.ExpectedItemId}, quantity {rule.ExpectedItemQuantity}, set if good {rule.SetIfGoodItem}, new emotion if good {rule.NewEmotionIfGoodItem}");
             itemQuantity++;
             if (itemQuantity >= rule.ExpectedItemQuantity)
             {
@@ -95,11 +104,13 @@ namespace Synaptik.Game
                 {
                     Emotion = rule.NewEmotionIfGoodItem;
                     ApplyAnimFromEmotion();
+                    Debug.Log(rule.NewEmotionIfGoodItem);
                 }
                 
                 if (_def.Dialogue != null && _def.Dialogue.TryGet(Emotion, Behavior.Action, out var entry)) // On reçoit un item, donc on utilise le channel Action forcémment (le joueur ne peut pas donner un objet en parlant)
                 {
                     _dialogueBubblePrefab.ShowFor(entry.EmojiLine, entry.Duration);
+                    Debug.Log($"Dialogue for item {itemId}: {entry.EmojiLine}" );
                 }
             }
             

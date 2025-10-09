@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Synaptik.Game
 {
@@ -13,14 +15,18 @@ namespace Synaptik.Game
 
         private HoldableItem _held;
         private string _heldItemId => _held != null ? _held.ItemId : null;
+
         
-        
-        [Header("Interaction Settings")]
-        [SerializeField] private Transform _aim;
+        [Header("Interaction Settings")] 
+        [SerializeField] private Transform _aimZone;
         [SerializeField] private float _interactRadius = 2f;
         [SerializeField] private float _interactHalfFov = 45f;
         [SerializeField] private LayerMask _alienMask;
-        
+
+        private void Start()
+        {
+            InputsDetection.Instance.OnEmotionAction += HandleEmotionAction;
+        }
 
         private void OnEnable()
         {
@@ -40,19 +46,68 @@ namespace Synaptik.Game
 
         private void HandleEmotionAction(Emotion emotion, Behavior behavior)
         {
-            Transform origin = _aim != null ? _aim : transform;
+            Debug.Log($"HandleEmotionAction: {emotion} + {behavior}");
+            Transform origin = _aimZone != null ? _aimZone : transform;
             Alien alien = TargetingUtil.FindAlienInFront(origin, _interactRadius, _interactHalfFov, _alienMask);
             if (alien == null)
             {
-                PickUp();
+                if (!_held && emotion == Emotion.Curious && behavior == Behavior.Action) PickUp();
+                else if (_held && emotion == Emotion.Friendly && behavior == Behavior.Action) DropItem();
                 return;
             }
+
+            if (behavior == Behavior.Action)
+            {
+                switch (emotion)
+                {
+                    case Emotion.Anger: // Hit
+                        break;
+                    case Emotion.Curious: // Ramasser
+                    {
+                        PickUp();
+                        break;
+                    }
+                        
+                    case Emotion.Fearful: // Courir
+                        break;
+                    case Emotion.Friendly: // Donne
+                    {
+                        if (alien.Definition.Reactions.TryFindItemRule(_heldItemId, out var itemRule))
+                        {
+                            alien.TryReceiveItem(_heldItemId);
+                            DropItem(true);
+                            Debug.Log($"Give item {itemRule.ExpectedItemId} to alien {alien.Definition.name}");
+                            break;
+                        }
+                        DropItem();
+                        Debug.Log("Drop item in front of alien");
+                        break;
+                    }
+                        
+                }
+            }
+            else if (behavior == Behavior.Talking)
+            {
+                switch (emotion)
+                {
+                    case Emotion.Anger: // Insulter
+                        break;
+                    case Emotion.Curious: // Curieux
+                        break;
+                    case Emotion.Fearful: // Crie
+                        break;
+                    case Emotion.Friendly: // Complimenter 
+                        break;
+                }
+            }
+            
             
             alien.OnPlayerCombo(emotion, behavior);
         }
 
         public void PickUp()
         {
+            Debug.Log("PickUp: tenter de ramasser un objet");
             Vector3 origin = _handSocket ? _handSocket.position : transform.position;
             Collider[] hits = Physics.OverlapSphere(origin, _pickupRadius, _pickupMask, QueryTriggerInteraction.Ignore);
 
@@ -78,7 +133,7 @@ namespace Synaptik.Game
                 return;
             }
             
-            if (_held != null)
+            if (_held != null) // on lâche l'objet tenu avant de ramasser le nouveau
             {
                 Vector3 v = _dropForwardSpeed > 0f ? transform.forward * _dropForwardSpeed : Vector3.zero;
                 _held.Drop(v);
@@ -89,11 +144,17 @@ namespace Synaptik.Game
             _held = best;
         }
 
-        public void DropItem()
+        public void DropItem(bool destroyItem = false)
         {
             if (_held == null) return;
             
-            Transform origin = _aim != null ? _aim : transform;
+            if (destroyItem)
+            {
+                Destroy(_held.gameObject);
+                _held = null;
+                return;
+            }
+            Transform origin = _aimZone != null ? _aimZone : transform;
             Alien alien = TargetingUtil.FindAlienInFront(origin, _interactRadius, _interactHalfFov, _alienMask);
 
             if (!alien)
@@ -105,56 +166,31 @@ namespace Synaptik.Game
             {
                 if (alien.IsWithinReceiveRadius(origin.position))
                 {
-                    alien.TryReceiveItem(_heldItemId);
+                    if (alien.TryReceiveItem(_heldItemId));
+                    else
+                    {
+                        Vector3 v = _dropForwardSpeed > 0f ? transform.forward * _dropForwardSpeed : Vector3.zero;
+                        _held.Drop(v);
+                    }
                 }
             }
             _held = null;
         }
 
-        public void Interact(Emotion e, Behavior b)
+        public void OnDrawGizmos()
         {
-            if (b == Behavior.Talking)
+            if (_handSocket != null)
             {
-                switch (e)
-                {
-                    case Emotion.Curious:
-                        Debug.Log("Interagir: poser une question");
-                        break;
-                    case Emotion.Friendly:
-                        Debug.Log("Interagir: faire un compliment");
-                        break;
-                    case Emotion.Fearful:
-                        Debug.Log("Interagir: montrer qu'on cède");
-                        break;
-                    case Emotion.Anger:
-                        Debug.Log("Interagir: insulter");
-                        break;
-                    default:
-                        Debug.Log("Interagir: poser une question");
-                        break;    
-                }
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireSphere(_handSocket.position, _pickupRadius);
             }
-            else if (b == Behavior.Action)
+
+            if (_aimZone != null)
             {
-                switch (e)
-                {
-                    case Emotion.Curious:
-                        PickUp();
-                        break;
-                    case Emotion.Friendly:
-                        DropItem();
-                        break;
-                    case Emotion.Fearful:
-                        Debug.Log("Interagir: courir");
-                        break;
-                    case Emotion.Anger:
-                        Debug.Log("Interagir: frapper");
-                        break;
-                    
-                    default:
-                        Debug.Log("Interagir: donner un objet");
-                        break;    
-                }
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawWireSphere(_aimZone.position, _interactRadius);
+                Gizmos.DrawLine(_aimZone.position, _aimZone.position + Quaternion.Euler(0f, _interactHalfFov, 0f) * _aimZone.forward * _interactRadius);
+                Gizmos.DrawLine(_aimZone.position, _aimZone.position + Quaternion.Euler(0f, -_interactHalfFov, 0f) * _aimZone.forward * _interactRadius);
             }
         }
     }

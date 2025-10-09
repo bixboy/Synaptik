@@ -42,7 +42,8 @@ public class HoldableItem : MonoBehaviour
     {
         if (IsHeld) return;
         
-        StopCoroutine(_respawnCoroutine);
+        if (_respawnCoroutine != null)
+            StopCoroutine(_respawnCoroutine);
 
         IsHeld = true;
         _originalParent = transform.parent;
@@ -56,6 +57,7 @@ public class HoldableItem : MonoBehaviour
 
         // attache à la main (pose exacte via offsets)
         transform.SetParent(handSocket, worldPositionStays: false);
+        transform.localPosition = handSocket.localPosition;
     }
 
     public void Drop(Vector3 inheritVelocity)
