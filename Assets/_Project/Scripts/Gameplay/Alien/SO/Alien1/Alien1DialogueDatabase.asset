@@ -45,3 +45,7 @@ MonoBehaviour:
     _behavior: 2
     _emojiLine: Fearful Action
     _duration: 3
+  _itemEntries:
+  - _itemID: Fleur
+    _emojiLine: "J'ai bien r\xE9cup la fleur bg"
+    _duration: 4

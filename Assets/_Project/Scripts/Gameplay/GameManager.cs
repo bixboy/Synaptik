@@ -6,9 +6,18 @@ using UnityEngine;
 /// </summary>
 public struct Mission
 {
-    public string Name;
+    public string MissionID;
+    public string Title;
+    public string Description;
     public bool IsFinished;
-    public IInteraction UfoRef;
+    
+    public Mission(string missionID, string title, string description)
+    {
+        MissionID = missionID;
+        Title = title;
+        Description = description;
+        IsFinished = false;
+    }
 }
 
 
@@ -21,13 +30,7 @@ public class GameManager : MonoBehaviour
     // --- Données des missions ---
     [SerializeField] 
     private List<Mission> _missions = new List<Mission>();
-
-    // --- Paramètres de gameplay ---
-    [SerializeField] 
-    private float _mistrust = 0f;
-
-    [SerializeField] 
-    private float _maxMistrust = 100f;
+    
     
     
     public delegate void TaskEndHandler(Mission mission);
@@ -55,18 +58,14 @@ public class GameManager : MonoBehaviour
     {
         foreach (var existingMission in _missions)
         {
-            if (existingMission.Name == mission.Name)
+            if (existingMission.MissionID == mission.MissionID)
             {
-                Debug.LogWarning($"Mission '{mission.Name}' already registered.");
+                Debug.LogWarning($"Mission '{mission.MissionID}' already registered.");
                 return false;
             }
         }
 
         _missions.Add(mission);
-
-        // if (mission.UfoRef is UFO ufo)
-        //     ufo.OnUfoInteract += HandleUfoInteract;
-
         return true;
     }
 
@@ -74,7 +73,7 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < _missions.Count; i++)
         {
-            if (_missions[i].Name == missionName)
+            if (_missions[i].MissionID == missionName)
             {
                 var mission = _missions[i];
                 mission.IsFinished = true;
@@ -99,25 +98,13 @@ public class GameManager : MonoBehaviour
         }
 
         _missions.Clear();
-        _mistrust = 0f;
+        MistrustManager.Instance.RemoveMistrust(1000);
 
         Debug.Log("Toutes les missions et abonnements ont été nettoyés.");
     }
 
-    // --- Gestion de la méfiance ---
-    public void SetMistrustValue(float value)
+    public List<Mission> GetMissions()
     {
-        _mistrust = Mathf.Clamp(value, 0f, _maxMistrust);
-
-        if (_mistrust >= _maxMistrust)
-        {
-            Debug.Log("💀 Défaite : méfiance maximale atteinte !");
-        }
+        return _missions;
     }
-
-    // --- Gestion des interactions UFO ---
-    // private void HandleUfoInteract(UFO ufo, ActionValues action)
-    // {
-    //     Debug.Log($"[GameManager] Interaction détectée avec : {ufo.transform.parent.name}");
-    // }
 }

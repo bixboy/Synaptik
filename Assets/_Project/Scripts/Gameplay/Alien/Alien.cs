@@ -37,6 +37,10 @@ namespace Synaptik.Game
         private void Start()
         {
             AlienManager.Instance.RegisterAlien(this);
+            foreach (AlienQuest quest in _def.Quests)
+            {
+                GameManager.Instance.RegisterMission(new Mission(quest.QuestId, quest.Title, quest.Description));
+            }
         }
 
         private void OnDestroy()
@@ -76,6 +80,10 @@ namespace Synaptik.Game
                 }
                 
                 MistrustManager.Instance.AddMistrust(rule.SuspicionDelta);
+                if (rule.QuestId != null)
+                {
+                    GameManager.Instance.SetMissionFinished(rule.QuestId);
+                }
                 
             }
             
@@ -107,10 +115,16 @@ namespace Synaptik.Game
                     Debug.Log(rule.NewEmotionIfGoodItem);
                 }
                 
-                if (_def.Dialogue != null && _def.Dialogue.TryGet(Emotion, Behavior.Action, out var entry)) // On reçoit un item, donc on utilise le channel Action forcémment (le joueur ne peut pas donner un objet en parlant)
+                if (_def.Dialogue != null && _def.Dialogue.TryGet(itemId, out var entry)) // On reçoit un item, donc on utilise le channel Action forcémment (le joueur ne peut pas donner un objet en parlant)
                 {
                     _dialogueBubblePrefab.ShowFor(entry.EmojiLine, entry.Duration);
                     Debug.Log($"Dialogue for item {itemId}: {entry.EmojiLine}" );
+                }
+            
+                MistrustManager.Instance.AddMistrust(rule.SuspicionDelta);
+                if (rule.QuestId != null)
+                {
+                    GameManager.Instance.SetMissionFinished(rule.QuestId);
                 }
             }
             
