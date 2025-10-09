@@ -178,7 +178,7 @@ public class InputsDetection : MonoBehaviour
 
     private void Trigger(Emotion emotion, Behavior action)
     {
-        Debug.Log($"🎭 Combo détecté → Émotion: {emotion}, Action: {action}");
+        // Debug.Log($"🎭 Combo détecté → Émotion: {emotion}, Action: {action}");
         OnEmotionAction?.Invoke(emotion, action);
     }
 

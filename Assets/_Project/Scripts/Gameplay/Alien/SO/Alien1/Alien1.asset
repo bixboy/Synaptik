@@ -16,4 +16,4 @@ MonoBehaviour:
   _startEmotion: 2
   _animator: {fileID: 9100000, guid: 63ee86efd213bf34285c95f33e79dc6c, type: 2}
   _reactions: {fileID: 11400000, guid: 73d53233d08b9ba49be514744243debc, type: 2}
-  _dialogue: {fileID: 0}
+  _dialogue: {fileID: 11400000, guid: c610a60b133dc6d42b56d74c2e752b4e, type: 2}
