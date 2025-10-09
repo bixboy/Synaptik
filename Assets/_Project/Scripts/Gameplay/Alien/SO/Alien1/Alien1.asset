@@ -18,6 +18,21 @@ MonoBehaviour:
   _reactions: {fileID: 11400000, guid: 73d53233d08b9ba49be514744243debc, type: 2}
   _dialogue: {fileID: 11400000, guid: c610a60b133dc6d42b56d74c2e752b4e, type: 2}
   _quests:
-  - QuestId: Fleur
-    Title: Dinner romantique
-    Description: "Donner une fleur \xE0 l'alien curieux"
+  - _questId: Fleur
+    _title: Donner une fleur et parler
+    _description: oui oui oui oui oui
+    _autoRegisterMission: 1
+    _autoCompleteMissionOnQuestEnd: 0
+    _steps:
+    - _stepId: 0
+      _stepType: 0
+      _completesQuest: 0
+      _nextStepId: 1
+    - _stepId: 1
+      _stepType: 1
+      _completesQuest: 0
+      _nextStepId: 2
+    - _stepId: 2
+      _stepType: 0
+      _completesQuest: 1
+      _nextStepId: 0

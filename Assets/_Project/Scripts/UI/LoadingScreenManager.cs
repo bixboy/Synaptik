@@ -19,8 +19,8 @@ public class LoadingScreenManager : MonoBehaviour
     [Header("Text")]
     public List<string> TextFiller = new List<string>();
 
-    private CanvasGroup currentCanvasGroup;
-    private GameObject currentLoadingInstance;
+    private CanvasGroup _currentCanvasGroup;
+    private GameObject _currentLoadingInstance;
 
     private void Awake()
     {
@@ -42,18 +42,19 @@ public class LoadingScreenManager : MonoBehaviour
 
     private IEnumerator LoadSceneRoutine(string sceneName)
     {
-        currentLoadingInstance = Instantiate(loadingScreenPrefab);
-        DontDestroyOnLoad(currentLoadingInstance);
-        currentCanvasGroup = currentLoadingInstance.GetComponentInChildren<CanvasGroup>();
-        loadingText = currentLoadingInstance.GetComponentInChildren<LoadingText>();
+        _currentLoadingInstance = Instantiate(loadingScreenPrefab);
+        DontDestroyOnLoad(_currentLoadingInstance);
+        
+        _currentCanvasGroup = _currentLoadingInstance.GetComponentInChildren<CanvasGroup>();
+        loadingText = _currentLoadingInstance.GetComponentInChildren<LoadingText>();
 
-        if (!currentCanvasGroup)
+        if (!_currentCanvasGroup)
         {
             Debug.LogError("Le prefab de loading screen doit contenir un CanvasGroup !");
             yield break;
         }
 
-        currentCanvasGroup.alpha = 0f;
+        _currentCanvasGroup.alpha = 0f;
 
         if (loadingText)
             loadingText.StartText(TextFiller);
@@ -84,9 +85,9 @@ public class LoadingScreenManager : MonoBehaviour
 
        yield return StartCoroutine(Fade(1f, 0f));
 
-        Destroy(currentLoadingInstance);
-        currentLoadingInstance = null;
-        currentCanvasGroup = null;
+        Destroy(_currentLoadingInstance);
+        _currentLoadingInstance = null;
+        _currentCanvasGroup = null;
     }
 
     private IEnumerator Fade(float from, float to)
@@ -95,13 +96,13 @@ public class LoadingScreenManager : MonoBehaviour
         while (time < fadeDuration)
         {
             time += Time.deltaTime;
-            if (currentCanvasGroup)
-                currentCanvasGroup.alpha = Mathf.Lerp(from, to, time / fadeDuration);
+            if (_currentCanvasGroup)
+                _currentCanvasGroup.alpha = Mathf.Lerp(from, to, time / fadeDuration);
             yield return null;
         }
 
-        if (currentCanvasGroup)
-            currentCanvasGroup.alpha = to;
+        if (_currentCanvasGroup)
+            _currentCanvasGroup.alpha = to;
     }
 
     private IEnumerator UpdateLoadingProgress(float duration)

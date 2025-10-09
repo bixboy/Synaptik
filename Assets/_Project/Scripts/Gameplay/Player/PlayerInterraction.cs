@@ -83,6 +83,7 @@ namespace Synaptik.Game
                             return;
                         }
                         DropItem();
+                        
                         Debug.Log("Drop item in front of alien");
                         return;
                     }
@@ -120,44 +121,49 @@ namespace Synaptik.Game
             foreach (var h in hits)
             {
                 var holdable = h.GetComponentInParent<HoldableItem>();
-                if (holdable == null) continue;
+                if (!holdable) 
+                    continue;
 
 
-                if (_held != null && holdable == _held) continue;
+                if (_held && holdable == _held)
+                    continue;
 
                 float d = Vector3.SqrMagnitude(h.transform.position - origin);
                 if (d < bestDist) { bestDist = d; best = holdable; }
             }
             
-            if (best == null)
+            if (!best)
             {
-                if (_held == null)
+                if (!_held)
                     Debug.Log("PickUp: aucun objet à portée");
+                
                 return;
             }
             
-            if (_held != null) // on lâche l'objet tenu avant de ramasser le nouveau
+            if (_held)
             {
                 Vector3 v = _dropForwardSpeed > 0f ? transform.forward * _dropForwardSpeed : Vector3.zero;
                 _held.Drop(v);
                 _held = null;
             }
             
-            best.Pick(_handSocket != null ? _handSocket : transform);
+            best.Pick(_handSocket ? _handSocket : transform);
             _held = best;
         }
 
         public void DropItem(bool destroyItem = false)
         {
-            if (_held == null) return;
+            if (!_held)
+                return;
             
             if (destroyItem)
             {
                 Destroy(_held.gameObject);
                 _held = null;
+                
                 return;
             }
-            Transform origin = _aimZone != null ? _aimZone : transform;
+            Transform origin = _aimZone ? _aimZone : transform;
             Alien alien = TargetingUtil.FindAlienInFront(origin, _interactRadius, _interactHalfFov, _alienMask);
 
             if (!alien)
