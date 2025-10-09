@@ -51,8 +51,11 @@ namespace Synaptik.Game
             Alien alien = TargetingUtil.FindAlienInFront(origin, _interactRadius, _interactHalfFov, _alienMask);
             if (alien == null)
             {
-                if (!_held && emotion == Emotion.Curious && behavior == Behavior.Action) PickUp();
-                else if (_held && emotion == Emotion.Friendly && behavior == Behavior.Action) DropItem();
+                if (!_held && emotion == Emotion.Curious && behavior == Behavior.Action)
+                    PickUp();
+                else if (_held && emotion == Emotion.Friendly && behavior == Behavior.Action)
+                    DropItem();
+                
                 return;
             }
 

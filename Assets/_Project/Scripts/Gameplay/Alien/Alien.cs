@@ -59,6 +59,7 @@ namespace Synaptik.Game
 
         public void OnPlayerCombo(Emotion playerEmotion, Behavior channel)
         {
+            Debug.Log("Player combo: " + playerEmotion);
             if (_def == null || _def.Reactions == null)
             {
                 Debug.Log("No definition or reactions");

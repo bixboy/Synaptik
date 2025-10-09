@@ -21,9 +21,9 @@ MonoBehaviour:
     _newEmotion: 1
   - _channel: 1
     _playerEmotion: 2
-    _questId: 
+    _questId: test
     _suspicionDelta: -10
-    _setNewEmotion: 1
+    _setNewEmotion: 0
     _newEmotion: 2
   - _channel: 1
     _playerEmotion: 3
