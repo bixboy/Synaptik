@@ -8,6 +8,7 @@
     {
         [SerializeField] private Behavior _channel;
         [SerializeField] private Emotion _playerEmotion;
+        [SerializeField] private string _questId;
  
         [SerializeField] private int _suspicionDelta;
         [SerializeField] private bool _setNewEmotion;
@@ -16,6 +17,8 @@
 
         public Behavior Channel => _channel;
         public Emotion PlayerEmotion => _playerEmotion;
+        
+        public string QuestId => _questId;
 
         public int SuspicionDelta => _suspicionDelta;
         public bool SetNewEmotion => _setNewEmotion;
@@ -25,15 +28,17 @@
     [Serializable]
     public struct ItemRule
     {
-
         [Header("Item Reaction")]
+        [SerializeField] private string _questId;
         [SerializeField] private string _expectedItemId;
+        [SerializeField] private int _suspicionDelta;
         [SerializeField] private int _expectedItemQuantity;
         [SerializeField] private bool _setIfGoodItem;
         [SerializeField] private Emotion _newEmotionIfGoodItem;
         
-
+        public string QuestId => _questId;
         public string ExpectedItemId => _expectedItemId;
+        public int SuspicionDelta => _suspicionDelta;
         public int ExpectedItemQuantity => _expectedItemQuantity;
         public bool SetIfGoodItem => _setIfGoodItem;
         public Emotion NewEmotionIfGoodItem => _newEmotionIfGoodItem;

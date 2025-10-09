@@ -6,7 +6,6 @@ using UnityEngine.Serialization;
 [RequireComponent(typeof(Rigidbody))]
 public class HoldableItem : MonoBehaviour
 {
-    
     private Rigidbody _rb;
     private Collider[] _colliders;
     private Transform _originalParent;
@@ -27,6 +26,8 @@ public class HoldableItem : MonoBehaviour
     [SerializeField] private float _despawnTime = 0.5f;
     [SerializeField] private AnimationCurve _despawnAnim = AnimationCurve.Linear(0, 0, 1, 1);
     private Coroutine _respawnCoroutine;
+    [Space(7)]
+    [SerializeField] private GameObject _despawnVFXPrefab;
 
     private void Awake()
     {
@@ -85,12 +86,8 @@ public class HoldableItem : MonoBehaviour
             _delayCurrent = _respawnDelay;
         else
             _delayCurrent = a_time;
-
-        while (_delayCurrent > 0)
-        {
-            _delayCurrent -= Time.fixedDeltaTime;
-            yield return new WaitForFixedUpdate();
-        }
+        
+        yield return new WaitForSeconds(_delayCurrent);
         
         _delayCurrent = _despawnTime;
         Vector3 startScale = transform.localScale;
@@ -102,7 +99,7 @@ public class HoldableItem : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
         
-        //Spawn VFX
+        Instantiate(_despawnVFXPrefab, transform.position, Quaternion.Euler(Vector3.zero));
         
         _rb.linearVelocity = Vector3.zero;
         transform.position = _spawnLocation;

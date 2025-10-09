@@ -15,46 +15,56 @@ MonoBehaviour:
   _interrationRules:
   - _channel: 1
     _playerEmotion: 1
+    _questId: 
     _suspicionDelta: 15
     _setNewEmotion: 1
     _newEmotion: 1
   - _channel: 1
     _playerEmotion: 2
+    _questId: 
     _suspicionDelta: -10
     _setNewEmotion: 1
     _newEmotion: 2
   - _channel: 1
     _playerEmotion: 3
+    _questId: 
     _suspicionDelta: -5
     _setNewEmotion: 1
     _newEmotion: 3
   - _channel: 1
     _playerEmotion: 4
+    _questId: 
     _suspicionDelta: 10
     _setNewEmotion: 1
     _newEmotion: 4
   - _channel: 2
     _playerEmotion: 4
+    _questId: 
     _suspicionDelta: 10
     _setNewEmotion: 1
     _newEmotion: 4
   - _channel: 2
     _playerEmotion: 3
+    _questId: 
     _suspicionDelta: -5
     _setNewEmotion: 1
     _newEmotion: 3
   - _channel: 2
     _playerEmotion: 2
+    _questId: 
     _suspicionDelta: -10
     _setNewEmotion: 1
     _newEmotion: 2
   - _channel: 2
     _playerEmotion: 1
+    _questId: 
     _suspicionDelta: 15
     _setNewEmotion: 1
     _newEmotion: 1
   _itemRules:
-  - _expectedItemId: Fleur
+  - _questId: Fleur
+    _expectedItemId: Fleur
+    _suspicionDelta: -10
     _expectedItemQuantity: 1
     _setIfGoodItem: 1
     _newEmotionIfGoodItem: 2

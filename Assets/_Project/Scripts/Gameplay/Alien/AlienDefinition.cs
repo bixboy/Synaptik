@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ namespace Synaptik.Game
         [SerializeField] private RuntimeAnimatorController _animator;
         [SerializeField] private ReactionMatrix _reactions;
         [SerializeField] private DialogueDatabase _dialogue;
+        [SerializeField] private List<AlienQuest> _quests = new List<AlienQuest>();
 
         public string AlienId => _alienId;
         public Emotion StartEmotion => _startEmotion;
@@ -18,6 +20,8 @@ namespace Synaptik.Game
         public RuntimeAnimatorController Animator => _animator;
         public ReactionMatrix Reactions => _reactions;
         public DialogueDatabase Dialogue => _dialogue;
+        
+        public List<AlienQuest> Quests => _quests;
         
         public void SetUniqueId(string id)
         {

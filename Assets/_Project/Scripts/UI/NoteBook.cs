@@ -18,8 +18,8 @@ public class NoteBook : MonoBehaviour
         // Attendre que le GameManager soit prêt
         yield return new WaitUntil(() => GameManager.Instance != null && GameManager.Instance.IsInitialized);
 
-        GameManager.Instance.OnTaskEnd += HandleTaskEnd;
-        //_missions = GameManager.Instance.GetMissions();
+        GameManager.Instance.OnTaskEnd += HandleTaskEnd; 
+        _missions = GameManager.Instance.GetMissions();
         RefreshNotebookUI();
     }
 
@@ -33,6 +33,7 @@ public class NoteBook : MonoBehaviour
     {
        // _missions = GameManager.Instance.GetMissions();
         RefreshNotebookUI();
+        
     }
 
     private void RefreshNotebookUI()
@@ -43,14 +44,12 @@ public class NoteBook : MonoBehaviour
         foreach (var mission in _missions)
         {
             GameObject entry = Instantiate(missionEntryPrefab, missionListContainer);
-            TextMeshProUGUI text = entry.GetComponentInChildren<TextMeshProUGUI>();
+            NotebookEntry notebookEntry = entry.GetComponentInChildren<NotebookEntry>();
 
-            if (text != null)
+            if (notebookEntry != null)
             {
-                string status = mission.IsFinished 
-                    ? "<color=#00FF00>[✓]</color>"    // vert fluo
-                    : "<color=#808080>[ ]</color>";   // gris
-                text.text = $"{status} {mission.Name}";
+                notebookEntry.Initialize(mission);
+                notebookEntry.SetToggle(mission.IsFinished);
             }
         }
 
