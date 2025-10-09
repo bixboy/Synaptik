@@ -290,7 +290,7 @@ Transform:
   m_GameObject: {fileID: 166906662}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 19.229998, y: -2.86, z: -1.7400002}
+  m_LocalPosition: {x: 12.99, y: -2.86, z: -3.6}
   m_LocalScale: {x: 0.7423342, y: 0.7423342, z: 0.7423342}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -666,13 +666,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 359247496}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 3.4, y: 16, z: -3.3}
+  m_LocalRotation: {x: 0.5517154, y: -0, z: -0, w: 0.83403254}
+  m_LocalPosition: {x: 1.13, y: 10.26, z: -11.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 90, y: 180, z: 180}
+  m_LocalEulerAnglesHint: {x: 113.03, y: 180, z: 180}
 --- !u!114 &359247500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1206,7 +1206,7 @@ Transform:
   m_GameObject: {fileID: 533628103}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 19.2, y: -2.86, z: -3.9}
+  m_LocalPosition: {x: 12.960003, y: -2.86, z: -5.7599998}
   m_LocalScale: {x: 0.7423342, y: 0.7423342, z: 0.7423342}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1748,7 +1748,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _def: {fileID: 11400000, guid: f39359a08646cef449ea31f4c6167320, type: 2}
   _receiveRadius: 2
-  _dialogueBubblePrefab: {fileID: 1460663270}
+  _dialogueBubble: {fileID: 1460663270}
 --- !u!95 &1460663264
 Animator:
   serializedVersion: 7
@@ -1844,7 +1844,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bc6da4580f5514e458fe5def87e138be, type: 2}
+  - {fileID: 2100000, guid: 28638862ea1084726a3511cd325fc53d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2408,11 +2408,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4358123925677155083, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4358123925677155083, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4358123925677155083, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
       propertyPath: m_SizeDelta.x
@@ -2420,11 +2420,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4358123925677155083, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 61.5419
       objectReference: {fileID: 0}
     - target: {fileID: 4358123925677155083, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -10.27195
       objectReference: {fileID: 0}
     - target: {fileID: 5563964399277880321, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
       propertyPath: m_SizeDelta.x
@@ -2767,7 +2767,7 @@ Transform:
   m_GameObject: {fileID: 1804758811}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 19.229998, y: -2.86, z: -6.51}
+  m_LocalPosition: {x: 12.99, y: -2.86, z: -8.37}
   m_LocalScale: {x: 0.7423342, y: 0.7423342, z: 0.7423342}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3004,7 +3004,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _def: {fileID: 11400000, guid: fc0964769e300bc46a63892a6655d1cf, type: 2}
   _receiveRadius: 2
-  _dialogueBubblePrefab: {fileID: 2061381804}
+  _dialogueBubble: {fileID: 2061381804}
 --- !u!95 &2061381806
 Animator:
   serializedVersion: 7
@@ -3139,7 +3139,7 @@ Transform:
   m_GameObject: {fileID: 2061381803}
   serializedVersion: 2
   m_LocalRotation: {x: 0.008703665, y: -0, z: -0, w: 0.9999622}
-  m_LocalPosition: {x: -5.44, y: -2.29, z: -11.26}
+  m_LocalPosition: {x: -5.44, y: -3.01, z: -14.53}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

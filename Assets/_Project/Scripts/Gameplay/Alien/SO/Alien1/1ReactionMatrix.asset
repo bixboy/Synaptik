@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2663d4c0b200fdc4d9f43b6546dbdde5, type: 3}
+  m_Name: 1ReactionMatrix
+  m_EditorClassIdentifier: 
+  _interactionRules:
+  - _channel: 0
+    _playerEmotion: 0
+    _questId: 
+    _questStepId: 
+    _suspicionDelta: 0
+    _setNewEmotion: 0
+    _newEmotion: 0
+  _itemRules:
+  - _questId: Fleur
+    _questStepId: 
+    _expectedItemId: Fleur
+    _suspicionDelta: -10
+    _expectedItemQuantity: 1
+    _setIfGoodItem: 1
+    _newEmotionIfGoodItem: 2
