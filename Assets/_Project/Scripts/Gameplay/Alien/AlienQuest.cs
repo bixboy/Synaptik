@@ -10,8 +10,8 @@ namespace Synaptik.Game
         [SerializeField] private string _questId;
         [SerializeField] private string _title;
         [SerializeField, TextArea] private string _description;
-        [SerializeField] private bool _autoRegisterMission = true;
-        [SerializeField] private bool _autoCompleteMissionOnQuestEnd = true;
+        [SerializeField] private bool _autoRegisterMission;
+        [SerializeField] private bool _autoCompleteMissionOnQuestEnd;
         [SerializeField] private QuestStep[] _steps;
 
         public string QuestId => _questId;
