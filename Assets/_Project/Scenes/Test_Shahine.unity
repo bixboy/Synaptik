@@ -1406,7 +1406,7 @@ GameObject:
   - component: {fileID: 1390055224}
   - component: {fileID: 1390055226}
   - component: {fileID: 1390055225}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1487,7 +1487,7 @@ GameObject:
   - component: {fileID: 1460663264}
   - component: {fileID: 1460663263}
   - component: {fileID: 1460663270}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Alien
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -1678,7 +1678,7 @@ GameObject:
   - component: {fileID: 1506399003}
   - component: {fileID: 1506399002}
   - component: {fileID: 1506399001}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2014,18 +2014,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f17a219a07eaff4d8661351ee4701a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _handSocket: {fileID: 0}
+  _handSocket: {fileID: 715469668}
   _pickupRadius: 1.2
   _pickupMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 64
   _dropForwardSpeed: 0
-  _aim: {fileID: 0}
+  _aim: {fileID: 715469668}
   _interactRadius: 2
   _interactHalfFov: 45
   _alienMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
 --- !u!1 &1787017528
 GameObject:
   m_ObjectHideFlags: 0
@@ -2037,7 +2037,7 @@ GameObject:
   - component: {fileID: 1787017531}
   - component: {fileID: 1787017530}
   - component: {fileID: 1787017529}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2197,7 +2197,7 @@ MonoBehaviour:
   - key: 283
     emotion: 4
   - key: 284
-    emotion: 5
+    emotion: 3
   - key: 285
     emotion: 2
   actionBindings:

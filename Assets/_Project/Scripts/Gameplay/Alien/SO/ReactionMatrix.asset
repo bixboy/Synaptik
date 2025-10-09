@@ -20,6 +20,6 @@ MonoBehaviour:
     _newEmotion: 1
     _dependsOnItem: 1
     _expectedItemId: Fleur
-    _expectedItemQuantity: 2
+    _expectedItemQuantity: 1
     _setIfGoodItem: 1
-    _newEmotionIfGoodItem: 0
+    _newEmotionIfGoodItem: 2
