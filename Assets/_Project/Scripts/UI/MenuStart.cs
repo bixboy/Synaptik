@@ -196,5 +196,6 @@ public class MenuStart : MonoBehaviour
     public void TestStart()
     {
         Debug.Log("TestStart");
+        LoadingScreenManager.Instance.LoadScene("Test_Shahine");
     }
 }
