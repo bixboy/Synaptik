@@ -501,9 +501,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadingScreenPrefab: {fileID: 4041259661545536450, guid: ddcf1705da589ea4ba418f7bec70b86d, type: 3}
-  fadeDuration: 2
-  holdDurationBeforeLoad: 1
-  holdDurationAfterSceneLoaded: 1
+  fadeDuration: 1
+  holdDurationBeforeLoad: 5
+  holdDurationAfterSceneLoaded: 5
+  TextFiller:
+  - ougouogusdfdhighsoishjdgpi
+  - 11111111111111111111111111111111
+  - 'dddd ffffff sqqqqsss '
+  - nnnnnnnnnnnnn uuuuuuuuuuu yyyyyyyyyyyyy
 --- !u!4 &336193470
 Transform:
   m_ObjectHideFlags: 0
