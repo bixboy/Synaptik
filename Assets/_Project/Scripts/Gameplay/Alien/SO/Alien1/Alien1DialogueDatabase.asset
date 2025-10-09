@@ -15,21 +15,33 @@ MonoBehaviour:
   _entries:
   - _emotion: 1
     _behavior: 1
-    _emojiLine: Angry
+    _emojiLine: Angry Talking
     _duration: 3
   - _emotion: 3
     _behavior: 1
-    _emojiLine: Curious
+    _emojiLine: Curious Talking
     _duration: 3
   - _emotion: 2
     _behavior: 1
-    _emojiLine: Friendly
+    _emojiLine: Friendly Talking
     _duration: 3
   - _emotion: 4
     _behavior: 1
-    _emojiLine: Fearful
+    _emojiLine: Fearful Talking
+    _duration: 3
+  - _emotion: 1
+    _behavior: 2
+    _emojiLine: Anger Action
     _duration: 3
   - _emotion: 2
     _behavior: 2
     _emojiLine: Friendly Action
+    _duration: 3
+  - _emotion: 3
+    _behavior: 2
+    _emojiLine: Curious Action
+    _duration: 3
+  - _emotion: 4
+    _behavior: 2
+    _emojiLine: Fearful Action
     _duration: 3

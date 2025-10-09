@@ -42,7 +42,8 @@ public class HoldableItem : MonoBehaviour
     {
         if (IsHeld) return;
         
-        StopCoroutine(_respawnCoroutine);
+        if (_respawnCoroutine != null)
+            StopCoroutine(_respawnCoroutine);
 
         IsHeld = true;
         _originalParent = transform.parent;
