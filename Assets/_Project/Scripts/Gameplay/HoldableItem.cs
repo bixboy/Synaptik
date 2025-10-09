@@ -79,6 +79,8 @@ public class HoldableItem : MonoBehaviour
 
     private IEnumerator Respawn(float a_time = -1.0f)
     {
+
+        Debug.Log("Resplawn");
         if (a_time < 0)
             _delayCurrent = _respawnDelay;
         else
