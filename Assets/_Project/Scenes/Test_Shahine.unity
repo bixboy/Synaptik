@@ -179,6 +179,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _despawnVFXPrefab: {fileID: 0}
 --- !u!54 &166906664
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -958,6 +959,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _despawnVFXPrefab: {fileID: 0}
 --- !u!54 &533628105
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1225,6 +1227,7 @@ GameObject:
   - component: {fileID: 947534218}
   - component: {fileID: 947534220}
   - component: {fileID: 947534219}
+  - component: {fileID: 947534221}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
@@ -1247,6 +1250,7 @@ RectTransform:
   - {fileID: 244723849}
   - {fileID: 1009453557}
   - {fileID: 1150179970}
+  - {fileID: 1293606199}
   m_Father: {fileID: 486928716}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
@@ -1320,6 +1324,28 @@ MonoBehaviour:
   _mistrustSlider: {fileID: 947534219}
   _mistrustRange: {x: 0, y: 100}
   _initialMistrust: 50
+--- !u!114 &947534221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947534217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dca1907b985a05e4fa6d70b0df65d22c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetUI: {fileID: 947534217}
+  _shakePower: 5
+  _shakeSpeed: 20
+  _shakeDuration: 0.5
+  _floatingNumberPrefab: {fileID: 4213358860362372853, guid: 31dc58e5684fcdf438375b231d86b6cf, type: 3}
+  _floatingNumberSpawn: {fileID: 1293606199}
+  _floatOffset: {x: 0, y: -60}
+  _floatDuration: 2
+  _floatRandomAngle: 25
+  _floatRandomSpeedFactor: 0.25
 --- !u!1 &1009453556
 GameObject:
   m_ObjectHideFlags: 0
@@ -1353,7 +1379,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -0.036102295, y: 0}
+  m_AnchoredPosition: {x: -0.036132812, y: 0}
   m_SizeDelta: {x: -10.0723, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1048795821
@@ -1511,6 +1537,10 @@ PrefabInstance:
     - target: {fileID: 5563964399277880321, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
       propertyPath: m_SizeDelta.y
       value: 20.5439
+      objectReference: {fileID: 0}
+    - target: {fileID: 5819704158738935430, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
+      propertyPath: m_fontSize
+      value: 9.2
       objectReference: {fileID: 0}
     - target: {fileID: 6125394818075083773, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
       propertyPath: missionEntryPrefab
@@ -1679,6 +1709,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1150179969}
   m_CullTransparentMesh: 1
+--- !u!1 &1293606198
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1293606199}
+  m_Layer: 5
+  m_Name: FloatingTextSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1293606199
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293606198}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 947534218}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 14, y: 14}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1390055223
 GameObject:
   m_ObjectHideFlags: 0
@@ -1792,7 +1857,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _def: {fileID: 11400000, guid: f39359a08646cef449ea31f4c6167320, type: 2}
   _receiveRadius: 2
-  _dialogueBubblePrefab: {fileID: 1460663270}
+  _dialogueBubble: {fileID: 1460663270}
 --- !u!95 &1460663264
 Animator:
   serializedVersion: 7
@@ -2142,6 +2207,7 @@ GameObject:
   - component: {fileID: 1714252157}
   - component: {fileID: 1714252156}
   - component: {fileID: 1714252162}
+  - component: {fileID: 1714252163}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2298,6 +2364,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f17a219a07eaff4d8661351ee4701a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _defaultComboBubbleDuration: 1.75
+  _comboSymbolDefinitions:
+  - Emotion: 1
+    Behavior: 1
+    Symbols: "\U0001F4AC\u26A1"
+    Duration: 2
+  - Emotion: 2
+    Behavior: 1
+    Symbols: "\U0001F4AC\u2764\uFE0F"
+    Duration: 2
+  - Emotion: 3
+    Behavior: 1
+    Symbols: "\U0001F4AC\u2753"
+    Duration: 2
+  - Emotion: 4
+    Behavior: 1
+    Symbols: "\U0001F4AC\U0001F631"
+    Duration: 2
+  - Emotion: 1
+    Behavior: 2
+    Symbols: "\u270B\u26A1"
+    Duration: 1.75
+  - Emotion: 2
+    Behavior: 2
+    Symbols: "\u270B\u2764\uFE0F"
+    Duration: 1.75
+  - Emotion: 3
+    Behavior: 2
+    Symbols: "\u270B\u2753"
+    Duration: 1.75
+  - Emotion: 4
+    Behavior: 2
+    Symbols: "\u270B\U0001F631"
+    Duration: 1.75
   _handSocket: {fileID: 715469668}
   _pickupRadius: 1.2
   _pickupMask:
@@ -2310,6 +2410,27 @@ MonoBehaviour:
   _alienMask:
     serializedVersion: 2
     m_Bits: 128
+--- !u!114 &1714252163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1714252155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74eea693354e43b0be0532c44d043ed4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bubblePrefab: {fileID: 3989471895941643016, guid: 4263e1fd48922eb4bbaf2025a83e5e5f, type: 3}
+  _verticalOffset: 1.5
+  _worldScale: 0.03
+  _minBubbleSize: {x: 120, y: 60}
+  _padding: {x: 16, y: 10}
+  _defaultLifetime: 1.75
+  _backgroundColor: {r: 1, g: 1, b: 1, a: 0.4}
+  _textColor: {r: 0, g: 0, b: 0, a: 1}
+  _fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
 --- !u!1 &1787017528
 GameObject:
   m_ObjectHideFlags: 0

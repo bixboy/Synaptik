@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -6,7 +7,84 @@ namespace Synaptik.Game
 {
     public class PlayerInteraction : MonoBehaviour
     {
-        
+        [Serializable]
+        private struct ComboSymbolDefinition
+        {
+            public Emotion Emotion;
+            public Behavior Behavior;
+            public string Symbols;
+            public float Duration;
+
+            public ComboSymbolDefinition(Emotion emotion, Behavior behavior, string symbols, float duration)
+            {
+                Emotion = emotion;
+                Behavior = behavior;
+                Symbols = symbols;
+                Duration = duration;
+            }
+        }
+
+        private readonly struct ComboKey : IEquatable<ComboKey>
+        {
+            public readonly Emotion Emotion;
+            public readonly Behavior Behavior;
+
+            public ComboKey(Emotion emotion, Behavior behavior)
+            {
+                Emotion = emotion;
+                Behavior = behavior;
+            }
+
+            public bool Equals(ComboKey other)
+            {
+                return Emotion == other.Emotion && Behavior == other.Behavior;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is ComboKey other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    return ((int)Emotion * 397) ^ (int)Behavior;
+                }
+            }
+        }
+
+        private static readonly Dictionary<Emotion, string> DefaultEmotionSymbols = new()
+        {
+            { Emotion.Anger, "⚡" },
+            { Emotion.Friendly, "❤️" },
+            { Emotion.Curious, "❓" },
+            { Emotion.Fearful, "😱" }
+        };
+
+        private static readonly Dictionary<Behavior, string> DefaultBehaviorSymbols = new()
+        {
+            { Behavior.Talking, "💬" },
+            { Behavior.Action, "✋" }
+        };
+
+        [Header("Combo Feedback")]
+        [SerializeField] private float _defaultComboBubbleDuration = 1.75f;
+        [SerializeField] private ComboSymbolDefinition[] _comboSymbolDefinitions =
+        {
+            new ComboSymbolDefinition(Emotion.Anger,    Behavior.Talking, "💬⚡", 2f),
+            new ComboSymbolDefinition(Emotion.Friendly, Behavior.Talking, "💬❤️", 2f),
+            new ComboSymbolDefinition(Emotion.Curious,  Behavior.Talking, "💬❓", 2f),
+            new ComboSymbolDefinition(Emotion.Fearful,  Behavior.Talking, "💬😱", 2f),
+            new ComboSymbolDefinition(Emotion.Anger,    Behavior.Action,  "✋⚡", 1.75f),
+            new ComboSymbolDefinition(Emotion.Friendly, Behavior.Action,  "✋❤️", 1.75f),
+            new ComboSymbolDefinition(Emotion.Curious,  Behavior.Action,  "✋❓", 1.75f),
+            new ComboSymbolDefinition(Emotion.Fearful,  Behavior.Action,  "✋😱", 1.75f),
+        };
+
+        private readonly Dictionary<ComboKey, ComboSymbolDefinition> _comboLookup = new();
+        private PlayerComboBubble _comboBubble;
+
         [Header("Pickup/Drop Settings")]
         [SerializeField] private Transform _handSocket;         // vide placé dans la main
         [SerializeField] private float _pickupRadius = 1.2f;    // portée
@@ -22,6 +100,17 @@ namespace Synaptik.Game
         [SerializeField] private float _interactRadius = 2f;
         [SerializeField] private float _interactHalfFov = 45f;
         [SerializeField] private LayerMask _alienMask;
+
+        private void Awake()
+        {
+            _comboBubble = GetComponent<PlayerComboBubble>();
+            if (_comboBubble == null)
+            {
+                _comboBubble = gameObject.AddComponent<PlayerComboBubble>();
+            }
+
+            RebuildComboLookup();
+        }
 
         private void Start()
         {
@@ -44,8 +133,70 @@ namespace Synaptik.Game
             }
         }
 
+        private void OnValidate()
+        {
+            RebuildComboLookup();
+        }
+
+        private void RebuildComboLookup()
+        {
+            _comboLookup.Clear();
+            if (_comboSymbolDefinitions == null)
+            {
+                return;
+            }
+
+            foreach (var definition in _comboSymbolDefinitions)
+            {
+                if (definition.Behavior == Behavior.None || definition.Emotion == Emotion.None)
+                {
+                    continue;
+                }
+
+                var key = new ComboKey(definition.Emotion, definition.Behavior);
+                if (_comboLookup.ContainsKey(key))
+                {
+                    _comboLookup[key] = definition;
+                }
+                else
+                {
+                    _comboLookup.Add(key, definition);
+                }
+            }
+        }
+
+        private void ShowComboFeedback(Emotion emotion, Behavior behavior)
+        {
+            if (_comboBubble == null || emotion == Emotion.None || behavior == Behavior.None)
+            {
+                return;
+            }
+
+            if (_comboLookup.Count == 0)
+            {
+                RebuildComboLookup();
+            }
+
+            var key = new ComboKey(emotion, behavior);
+            if (_comboLookup.TryGetValue(key, out var definition) && !string.IsNullOrWhiteSpace(definition.Symbols))
+            {
+                var duration = definition.Duration > 0f ? definition.Duration : _defaultComboBubbleDuration;
+                _comboBubble.Show(definition.Symbols, duration);
+                return;
+            }
+
+            if (!DefaultBehaviorSymbols.TryGetValue(behavior, out var behaviorSymbol) ||
+                !DefaultEmotionSymbols.TryGetValue(emotion, out var emotionSymbol))
+            {
+                return;
+            }
+
+            _comboBubble.Show(behaviorSymbol + emotionSymbol, _defaultComboBubbleDuration);
+        }
+
         private void HandleEmotionAction(Emotion emotion, Behavior behavior)
         {
+            ShowComboFeedback(emotion, behavior);
             Debug.Log($"HandleEmotionAction: {emotion} + {behavior}");
             Transform origin = _aimZone != null ? _aimZone : transform;
             Alien alien = TargetingUtil.FindAlienInFront(origin, _interactRadius, _interactHalfFov, _alienMask);
