@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 namespace Synaptik.Game
 {
     [RequireComponent(typeof(Animator))]
-    public class Alien : MonoBehaviour
+    public class Alien : MonoBehaviour, IInteraction
     {
         [SerializeField] private AlienDefinition _def;
         public AlienDefinition Definition => _def;
@@ -76,6 +76,57 @@ namespace Synaptik.Game
             {
                 _anim.SetInteger(EmotionHash, (int)Emotion);
             }
+        }
+        
+        public void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null)
+        {
+            Behavior behavior = action._behavior;
+            Emotion emotion = action._emotion;
+            if (behavior == Behavior.Action)
+            {
+                switch (emotion)
+                {
+                    case Emotion.Anger: // Hit
+                        break;
+                    case Emotion.Curious: // Ramasser
+                        break;
+                    case Emotion.Fearful: // Courir
+                        break;
+                    case Emotion.Friendly: // Donne
+                    {
+                        if (item && TryReceiveItem(item.ItemId))
+                        {
+                            playerInteraction.DropItem(true);
+                            Debug.Log($"Give item {item.ItemId} to alien {Definition.name}");
+                            return;
+                        }
+                        
+                        if (item)
+                        {
+                            playerInteraction?.DropItem();
+                            Debug.Log("Drop item in front of alien");
+                            return;
+                        }
+                        break;
+                    }
+                        
+                }
+            }
+            else if (behavior == Behavior.Talking)
+            {
+                switch (emotion)
+                {
+                    case Emotion.Anger: // Insulter
+                        break;
+                    case Emotion.Curious: // Curieux
+                        break;
+                    case Emotion.Fearful: // Crie
+                        break;
+                    case Emotion.Friendly: // Complimenter 
+                        break;
+                }
+            }
+            OnPlayerCombo(action._emotion, action._behavior);
         }
 
         public void OnPlayerCombo(Emotion playerEmotion, Behavior channel)
@@ -270,5 +321,8 @@ namespace Synaptik.Game
 
             _receivedItemQuantities[itemId] = 0;
         }
+
+        
+        
     }
 }

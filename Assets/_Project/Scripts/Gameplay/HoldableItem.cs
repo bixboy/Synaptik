@@ -1,10 +1,11 @@
 ﻿using System.Collections;
+using Synaptik.Game;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Rigidbody))]
-public class HoldableItem : MonoBehaviour
+public class HoldableItem : MonoBehaviour, IInteraction
 {
     private Rigidbody _rb;
     private Collider[] _colliders;
@@ -14,6 +15,7 @@ public class HoldableItem : MonoBehaviour
     
     [SerializeField] private string _itemId;
     public string ItemId => _itemId;
+    public bool CanBePicked => _canTake && !IsHeld;
     
     [Header("Respawn")]
     private Vector3 _spawnLocation;
@@ -39,6 +41,23 @@ public class HoldableItem : MonoBehaviour
         _spawnLocation = transform.position;
         _spawnRotation = transform.rotation;
         _spawnScale = transform.localScale;
+    }
+    
+    public void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null)
+    {
+        Behavior behavior = action._behavior;
+        Emotion emotion = action._emotion;
+        if (behavior == Behavior.Action)
+        {
+            if (emotion == Emotion.Curious)
+            {
+                playerInteraction?.PickUp();
+            }
+            else if (emotion == Emotion.Friendly)
+            {
+                if (item) playerInteraction?.DropItem();
+            }
+        }
     }
 
     public void Pick(Transform handSocket)
@@ -113,4 +132,6 @@ public class HoldableItem : MonoBehaviour
 
         _canTake = true;
     }
+
+    
 }
