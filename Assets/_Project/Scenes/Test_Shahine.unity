@@ -592,6 +592,7 @@ GameObject:
   - component: {fileID: 359247498}
   - component: {fileID: 359247497}
   - component: {fileID: 359247500}
+  - component: {fileID: 359247501}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -667,7 +668,7 @@ Transform:
   m_GameObject: {fileID: 359247496}
   serializedVersion: 2
   m_LocalRotation: {x: 0.18954542, y: 0.18089591, z: -0.03249851, w: 0.964517}
-  m_LocalPosition: {x: -1.71, y: -0.5, z: -9.94}
+  m_LocalPosition: {x: -4.63, y: 11.29, z: -18.95}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -717,6 +718,26 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &359247501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 359247496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db153e9df7690dc44943d595a5c78bc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1714252161}
+  offset: {x: 0, y: 10, z: -8}
+  rotationSmoothness: 5
+  maxYawAngle: 45
+  maxPitchAngle: 20
+  zoomSpeed: 5
+  minZoom: 5
+  maxZoom: 15
 --- !u!1 &394181157
 GameObject:
   m_ObjectHideFlags: 0
