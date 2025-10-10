@@ -1,4 +1,6 @@
 
+using Synaptik.Game;
+
 [System.Serializable]
 public enum Emotion
 {
@@ -18,25 +20,19 @@ public enum Behavior
 
 
 [System.Serializable]
-public enum AlienVerb
-{
-    Ask,
-    Compliment,
-    Insult,
-    Yield,
-    Hit,
-    Give,
-}
-[System.Serializable]
 public struct ActionValues
 {
     public Emotion _emotion;
     public Behavior _behavior;
+    
+    public ActionValues(Emotion emotion, Behavior behavior)
+    {
+        _emotion = emotion;
+        _behavior = behavior;
+    }
 }
 
 public interface IInteraction
 {
-    public void Interact(ActionValues _action);
-
-    public void RegisterMission();
+    public void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null);
 }
