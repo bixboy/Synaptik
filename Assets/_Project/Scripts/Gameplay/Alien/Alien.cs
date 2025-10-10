@@ -85,7 +85,7 @@ namespace Synaptik.Game
                 return;
             }
 
-            if (!_def.Reactions.TryFindRule(channel, playerEmotion, out var rule))
+            if (!_def.Reactions.TryFindRule(channel, playerEmotion, IsInteractionRuleAvailable, out var rule))
             {
                 return;
             }
@@ -167,6 +167,16 @@ namespace Synaptik.Game
             }
         }
 
+        private bool IsInteractionRuleAvailable(InterractionRule rule)
+        {
+            if (string.IsNullOrWhiteSpace(rule.QuestId) || string.IsNullOrWhiteSpace(rule.QuestStepId))
+            {
+                return true;
+            }
+
+            return IsQuestStepActive(rule.QuestId, rule.QuestStepId, QuestStepType.Talk);
+        }
+
         private void HandleItemRule(ItemRule rule, string itemId)
         {
             var handled = ProcessQuestStep(rule.QuestId, rule.QuestStepId, QuestStepType.GiveItem);
@@ -238,6 +248,21 @@ namespace Synaptik.Game
             if (_questRuntimes.TryGetValue(questId, out var runtime))
             {
                 return runtime.TryHandleStep(questStepId, triggerType);
+            }
+
+            return false;
+        }
+
+        private bool IsQuestStepActive(string questId, string questStepId, QuestStepType triggerType)
+        {
+            if (string.IsNullOrWhiteSpace(questId) || string.IsNullOrWhiteSpace(questStepId))
+            {
+                return false;
+            }
+
+            if (_questRuntimes.TryGetValue(questId, out var runtime))
+            {
+                return runtime.IsStepActive(questStepId, triggerType);
             }
 
             return false;

@@ -68,6 +68,31 @@ namespace Synaptik.Game
             return true;
         }
 
+        public bool IsStepActive(string stepId, QuestStepType triggerType)
+        {
+            if (!_definition.HasSteps || string.IsNullOrEmpty(stepId) || _questCompleted)
+            {
+                return false;
+            }
+
+            if (!_stepIndexById.TryGetValue(stepId, out var index))
+            {
+                return false;
+            }
+
+            if (index < 0 || index >= _steps.Length)
+            {
+                return false;
+            }
+
+            if (_steps[index].StepType != triggerType)
+            {
+                return false;
+            }
+
+            return index == _currentIndex;
+        }
+
         private void ExecuteStep(int index)
         {
             var step = _steps[index];
