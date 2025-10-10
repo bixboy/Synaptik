@@ -17,42 +17,42 @@ MonoBehaviour:
     _playerEmotion: 1
     _questId: 
     _questStepId: 
-    _suspicionDelta: 15
+    _suspicionDelta: 0
     _setNewEmotion: 1
     _newEmotion: 1
   - _channel: 1
     _playerEmotion: 2
     _questId: Fleur
     _questStepId: 0
-    _suspicionDelta: -10
+    _suspicionDelta: 0
     _setNewEmotion: 1
     _newEmotion: 2
   - _channel: 1
     _playerEmotion: 3
     _questId: Fleur
     _questStepId: 2
-    _suspicionDelta: -5
+    _suspicionDelta: 0
     _setNewEmotion: 1
     _newEmotion: 3
   - _channel: 1
     _playerEmotion: 4
     _questId: 
     _questStepId: 
-    _suspicionDelta: 10
+    _suspicionDelta: 0
     _setNewEmotion: 1
     _newEmotion: 4
   - _channel: 2
     _playerEmotion: 4
     _questId: 
     _questStepId: 
-    _suspicionDelta: 10
+    _suspicionDelta: 0
     _setNewEmotion: 1
     _newEmotion: 4
   - _channel: 2
     _playerEmotion: 3
     _questId: 
     _questStepId: 
-    _suspicionDelta: -5
+    _suspicionDelta: 0
     _setNewEmotion: 1
     _newEmotion: 3
   - _channel: 2
