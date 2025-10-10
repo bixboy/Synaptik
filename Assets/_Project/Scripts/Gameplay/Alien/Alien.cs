@@ -150,12 +150,15 @@ namespace Synaptik.Game
                 return;
             }
 
+            Debug.Log($"[Alien] {name} received combo {channel}/{playerEmotion}");
+
             if (!_def.Reactions.TryFindRule(channel, playerEmotion, IsInteractionRuleAvailable, out var rule))
             {
+                Debug.LogWarning($"[Alien] No interaction rule found for {name} with combo {channel}/{playerEmotion}");
                 return;
             }
 
-            HandleInteractionRule(rule, channel);
+            HandleInteractionRule(rule, channel, playerEmotion);
         }
 
         public bool TryReceiveItem(string itemId)
@@ -214,7 +217,7 @@ namespace Synaptik.Game
             _dialogueBubble.ShowFor(emojiLine, duration);
         }
 
-        private void HandleInteractionRule(InterractionRule rule, Behavior channel)
+        private void HandleInteractionRule(InterractionRule rule, Behavior channel, Emotion playerEmotion)
         {
             var handled = ProcessQuestStep(rule.QuestId, rule.QuestStepId, QuestStepType.Talk);
 
@@ -223,7 +226,19 @@ namespace Synaptik.Game
                 SetEmotion(rule.NewEmotion);
             }
 
-            TryShowDialogue(Emotion, channel);
+            if (!TryShowDialogue(playerEmotion, channel, "player emotion"))
+            {
+                var displayEmotion = Emotion;
+                if (rule.SetNewEmotion)
+                {
+                    displayEmotion = rule.NewEmotion;
+                }
+
+                if (displayEmotion != playerEmotion)
+                {
+                    TryShowDialogue(displayEmotion, channel, "alien emotion fallback");
+                }
+            }
             ApplySuspicionDelta(rule.SuspicionDelta);
 
             if (!handled && !string.IsNullOrWhiteSpace(rule.QuestId))
@@ -260,17 +275,23 @@ namespace Synaptik.Game
             }
         }
 
-        private void TryShowDialogue(Emotion emotion, Behavior behavior)
+        private bool TryShowDialogue(Emotion emotion, Behavior behavior, string source)
         {
             if (_dialogueBubble == null || _def?.Dialogue == null)
             {
-                return;
+                Debug.LogWarning($"[Alien] Cannot show dialogue for {name}. Missing dialogue bubble or database.");
+                return false;
             }
 
             if (_def.Dialogue.TryGet(emotion, behavior, out var entry))
             {
+                Debug.Log($"[Alien] Showing dialogue '{entry.EmojiLine}' from {source} for {name} using key {behavior}/{emotion}.");
                 ShowDialogue(entry.EmojiLine, entry.Duration);
+                return true;
             }
+
+            Debug.LogWarning($"[Alien] No dialogue entry found for {name} using key {behavior}/{emotion} from {source}.");
+            return false;
         }
 
         private void TryShowItemDialogue(string itemId)
@@ -307,14 +328,18 @@ namespace Synaptik.Game
         {
             if (string.IsNullOrWhiteSpace(questId))
             {
+                Debug.Log($"[Alien] {name} processed interaction without quest (trigger {triggerType}).");
                 return false;
             }
 
             if (_questRuntimes.TryGetValue(questId, out var runtime))
             {
-                return runtime.TryHandleStep(questStepId, triggerType);
+                var handled = runtime.TryHandleStep(questStepId, triggerType);
+                Debug.Log($"[Alien] {name} quest '{questId}' step '{questStepId ?? "<current>"}' handled={handled} for trigger {triggerType}.");
+                return handled;
             }
 
+            Debug.LogWarning($"[Alien] {name} has no runtime for quest '{questId}'.");
             return false;
         }
 
@@ -322,14 +347,18 @@ namespace Synaptik.Game
         {
             if (string.IsNullOrWhiteSpace(questId))
             {
+                Debug.Log($"[Alien] {name} checking interaction rule without quest binding (trigger {triggerType}).");
                 return false;
             }
 
             if (_questRuntimes.TryGetValue(questId, out var runtime))
             {
-                return runtime.IsStepActive(questStepId, triggerType);
+                var active = runtime.IsStepActive(questStepId, triggerType);
+                Debug.Log($"[Alien] {name} quest '{questId}' step '{questStepId ?? "<current>"}' active={active} for trigger {triggerType}.");
+                return active;
             }
 
+            Debug.LogWarning($"[Alien] {name} has no runtime for quest '{questId}' while checking rule availability.");
             return false;
         }
 
