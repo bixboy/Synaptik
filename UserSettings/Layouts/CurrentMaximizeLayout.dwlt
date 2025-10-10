@@ -24,7 +24,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 39
+  controlID: 4851
   draggingID: 0
 --- !u!114 &2
 MonoBehaviour:
@@ -151,7 +151,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 40
+  controlID: 4852
   draggingID: 0
 --- !u!114 &4
 MonoBehaviour:
@@ -177,7 +177,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 41
+  controlID: 4853
   draggingID: 0
 --- !u!114 &5
 MonoBehaviour:
@@ -244,8 +244,8 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 9ed30000
-      m_LastClickedID: 54174
+      m_SelectedIDs: 484b0000
+      m_LastClickedID: 0
       m_ExpandedIDs: 1cd5ffff68d6ffff06fbffff38c500006cd1000000d20000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
@@ -1053,7 +1053,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/_Project/Scripts/Gameplay/Alien
+    - Assets/_Project/Scripts/Gameplay/Player
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1063,16 +1063,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/_Project/Scripts/Gameplay/Alien
+  - Assets/_Project/Scripts/Gameplay/Player
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Apps\Unity\Synaptik
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 63.600006}
-    m_SelectedIDs: eac90000
-    m_LastClickedID: 51690
-    m_ExpandedIDs: 0000000026c80000a2c90000eac90000ecc90000eec900000aca000000ca9a3bffffff7f
+    m_SelectedIDs: fcc90000
+    m_LastClickedID: 51708
+    m_ExpandedIDs: 0000000026c80000a2c90000ecc90000eec9000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1101,7 +1101,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 0000000026c80000
+    m_ExpandedIDs: 0000000026c8000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1127,8 +1127,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 9ed30000
-    m_LastClickedInstanceID: 54174
+    m_SelectedInstanceIDs: 484b0000
+    m_LastClickedInstanceID: 19272
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c6230000
     m_RenameOverlay:

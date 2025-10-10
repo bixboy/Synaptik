@@ -4,6 +4,10 @@ using System.Collections;
 [RequireComponent(typeof(CharacterController))]
 public class AlienWander : MonoBehaviour
 {
+    [Header("Cible à surveiller")]
+    public Transform player;
+    public float detectionRadius = 6f;
+
     [Header("Paramètres de déplacement")]
     public bool canMove = true;
     public float moveRadius = 5f;
@@ -26,7 +30,7 @@ public class AlienWander : MonoBehaviour
     {
         _controller = GetComponent<CharacterController>();
         _origin = transform.position;
-        
+
         if (canMove)
             StartCoroutine(WanderRoutine());
     }
@@ -35,19 +39,63 @@ public class AlienWander : MonoBehaviour
     {
         while (true)
         {
+            yield return StartCoroutine(CheckPlayerProximity());
+
             _target = GetRandomPointAround(_origin, moveRadius);
             _isMoving = true;
 
             while (!HasReachedTarget())
             {
+                if (IsPlayerClose())
+                    break;
+
                 MoveTowardsTarget();
                 yield return null;
             }
 
             _isMoving = false;
 
-            float waitTime = Random.Range(waitTimeMin, waitTimeMax);
-            yield return new WaitForSeconds(waitTime);
+            if (!IsPlayerClose())
+            {
+                float waitTime = Random.Range(waitTimeMin, waitTimeMax);
+                yield return new WaitForSeconds(waitTime);
+            }
+        }
+    }
+
+    // --- Nouvelle méthode ---
+    IEnumerator CheckPlayerProximity()
+    {
+        if (!player)
+            yield break;
+
+        while (IsPlayerClose())
+        {
+            LookAtPlayer();
+            yield return null;
+        }
+    }
+
+    private bool IsPlayerClose()
+    {
+        if (player == null) return false;
+
+        float dist = Vector3.Distance(
+            new Vector3(transform.position.x, 0, transform.position.z),
+            new Vector3(player.position.x, 0, player.position.z)
+        );
+        return dist <= detectionRadius;
+    }
+
+    private void LookAtPlayer()
+    {
+        Vector3 direction = (player.position - transform.position).normalized;
+        direction.y = 0f;
+
+        if (direction != Vector3.zero)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * rotationSpeed);
         }
     }
 
@@ -83,7 +131,7 @@ public class AlienWander : MonoBehaviour
 
         return point;
     }
-    
+
     private bool HasReachedTarget()
     {
         Vector3 flatPos = new Vector3(transform.position.x, 0f, transform.position.z);
@@ -95,5 +143,8 @@ public class AlienWander : MonoBehaviour
     {
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(Application.isPlaying ? _origin : transform.position, moveRadius);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
 }
