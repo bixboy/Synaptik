@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -20,6 +21,7 @@ namespace Synaptik.Game
 
         private readonly Dictionary<string, AlienQuestRuntime> _questRuntimes = new Dictionary<string, AlienQuestRuntime>();
         private readonly Dictionary<string, int> _receivedItemQuantities = new Dictionary<string, int>();
+        private readonly Dictionary<InteractionLookupKey, InterractionRule> _cachedInteractionRules = new Dictionary<InteractionLookupKey, InterractionRule>();
 
         private void Awake()
         {
@@ -152,12 +154,21 @@ namespace Synaptik.Game
 
             Debug.Log($"[Alien] {name} received combo {channel}/{playerEmotion}");
 
+            var interactionKey = new InteractionLookupKey(channel, playerEmotion);
             if (!_def.Reactions.TryFindRule(channel, playerEmotion, IsInteractionRuleAvailable, out var rule))
             {
+                if (_cachedInteractionRules.TryGetValue(interactionKey, out var cachedRule))
+                {
+                    Debug.Log($"[Alien] No interaction rule available for {name} with combo {channel}/{playerEmotion}. Using cached fallback.");
+                    HandleInteractionRule(cachedRule, channel, playerEmotion, false);
+                    return;
+                }
+
                 Debug.LogWarning($"[Alien] No interaction rule found for {name} with combo {channel}/{playerEmotion}");
                 return;
             }
 
+            _cachedInteractionRules[interactionKey] = rule;
             HandleInteractionRule(rule, channel, playerEmotion);
         }
 
@@ -217,9 +228,9 @@ namespace Synaptik.Game
             _dialogueBubble.ShowFor(emojiLine, duration);
         }
 
-        private void HandleInteractionRule(InterractionRule rule, Behavior channel, Emotion playerEmotion)
+        private void HandleInteractionRule(InterractionRule rule, Behavior channel, Emotion playerEmotion, bool allowQuestProgress = true)
         {
-            var handled = ProcessQuestStep(rule.QuestId, rule.QuestStepId, QuestStepType.Talk);
+            var handled = allowQuestProgress && ProcessQuestStep(rule.QuestId, rule.QuestStepId, QuestStepType.Talk);
 
             if (rule.SetNewEmotion)
             {
@@ -241,7 +252,7 @@ namespace Synaptik.Game
             }
             ApplySuspicionDelta(rule.SuspicionDelta);
 
-            if (!handled && !string.IsNullOrWhiteSpace(rule.QuestId))
+            if (allowQuestProgress && !handled && !string.IsNullOrWhiteSpace(rule.QuestId))
             {
                 GameManager.Instance?.SetMissionFinished(rule.QuestId);
             }
@@ -390,7 +401,37 @@ namespace Synaptik.Game
             _receivedItemQuantities[itemId] = 0;
         }
 
-        
-        
+        private readonly struct InteractionLookupKey : IEquatable<InteractionLookupKey>
+        {
+            private readonly Behavior _behavior;
+            private readonly Emotion _emotion;
+
+            public InteractionLookupKey(Behavior behavior, Emotion emotion)
+            {
+                _behavior = behavior;
+                _emotion = emotion;
+            }
+
+            public bool Equals(InteractionLookupKey other)
+            {
+                return _behavior == other._behavior && _emotion == other._emotion;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is InteractionLookupKey other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    return ((int)_behavior * 397) ^ (int)_emotion;
+                }
+            }
+        }
+
+
+
     }
 }
