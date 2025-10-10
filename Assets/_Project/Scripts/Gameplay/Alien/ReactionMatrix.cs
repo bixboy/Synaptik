@@ -11,10 +11,11 @@ namespace Synaptik.Game
         [SerializeField, FormerlySerializedAs("_interrationRules")] private InterractionRule[] _interactionRules = Array.Empty<InterractionRule>();
         [SerializeField] private ItemRule[] _itemRules = Array.Empty<ItemRule>();
 
-        private Dictionary<InteractionKey, InterractionRule> _interactionLookup;
+        private Dictionary<InteractionKey, List<InterractionRule>> _interactionLookup;
         private Dictionary<string, ItemRule> _itemLookup;
         private int _cachedInteractionRuleCount;
         private int _cachedItemRuleCount;
+        private int _cachedInteractionRuleHash;
 
         private void OnEnable()
         {
@@ -26,10 +27,32 @@ namespace Synaptik.Game
             BuildLookups();
         }
 
-        public bool TryFindRule(Behavior channel, Emotion playerEmotion, out InterractionRule rule)
+        public bool TryFindRule(Behavior channel, Emotion playerEmotion, Func<InterractionRule, bool> predicate, out InterractionRule rule)
         {
             EnsureInteractionLookup();
-            return _interactionLookup.TryGetValue(new InteractionKey(channel, playerEmotion), out rule);
+            if (!_interactionLookup.TryGetValue(new InteractionKey(channel, playerEmotion), out var candidates) || candidates.Count == 0)
+            {
+                rule = default;
+                return false;
+            }
+
+            if (predicate != null)
+            {
+                for (int i = 0; i < candidates.Count; i++)
+                {
+                    if (predicate(candidates[i]))
+                    {
+                        rule = candidates[i];
+                        return true;
+                    }
+                }
+
+                rule = default;
+                return false;
+            }
+
+            rule = candidates[candidates.Count - 1];
+            return true;
         }
 
         public bool TryFindItemRule(string itemId, out ItemRule rule)
@@ -46,7 +69,19 @@ namespace Synaptik.Game
 
         private void EnsureInteractionLookup()
         {
-            if (_interactionLookup == null || _cachedInteractionRuleCount != _interactionRules.Length)
+            if (_interactionLookup == null)
+            {
+                BuildInteractionLookup();
+                return;
+            }
+
+            if (_cachedInteractionRuleCount != _interactionRules.Length)
+            {
+                BuildInteractionLookup();
+                return;
+            }
+
+            if (_cachedInteractionRuleHash != ComputeInteractionRulesHash())
             {
                 BuildInteractionLookup();
             }
@@ -68,22 +103,23 @@ namespace Synaptik.Game
 
         private void BuildInteractionLookup()
         {
-            var lookup = new Dictionary<InteractionKey, InterractionRule>(_interactionRules.Length);
+            var lookup = new Dictionary<InteractionKey, List<InterractionRule>>(_interactionRules.Length);
 
             for (int i = 0; i < _interactionRules.Length; i++)
             {
                 var key = new InteractionKey(_interactionRules[i].Channel, _interactionRules[i].PlayerEmotion);
-                if (lookup.ContainsKey(key))
+                if (!lookup.TryGetValue(key, out var rules))
                 {
-                    Debug.LogWarning($"Duplicate interaction rule detected for {key}. Only the first occurrence will be used.");
-                    continue;
+                    rules = new List<InterractionRule>();
+                    lookup.Add(key, rules);
                 }
 
-                lookup.Add(key, _interactionRules[i]);
+                rules.Add(_interactionRules[i]);
             }
 
             _interactionLookup = lookup;
             _cachedInteractionRuleCount = _interactionRules.Length;
+            _cachedInteractionRuleHash = ComputeInteractionRulesHash();
         }
 
         private void BuildItemLookup()
@@ -109,6 +145,25 @@ namespace Synaptik.Game
 
             _itemLookup = lookup;
             _cachedItemRuleCount = _itemRules.Length;
+        }
+
+        private int ComputeInteractionRulesHash()
+        {
+            var hashCode = new HashCode();
+
+            for (int i = 0; i < _interactionRules.Length; i++)
+            {
+                var rule = _interactionRules[i];
+                hashCode.Add(rule.Channel);
+                hashCode.Add(rule.PlayerEmotion);
+                hashCode.Add(rule.QuestId);
+                hashCode.Add(rule.QuestStepId);
+                hashCode.Add(rule.SuspicionDelta);
+                hashCode.Add(rule.SetNewEmotion);
+                hashCode.Add(rule.NewEmotion);
+            }
+
+            return hashCode.ToHashCode();
         }
 
         private readonly struct InteractionKey : IEquatable<InteractionKey>
