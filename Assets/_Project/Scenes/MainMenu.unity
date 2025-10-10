@@ -471,6 +471,59 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 247513248}
   m_CullTransparentMesh: 1
+--- !u!1 &336193468
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 336193470}
+  - component: {fileID: 336193469}
+  m_Layer: 0
+  m_Name: LoadingScreenManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &336193469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 336193468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9e7365d0093340458cb6aa0f2ddd009, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loadingScreenPrefab: {fileID: 4041259661545536450, guid: ddcf1705da589ea4ba418f7bec70b86d, type: 3}
+  fadeDuration: 1
+  holdDurationBeforeLoad: 5
+  holdDurationAfterSceneLoaded: 5
+  TextFiller:
+  - ougouogusdfdhighsoishjdgpi
+  - 11111111111111111111111111111111
+  - 'dddd ffffff sqqqqsss '
+  - nnnnnnnnnnnnn uuuuuuuuuuu yyyyyyyyyyyyy
+--- !u!4 &336193470
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 336193468}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 401.98343, y: 187.49304, z: 0.9959047}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &348744645
 GameObject:
   m_ObjectHideFlags: 0
@@ -1683,3 +1736,4 @@ SceneRoots:
   - {fileID: 530393813}
   - {fileID: 573989295}
   - {fileID: 613083371}
+  - {fileID: 336193470}

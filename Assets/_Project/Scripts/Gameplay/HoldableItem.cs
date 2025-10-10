@@ -6,7 +6,6 @@ using UnityEngine.Serialization;
 [RequireComponent(typeof(Rigidbody))]
 public class HoldableItem : MonoBehaviour
 {
-    
     private Rigidbody _rb;
     private Collider[] _colliders;
     private Transform _originalParent;
@@ -27,6 +26,10 @@ public class HoldableItem : MonoBehaviour
     [SerializeField] private float _despawnTime = 0.5f;
     [SerializeField] private AnimationCurve _despawnAnim = AnimationCurve.Linear(0, 0, 1, 1);
     private Coroutine _respawnCoroutine;
+    [Space(7)]
+    [SerializeField] private GameObject _despawnVFXPrefab;
+
+    private bool _canTake = true;
 
     private void Awake()
     {
@@ -40,7 +43,7 @@ public class HoldableItem : MonoBehaviour
 
     public void Pick(Transform handSocket)
     {
-        if (IsHeld) return;
+        if (IsHeld || !_canTake) return;
         
         if (_respawnCoroutine != null)
             StopCoroutine(_respawnCoroutine);
@@ -83,12 +86,10 @@ public class HoldableItem : MonoBehaviour
             _delayCurrent = _respawnDelay;
         else
             _delayCurrent = a_time;
+        
+        yield return new WaitForSeconds(_delayCurrent);
 
-        while (_delayCurrent > 0)
-        {
-            _delayCurrent -= Time.fixedDeltaTime;
-            yield return new WaitForFixedUpdate();
-        }
+        _canTake = false;
         
         _delayCurrent = _despawnTime;
         Vector3 startScale = transform.localScale;
@@ -96,15 +97,20 @@ public class HoldableItem : MonoBehaviour
         while (_delayCurrent > 0)
         {
             _delayCurrent -= Time.fixedDeltaTime;
-            transform.localScale = Vector3.Lerp(startScale, Vector3.zero, _despawnAnim.Evaluate(_delayCurrent));
+            transform.localScale = Vector3.Lerp(Vector3.zero, startScale, _despawnAnim.Evaluate(_delayCurrent / _despawnTime));
             yield return new WaitForFixedUpdate();
         }
         
-        //Spawn VFX
+        if (_despawnVFXPrefab != null)
+            Instantiate(_despawnVFXPrefab, transform.position, Quaternion.Euler(Vector3.zero));
         
         _rb.linearVelocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
+        
         transform.position = _spawnLocation;
         transform.rotation = _spawnRotation;
         transform.localScale = _spawnScale;
+
+        _canTake = true;
     }
 }
