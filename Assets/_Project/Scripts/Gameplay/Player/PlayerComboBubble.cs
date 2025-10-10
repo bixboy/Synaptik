@@ -55,12 +55,22 @@ namespace Synaptik.Game
             UpdateLookAt();
         }
 
-        public void Show(string text, float duration)
+        public void Show(string text, float duration, Color? backgroundOverride = null, Color? textColorOverride = null)
         {
             EnsureInstance();
 
             if (!_label)
                 return;
+
+            if (_backgroundImage)
+            {
+                _backgroundImage.color = backgroundOverride ?? _backgroundColor;
+            }
+
+            if (_label)
+            {
+                _label.color = textColorOverride ?? _textColor;
+            }
 
             _label.text = text ?? string.Empty;
             AdjustBubbleSize();

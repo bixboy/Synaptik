@@ -30,11 +30,12 @@ public class GameManager : MonoBehaviour
     // --- Données des missions ---
     [SerializeField] 
     private List<Mission> _missions = new List<Mission>();
-    
-    
-    
+
+
+
     public delegate void TaskEndHandler(Mission mission);
     public event TaskEndHandler OnTaskEnd;
+    public event TaskEndHandler OnMissionRegistered;
 
     private void Awake()
     {
@@ -66,6 +67,7 @@ public class GameManager : MonoBehaviour
         }
 
         _missions.Add(mission);
+        OnMissionRegistered?.Invoke(mission);
         return true;
     }
 

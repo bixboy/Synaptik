@@ -18,7 +18,8 @@ public class NoteBook : MonoBehaviour
         // Attendre que le GameManager soit prêt
         yield return new WaitUntil(() => GameManager.Instance != null && GameManager.Instance.IsInitialized);
 
-        GameManager.Instance.OnTaskEnd += HandleTaskEnd; 
+        GameManager.Instance.OnTaskEnd += HandleTaskEnd;
+        GameManager.Instance.OnMissionRegistered += HandleMissionRegistered;
         _missions = GameManager.Instance.GetMissions();
         RefreshNotebookUI();
     }
@@ -26,14 +27,22 @@ public class NoteBook : MonoBehaviour
     private void OnDestroy()
     {
         if (GameManager.Instance)
+        {
             GameManager.Instance.OnTaskEnd -= HandleTaskEnd;
+            GameManager.Instance.OnMissionRegistered -= HandleMissionRegistered;
+        }
     }
 
     private void HandleTaskEnd(Mission mission)
     {
        // _missions = GameManager.Instance.GetMissions();
         RefreshNotebookUI();
-        
+
+    }
+
+    private void HandleMissionRegistered(Mission mission)
+    {
+        RefreshNotebookUI();
     }
 
     private void RefreshNotebookUI()

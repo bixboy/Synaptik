@@ -102,6 +102,8 @@ namespace Synaptik.Game
 
         private readonly Dictionary<ComboKey, ComboSymbolDefinition> _comboLookup = new();
         private PlayerComboBubble _comboBubble;
+        [Header("Player Feedback")]
+        [SerializeField] private PlayerInteractionFeedback _interactionFeedback;
         
         
         private void Awake()
@@ -110,6 +112,15 @@ namespace Synaptik.Game
             if (_comboBubble == null)
             {
                 _comboBubble = gameObject.AddComponent<PlayerComboBubble>();
+            }
+
+            if (_interactionFeedback == null)
+            {
+                _interactionFeedback = GetComponent<PlayerInteractionFeedback>();
+                if (_interactionFeedback == null)
+                {
+                    _interactionFeedback = gameObject.AddComponent<PlayerInteractionFeedback>();
+                }
             }
 
             RebuildComboLookup();
@@ -207,11 +218,19 @@ namespace Synaptik.Game
 
             if (interactable != null)
             {
-                interactable?.Interact(new ActionValues(emotion, behavior), _held, this);   
+                interactable?.Interact(new ActionValues(emotion, behavior), _held, this);
             }
             else if (emotion == Emotion.Friendly && behavior == Behavior.Action && _held)
             {
-                DropItem();   
+                DropItem();
+            }
+            else if (emotion == Emotion.Friendly && behavior == Behavior.Action && !_held)
+            {
+                _interactionFeedback?.ShowFriendlyWithoutItem();
+            }
+            else
+            {
+                _interactionFeedback?.ShowComboNoTarget(emotion, behavior, _held != null);
             }
         }
 
@@ -222,7 +241,14 @@ namespace Synaptik.Game
             int count = Physics.OverlapSphereNonAlloc(origin, _pickupRadius, _overlap, _pickupMask, QueryTriggerInteraction.Ignore);
             if (count <= 0)
             {
-                if (_held == null) Debug.Log("PickUp: aucun objet à portée");
+                if (_held == null)
+                {
+                    _interactionFeedback?.ShowPickupUnavailable();
+                }
+                else
+                {
+                    Debug.Log("PickUp: aucun objet à portée");
+                }
                 return;
             }
 
@@ -246,11 +272,19 @@ namespace Synaptik.Game
 
             if (!best)
             {
-                if (_held == null) Debug.Log("PickUp: aucun objet à portée");
+                if (_held == null)
+                {
+                    _interactionFeedback?.ShowPickupUnavailable();
+                }
+                else
+                {
+                    Debug.Log("PickUp: aucun objet à portée");
+                }
                 return;
             }
 
             // swap si on tient déjà quelque chose
+            string previousItemName = GetItemDisplayName(_held);
             if (_held)
             {
                 Vector3 v = _dropForwardSpeed > 0f ? transform.forward * _dropForwardSpeed : Vector3.zero;
@@ -261,17 +295,34 @@ namespace Synaptik.Game
             best.Pick(_handSocket ? _handSocket : transform);
             _held = best;
             _heldItemId = _held.ItemId;
+
+            string newItemName = GetItemDisplayName(_held);
+            if (!string.IsNullOrWhiteSpace(previousItemName))
+            {
+                _interactionFeedback?.ShowPickupSwap(previousItemName, newItemName);
+            }
+            else
+            {
+                _interactionFeedback?.ShowPickupSuccess(newItemName);
+            }
         }
 
         public void DropItem(bool destroyItem = false)
         {
-            if (!_held) return;
+            if (!_held)
+            {
+                _interactionFeedback?.ShowNoItemToDrop();
+                return;
+            }
+
+            string heldItemName = GetItemDisplayName(_held);
 
             if (destroyItem)
             {
                 Destroy(_held.gameObject);
                 _held = null;
                 _heldItemId = null; // si tu utilises un ID
+                _interactionFeedback?.ShowItemConsumed(heldItemName);
                 return;
             }
 
@@ -279,8 +330,12 @@ namespace Synaptik.Game
             Transform origin = _aimZone ? _aimZone : transform;
             Alien alien = TargetingUtil.FindAlienInFront(origin, _interactRadius, _interactHalfFov, _interactMask);
 
+            bool hasAlien = alien != null;
+            bool withinRadius = hasAlien && alien.IsWithinReceiveRadius(origin.position);
+            string alienName = GetAlienDisplayName(alien);
+
             bool didGive = false;
-            if (alien && alien.IsWithinReceiveRadius(origin.position))
+            if (withinRadius)
             {
                 // l'alien accepte ?
                 didGive = alien.TryReceiveItem(_heldItemId);
@@ -292,14 +347,30 @@ namespace Synaptik.Game
                 Destroy(_held.gameObject);
                 _held = null;
                 _heldItemId = null;
+                _interactionFeedback?.ShowGiftAccepted(heldItemName, alienName);
+                return;
+            }
+
+            // drop “au sol”
+            Vector3 v = _dropForwardSpeed > 0f ? transform.forward * _dropForwardSpeed : Vector3.zero;
+            _held.Drop(v);
+            _held = null;
+            _heldItemId = null;
+
+            if (hasAlien)
+            {
+                if (!withinRadius)
+                {
+                    _interactionFeedback?.ShowNeedToApproach(alienName);
+                }
+                else
+                {
+                    _interactionFeedback?.ShowGiftRefused(heldItemName, alienName);
+                }
             }
             else
             {
-                // drop “au sol”
-                Vector3 v = _dropForwardSpeed > 0f ? transform.forward * _dropForwardSpeed : Vector3.zero;
-                _held.Drop(v);
-                _held = null;
-                _heldItemId = null;
+                _interactionFeedback?.ShowDropOnGround(heldItemName);
             }
         }
 
@@ -318,6 +389,36 @@ namespace Synaptik.Game
                 Gizmos.DrawLine(_aimZone.position, _aimZone.position + Quaternion.Euler(0f, _interactHalfFov, 0f) * _aimZone.forward * _interactRadius);
                 Gizmos.DrawLine(_aimZone.position, _aimZone.position + Quaternion.Euler(0f, -_interactHalfFov, 0f) * _aimZone.forward * _interactRadius);
             }
+        }
+
+        private static string GetItemDisplayName(HoldableItem item)
+        {
+            if (!item)
+            {
+                return string.Empty;
+            }
+
+            if (!string.IsNullOrWhiteSpace(item.ItemId))
+            {
+                return item.ItemId;
+            }
+
+            return item.gameObject.name;
+        }
+
+        private static string GetAlienDisplayName(Alien alien)
+        {
+            if (!alien)
+            {
+                return string.Empty;
+            }
+
+            if (alien.Definition != null)
+            {
+                return alien.Definition.name;
+            }
+
+            return alien.name;
         }
     }
 }
