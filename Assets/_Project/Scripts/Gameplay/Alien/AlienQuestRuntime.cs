@@ -39,7 +39,8 @@ namespace Synaptik.Game
 
         public bool TryHandleStep(string stepId, QuestStepType triggerType)
         {
-            var questId = _definition != null ? _definition.QuestId : "<unknown>";
+            
+            var questId = _definition.Equals(default(AlienQuest)) ? "<unknown>" : _definition.QuestId;
             Debug.Log($"[QuestRuntime:{questId}] TryHandleStep trigger={triggerType} step='{stepId ?? "<current>"}' currentIndex={_currentIndex} completed={_questCompleted}");
 
             if (!_definition.HasSteps || _questCompleted)
@@ -84,7 +85,7 @@ namespace Synaptik.Game
 
         public bool IsStepActive(string stepId, QuestStepType triggerType)
         {
-            var questId = _definition != null ? _definition.QuestId : "<unknown>";
+            var questId = _definition.Equals(default(AlienQuest)) ? "<unknown>" : _definition.QuestId;
             Debug.Log($"[QuestRuntime:{questId}] IsStepActive trigger={triggerType} step='{stepId ?? "<current>"}' currentIndex={_currentIndex} completed={_questCompleted}");
 
             if (!_definition.HasSteps || _questCompleted)
@@ -122,7 +123,7 @@ namespace Synaptik.Game
 
         public bool TryHandleCurrentStep(QuestStepType triggerType)
         {
-            var questId = _definition != null ? _definition.QuestId : "<unknown>";
+            var questId = _definition.Equals(default(AlienQuest)) ? "<unknown>" : _definition.QuestId;
             Debug.Log($"[QuestRuntime:{questId}] TryHandleCurrentStep trigger={triggerType} currentIndex={_currentIndex} completed={_questCompleted}");
 
             if (!_definition.HasSteps || _questCompleted)
@@ -149,7 +150,7 @@ namespace Synaptik.Game
 
         public bool IsCurrentStepActive(QuestStepType triggerType)
         {
-            var questId = _definition != null ? _definition.QuestId : "<unknown>";
+            var questId = _definition.Equals(default(AlienQuest)) ? "<unknown>" : _definition.QuestId;
             Debug.Log($"[QuestRuntime:{questId}] IsCurrentStepActive trigger={triggerType} currentIndex={_currentIndex} completed={_questCompleted}");
 
             if (!_definition.HasSteps || _questCompleted)
@@ -171,7 +172,7 @@ namespace Synaptik.Game
         {
             var step = _steps[index];
 
-            var questId = _definition != null ? _definition.QuestId : "<unknown>";
+            var questId = _definition.Equals(default(AlienQuest)) ? "<unknown>" : _definition.QuestId;
             Debug.Log($"[QuestRuntime:{questId}] Executing step index {index} completesQuest={step.CompletesQuest} nextStepId='{step.NextStepId}'.");
 
             if (step.CompletesQuest)
@@ -186,7 +187,7 @@ namespace Synaptik.Game
 
         private void AdvanceToNext(int currentIndex, string nextStepId)
         {
-            var questId = _definition != null ? _definition.QuestId : "<unknown>";
+            var questId = _definition.Equals(default(AlienQuest)) ? "<unknown>" : _definition.QuestId;
             if (!string.IsNullOrEmpty(nextStepId) && _stepIndexById.TryGetValue(nextStepId, out var explicitIndex))
             {
                 Debug.Log($"[QuestRuntime:{questId}] Advancing to explicit step id '{nextStepId}' at index {explicitIndex}.");
@@ -209,15 +210,17 @@ namespace Synaptik.Game
 
         private void CompleteQuest()
         {
+            var questId = _definition.Equals(default(AlienQuest)) ? "<unknown>" : _definition.QuestId;
+
             if (_questCompleted)
             {
-                Debug.Log($"[QuestRuntime:{_definition?.QuestId ?? "<unknown>"}] CompleteQuest called but quest already completed.");
+                Debug.Log($"[QuestRuntime:{questId}] CompleteQuest called but quest already completed.");
                 return;
             }
 
             _questCompleted = true;
 
-            Debug.Log($"[QuestRuntime:{_definition?.QuestId ?? "<unknown>"}] Quest completed.");
+            Debug.Log($"[QuestRuntime:{questId}] Quest completed.");
 
             if (_definition.AutoCompleteMissionOnQuestEnd && GameManager.Instance != null && !string.IsNullOrWhiteSpace(_definition.QuestId))
             {
