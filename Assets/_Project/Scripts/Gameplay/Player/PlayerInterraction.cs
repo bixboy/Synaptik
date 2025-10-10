@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 
 namespace Synaptik.Game
 {
-    public class PlayerInteraction : MonoBehaviour
+    public class PlayerInteraction : MonoBehaviour, IAlienReaction
     {
         [Serializable]
         private struct ComboSymbolDefinition
@@ -334,6 +334,24 @@ namespace Synaptik.Game
             _held = null;
         }
 
+        #region AlienReaction
+
+        public void FeedbackAnimation(Animation a_animation)
+        {
+            throw new NotImplementedException();
+        }
+        public void FeedbackColor(Color a_color)
+        {
+            throw new NotImplementedException();
+        }
+        public void FeedbackTalking(string a_text)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+        
+        
         public void OnDrawGizmos()
         {
             if (_handSocket != null)
