@@ -9,54 +9,55 @@ namespace Synaptik.Game
 
         public static Alien FindAlienInFront(Transform origin, float radius, float maxAngleDeg, int layerMask)
         {
-            if (origin == null)
+            if (!origin)
+                return null;
+
+            Camera cam = Camera.main;
+            if (!cam)
             {
+                Debug.LogWarning("TargetingUtil: aucune caméra principale trouvée !");
                 return null;
             }
+
+            Vector3 originPos = cam.transform.position;
+            Vector3 forward = cam.transform.forward;
 
             int count = Physics.OverlapSphereNonAlloc(origin.position, radius, _overlapBuffer, layerMask);
             if (count <= 0)
-            {
                 return null;
-            }
 
-            Vector3 originPos = origin.position;
-            Vector3 forward = origin.forward;
             float bestScore = float.MinValue;
             Alien bestAlien = null;
 
             for (int i = 0; i < count; i++)
             {
-                var collider = _overlapBuffer[i];
-                if (collider == null)
-                {
+                Collider collider = _overlapBuffer[i];
+                if (!collider || !collider.gameObject.activeInHierarchy)
                     continue;
-                }
 
-                if (!collider.TryGetComponent(out Alien alien))
-                {
-                    alien = collider.GetComponentInParent<Alien>();
-                    if (alien == null)
-                    {
-                        continue;
-                    }
-                }
+                Alien alien = collider.GetComponent<Alien>() ?? collider.GetComponentInParent<Alien>();
+                if (!alien || !alien.gameObject.activeInHierarchy)
+                    continue;
 
                 Vector3 toAlien = alien.transform.position - originPos;
-                float distance = toAlien.magnitude;
-                if (distance <= 0.0001f)
-                {
-                    distance = 0.0001f;
-                }
 
-                Vector3 dir = toAlien / distance;
-                float angle = Vector3.Angle(forward, dir);
-                if (angle > maxAngleDeg)
-                {
+                toAlien.y = 0;
+                Vector3 flatForward = forward;
+                flatForward.y = 0;
+
+                if (toAlien.sqrMagnitude < 0.0001f)
                     continue;
-                }
 
-                float score = Vector3.Dot(forward, dir) - DistancePenalty * (distance / radius);
+                toAlien.Normalize();
+                flatForward.Normalize();
+
+                float angle = Vector3.Angle(flatForward, toAlien);
+                if (angle > maxAngleDeg)
+                    continue;
+
+                float distance = Vector3.Distance(originPos, alien.transform.position);
+                float score = Vector3.Dot(flatForward, toAlien) - DistancePenalty * (distance / radius);
+
                 if (score > bestScore)
                 {
                     bestScore = score;

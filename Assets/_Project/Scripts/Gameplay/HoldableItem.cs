@@ -29,6 +29,8 @@ public class HoldableItem : MonoBehaviour
     [Space(7)]
     [SerializeField] private GameObject _despawnVFXPrefab;
 
+    private bool _canTake = true;
+
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
@@ -41,7 +43,7 @@ public class HoldableItem : MonoBehaviour
 
     public void Pick(Transform handSocket)
     {
-        if (IsHeld) return;
+        if (IsHeld || !_canTake) return;
         
         if (_respawnCoroutine != null)
             StopCoroutine(_respawnCoroutine);
@@ -86,6 +88,8 @@ public class HoldableItem : MonoBehaviour
             _delayCurrent = a_time;
         
         yield return new WaitForSeconds(_delayCurrent);
+
+        _canTake = false;
         
         _delayCurrent = _despawnTime;
         Vector3 startScale = transform.localScale;
@@ -93,15 +97,20 @@ public class HoldableItem : MonoBehaviour
         while (_delayCurrent > 0)
         {
             _delayCurrent -= Time.fixedDeltaTime;
-            transform.localScale = Vector3.Lerp(startScale, Vector3.zero, _despawnAnim.Evaluate(_delayCurrent));
+            transform.localScale = Vector3.Lerp(Vector3.zero, startScale, _despawnAnim.Evaluate(_delayCurrent / _despawnTime));
             yield return new WaitForFixedUpdate();
         }
         
-        Instantiate(_despawnVFXPrefab, transform.position, Quaternion.Euler(Vector3.zero));
+        if (_despawnVFXPrefab != null)
+            Instantiate(_despawnVFXPrefab, transform.position, Quaternion.Euler(Vector3.zero));
         
         _rb.linearVelocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
+        
         transform.position = _spawnLocation;
         transform.rotation = _spawnRotation;
         transform.localScale = _spawnScale;
+
+        _canTake = true;
     }
 }
