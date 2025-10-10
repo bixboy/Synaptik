@@ -1,5 +1,6 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Synaptik.Game
 {
@@ -9,16 +10,16 @@ namespace Synaptik.Game
         [SerializeField] private AlienDefinition _def;
         public AlienDefinition Definition => _def;
         [SerializeField] private float _receiveRadius = 1.3f;
-        [SerializeField] private DialogueBubble _dialogueBubblePrefab;
+        [FormerlySerializedAs("_dialogueBubblePrefab")]
+        [SerializeField] private DialogueBubble _dialogueBubble;
 
         public Emotion Emotion { get; private set; }
 
         private Animator _anim;
         private static readonly int EmotionHash = Animator.StringToHash("Emotion");
-        
-        
-        private int itemQuantity = 0;
-        public int ItemQuantity => itemQuantity;
+
+        private readonly Dictionary<string, AlienQuestRuntime> _questRuntimes = new Dictionary<string, AlienQuestRuntime>();
+        private readonly Dictionary<string, int> _receivedItemQuantities = new Dictionary<string, int>();
 
         private void Awake()
         {
@@ -30,27 +31,47 @@ namespace Synaptik.Game
             }
 
             Emotion = _def != null ? _def.StartEmotion : Emotion.Curious;
-            Debug.Log("Emotion at start: " + Emotion);
             ApplyAnimFromEmotion();
         }
 
         private void Start()
         {
-            AlienManager.Instance.RegisterAlien(this);
+            if (AlienManager.Instance != null)
+            {
+                AlienManager.Instance.RegisterAlien(this);
+            }
+
+            if (_def == null)
+            {
+                return;
+            }
+
             foreach (AlienQuest quest in _def.Quests)
             {
-                GameManager.Instance.RegisterMission(new Mission(quest.QuestId, quest.Title, quest.Description));
+                var hasQuestId = !string.IsNullOrWhiteSpace(quest.QuestId);
+
+                if (hasQuestId && quest.AutoRegisterMission && GameManager.Instance != null)
+                {
+                    GameManager.Instance.RegisterMission(new Mission(quest.QuestId, quest.Title, quest.Description));
+                }
+
+                if (quest.HasSteps && hasQuestId && !_questRuntimes.ContainsKey(quest.QuestId))
+                {
+                    _questRuntimes.Add(quest.QuestId, new AlienQuestRuntime(quest));
+                }
             }
         }
 
         private void OnDestroy()
         {
-            AlienManager.Instance.UnregisterAlien(this);
+            if (AlienManager.Instance != null)
+            {
+                AlienManager.Instance.UnregisterAlien(this);
+            }
         }
 
         private void ApplyAnimFromEmotion()
         {
-            return;
             if (_anim != null)
             {
                 _anim.SetInteger(EmotionHash, (int)Emotion);
@@ -61,73 +82,37 @@ namespace Synaptik.Game
         {
             if (_def == null || _def.Reactions == null)
             {
-                Debug.Log("No definition or reactions");
                 return;
             }
-            
-            if (_def.Reactions.TryFindRule(channel, playerEmotion, out var rule))
-            {
-                if (rule.SetNewEmotion)
-                {
-                    Emotion = rule.NewEmotion;
-                    ApplyAnimFromEmotion();
-                    Debug.Log(rule.NewEmotion);
-                }
 
-                if (_def.Dialogue != null && _def.Dialogue.TryGet(Emotion, channel, out var entry))
-                {
-                    _dialogueBubblePrefab.ShowFor(entry.EmojiLine, entry.Duration);
-                }
-                
-                MistrustManager.Instance.AddMistrust(rule.SuspicionDelta);
-                if (rule.QuestId != null)
-                {
-                    GameManager.Instance.SetMissionFinished(rule.QuestId);
-                }
-                
+            if (!_def.Reactions.TryFindRule(channel, playerEmotion, out var rule))
+            {
+                return;
             }
-            
+
+            HandleInteractionRule(rule, channel);
         }
 
         public bool TryReceiveItem(string itemId)
         {
             if (_def == null || _def.Reactions == null)
             {
-                Debug.Log("No definition or reactions");
                 return false;
             }
 
             if (!_def.Reactions.TryFindItemRule(itemId, out var rule))
             {
-                Debug.Log($"No rule for item {itemId}");
                 return false;
             }
-            
-            Debug.Log($"Rule found for item {itemId}: expected {rule.ExpectedItemId}, quantity {rule.ExpectedItemQuantity}, set if good {rule.SetIfGoodItem}, new emotion if good {rule.NewEmotionIfGoodItem}");
-            itemQuantity++;
-            if (itemQuantity >= rule.ExpectedItemQuantity)
+
+            var quantity = GetUpdatedItemQuantity(itemId);
+            if (quantity < rule.ExpectedItemQuantity)
             {
-                itemQuantity = 0;
-                if (rule.SetIfGoodItem)
-                {
-                    Emotion = rule.NewEmotionIfGoodItem;
-                    ApplyAnimFromEmotion();
-                    Debug.Log(rule.NewEmotionIfGoodItem);
-                }
-                
-                if (_def.Dialogue != null && _def.Dialogue.TryGet(itemId, out var entry)) // On reçoit un item, donc on utilise le channel Action forcémment (le joueur ne peut pas donner un objet en parlant)
-                {
-                    _dialogueBubblePrefab.ShowFor(entry.EmojiLine, entry.Duration);
-                    Debug.Log($"Dialogue for item {itemId}: {entry.EmojiLine}" );
-                }
-            
-                MistrustManager.Instance.AddMistrust(rule.SuspicionDelta);
-                if (rule.QuestId != null)
-                {
-                    GameManager.Instance.SetMissionFinished(rule.QuestId);
-                }
+                return true;
             }
-            
+
+            ResetItemQuantity(itemId);
+            HandleItemRule(rule, itemId);
             return true;
         }
 
@@ -141,6 +126,149 @@ namespace Synaptik.Game
         {
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(transform.position, _receiveRadius);
+        }
+
+        internal void SetEmotion(Emotion newEmotion)
+        {
+            if (Emotion == newEmotion)
+            {
+                return;
+            }
+
+            Emotion = newEmotion;
+            ApplyAnimFromEmotion();
+        }
+
+        internal void ShowDialogue(string emojiLine, float duration)
+        {
+            if (_dialogueBubble == null || string.IsNullOrWhiteSpace(emojiLine) || duration <= 0f)
+            {
+                return;
+            }
+
+            _dialogueBubble.ShowFor(emojiLine, duration);
+        }
+
+        private void HandleInteractionRule(InterractionRule rule, Behavior channel)
+        {
+            var handled = ProcessQuestStep(rule.QuestId, rule.QuestStepId, QuestStepType.Talk);
+
+            if (rule.SetNewEmotion)
+            {
+                SetEmotion(rule.NewEmotion);
+            }
+
+            TryShowDialogue(Emotion, channel);
+            ApplySuspicionDelta(rule.SuspicionDelta);
+
+            if (!handled && !string.IsNullOrWhiteSpace(rule.QuestId))
+            {
+                GameManager.Instance?.SetMissionFinished(rule.QuestId);
+            }
+        }
+
+        private void HandleItemRule(ItemRule rule, string itemId)
+        {
+            var handled = ProcessQuestStep(rule.QuestId, rule.QuestStepId, QuestStepType.GiveItem);
+
+            if (rule.SetIfGoodItem)
+            {
+                SetEmotion(rule.NewEmotionIfGoodItem);
+            }
+
+            TryShowItemDialogue(itemId);
+            ApplySuspicionDelta(rule.SuspicionDelta);
+
+            if (!handled && !string.IsNullOrWhiteSpace(rule.QuestId))
+            {
+                GameManager.Instance?.SetMissionFinished(rule.QuestId);
+            }
+        }
+
+        private void TryShowDialogue(Emotion emotion, Behavior behavior)
+        {
+            if (_dialogueBubble == null || _def?.Dialogue == null)
+            {
+                return;
+            }
+
+            if (_def.Dialogue.TryGet(emotion, behavior, out var entry))
+            {
+                ShowDialogue(entry.EmojiLine, entry.Duration);
+            }
+        }
+
+        private void TryShowItemDialogue(string itemId)
+        {
+            if (_dialogueBubble == null || _def?.Dialogue == null)
+            {
+                return;
+            }
+
+            if (_def.Dialogue.TryGet(itemId, out var entry))
+            {
+                ShowDialogue(entry.EmojiLine, entry.Duration);
+            }
+        }
+
+        private void ApplySuspicionDelta(int delta)
+        {
+            if (delta == 0 || MistrustManager.Instance == null)
+            {
+                return;
+            }
+
+            if (delta > 0)
+            {
+                MistrustManager.Instance.AddMistrust(delta);
+            }
+            else
+            {
+                MistrustManager.Instance.RemoveMistrust(-delta);
+            }
+        }
+
+        private bool ProcessQuestStep(string questId, string questStepId, QuestStepType triggerType)
+        {
+            if (string.IsNullOrWhiteSpace(questId) || string.IsNullOrWhiteSpace(questStepId))
+            {
+                return false;
+            }
+
+            if (_questRuntimes.TryGetValue(questId, out var runtime))
+            {
+                return runtime.TryHandleStep(questStepId, triggerType);
+            }
+
+            return false;
+        }
+
+        private int GetUpdatedItemQuantity(string itemId)
+        {
+            if (string.IsNullOrEmpty(itemId))
+            {
+                return 0;
+            }
+
+            if (_receivedItemQuantities.TryGetValue(itemId, out var quantity))
+            {
+                quantity++;
+                _receivedItemQuantities[itemId] = quantity;
+                return quantity;
+            }
+
+            _receivedItemQuantities[itemId] = 1;
+            return 1;
+        }
+
+        private void ResetItemQuantity(string itemId)
+        {
+            if (string.IsNullOrEmpty(itemId))
+            {
+                return;
+            }
+
+            _receivedItemQuantities[itemId] = 0;
         }
     }
 }

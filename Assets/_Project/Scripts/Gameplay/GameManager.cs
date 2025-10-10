@@ -76,9 +76,13 @@ public class GameManager : MonoBehaviour
             if (_missions[i].MissionID == missionName)
             {
                 var mission = _missions[i];
+                if (mission.IsFinished)
+                {
+                    return;
+                }
                 mission.IsFinished = true;
                 _missions[i] = mission;
-                
+
                 OnTaskEnd?.Invoke(mission);
 
                 Debug.Log($"Mission '{missionName}' terminée !");
