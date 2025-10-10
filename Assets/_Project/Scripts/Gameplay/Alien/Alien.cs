@@ -164,6 +164,14 @@ namespace Synaptik.Game
                     return;
                 }
 
+                if (_def.Reactions.TryFindRule(channel, playerEmotion, null, out var fallbackRule))
+                {
+                    Debug.Log($"[Alien] No interaction rule available for {name} with combo {channel}/{playerEmotion}. Using definition fallback.");
+                    _cachedInteractionRules[interactionKey] = fallbackRule;
+                    HandleInteractionRule(fallbackRule, channel, playerEmotion, false);
+                    return;
+                }
+
                 Debug.LogWarning($"[Alien] No interaction rule found for {name} with combo {channel}/{playerEmotion}");
                 return;
             }
