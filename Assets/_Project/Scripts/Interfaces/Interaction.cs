@@ -2,11 +2,11 @@
 [System.Serializable]
 public enum Emotion
 {
-  None,
-  Anger,
-  Friendly,
-  Curious,
-  Fearful
+  None = 0,
+  Anger = 1,
+  Friendly = 2,
+  Curious = 3,
+  Fearful = 4
 }
 [System.Serializable]
 public enum Behavior
