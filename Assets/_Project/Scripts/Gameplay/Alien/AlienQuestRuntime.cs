@@ -39,9 +39,14 @@ namespace Synaptik.Game
 
         public bool TryHandleStep(string stepId, QuestStepType triggerType)
         {
-            if (!_definition.HasSteps || string.IsNullOrEmpty(stepId) || _questCompleted)
+            if (!_definition.HasSteps || _questCompleted)
             {
                 return false;
+            }
+
+            if (string.IsNullOrEmpty(stepId))
+            {
+                return TryHandleCurrentStep(triggerType);
             }
 
             if (!_stepIndexById.TryGetValue(stepId, out var index))
@@ -70,9 +75,14 @@ namespace Synaptik.Game
 
         public bool IsStepActive(string stepId, QuestStepType triggerType)
         {
-            if (!_definition.HasSteps || string.IsNullOrEmpty(stepId) || _questCompleted)
+            if (!_definition.HasSteps || _questCompleted)
             {
                 return false;
+            }
+
+            if (string.IsNullOrEmpty(stepId))
+            {
+                return IsCurrentStepActive(triggerType);
             }
 
             if (!_stepIndexById.TryGetValue(stepId, out var index))
@@ -91,6 +101,42 @@ namespace Synaptik.Game
             }
 
             return index == _currentIndex;
+        }
+
+        public bool TryHandleCurrentStep(QuestStepType triggerType)
+        {
+            if (!_definition.HasSteps || _questCompleted)
+            {
+                return false;
+            }
+
+            if (_currentIndex < 0 || _currentIndex >= _steps.Length)
+            {
+                return false;
+            }
+
+            if (_steps[_currentIndex].StepType != triggerType)
+            {
+                return false;
+            }
+
+            ExecuteStep(_currentIndex);
+            return true;
+        }
+
+        public bool IsCurrentStepActive(QuestStepType triggerType)
+        {
+            if (!_definition.HasSteps || _questCompleted)
+            {
+                return false;
+            }
+
+            if (_currentIndex < 0 || _currentIndex >= _steps.Length)
+            {
+                return false;
+            }
+
+            return _steps[_currentIndex].StepType == triggerType;
         }
 
         private void ExecuteStep(int index)

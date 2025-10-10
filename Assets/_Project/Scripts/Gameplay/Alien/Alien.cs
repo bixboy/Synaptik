@@ -25,6 +25,20 @@ namespace Synaptik.Game
         {
             _anim = GetComponent<Animator>();
 
+            if (_dialogueBubble == null)
+            {
+                _dialogueBubble = GetComponentInChildren<DialogueBubble>(true);
+            }
+
+            if (_dialogueBubble != null && !_dialogueBubble.gameObject.scene.IsValid())
+            {
+                var prefabBubble = _dialogueBubble;
+                _dialogueBubble = Instantiate(prefabBubble, transform);
+                _dialogueBubble.transform.localPosition = prefabBubble.transform.localPosition;
+                _dialogueBubble.transform.localRotation = prefabBubble.transform.localRotation;
+                _dialogueBubble.transform.localScale = prefabBubble.transform.localScale;
+            }
+
             if (_def != null && _def.Animator != null)
             {
                 _anim.runtimeAnimatorController = _def.Animator;
@@ -220,7 +234,7 @@ namespace Synaptik.Game
 
         private bool IsInteractionRuleAvailable(InterractionRule rule)
         {
-            if (string.IsNullOrWhiteSpace(rule.QuestId) || string.IsNullOrWhiteSpace(rule.QuestStepId))
+            if (string.IsNullOrWhiteSpace(rule.QuestId))
             {
                 return true;
             }
@@ -291,7 +305,7 @@ namespace Synaptik.Game
 
         private bool ProcessQuestStep(string questId, string questStepId, QuestStepType triggerType)
         {
-            if (string.IsNullOrWhiteSpace(questId) || string.IsNullOrWhiteSpace(questStepId))
+            if (string.IsNullOrWhiteSpace(questId))
             {
                 return false;
             }
@@ -306,7 +320,7 @@ namespace Synaptik.Game
 
         private bool IsQuestStepActive(string questId, string questStepId, QuestStepType triggerType)
         {
-            if (string.IsNullOrWhiteSpace(questId) || string.IsNullOrWhiteSpace(questStepId))
+            if (string.IsNullOrWhiteSpace(questId))
             {
                 return false;
             }
