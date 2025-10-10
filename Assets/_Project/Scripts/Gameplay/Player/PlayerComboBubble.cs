@@ -7,35 +7,32 @@ namespace Synaptik.Game
     [DisallowMultipleComponent]
     public class PlayerComboBubble : MonoBehaviour
     {
-        [Header("Bubble Layout")]
+        [Header("Bubble Setup")]
+        [SerializeField] private GameObject _bubblePrefab;
         [SerializeField] private float _verticalOffset = 2.6f;
+        [SerializeField] private float _worldScale = 0.03f;
+
+        [Header("Layout Settings")]
         [SerializeField] private Vector2 _minBubbleSize = new Vector2(120f, 60f);
         [SerializeField] private Vector2 _padding = new Vector2(16f, 10f);
-        [SerializeField] private float _worldScale = 0.03f;
+        [SerializeField] private float _defaultLifetime = 1.75f;
+
+        [Header("Visual Settings")]
         [SerializeField] private Color _backgroundColor = new Color(1f, 1f, 1f, 0.4f);
         [SerializeField] private Color _textColor = Color.black;
         [SerializeField] private TMP_FontAsset _fontAsset;
-        [SerializeField] private float _defaultLifetime = 1.75f;
 
-        private GameObject _bubbleRoot;
+        private GameObject _bubbleInstance;
         private RectTransform _bubbleRect;
-        private RectTransform _panelRect;
+        private Image _backgroundImage;
         private TextMeshProUGUI _label;
         private float _remainingTime;
         private Camera _camera;
 
-        private const float PanelPadding = 6f;
-
         private void Awake()
         {
-            EnsureHierarchy();
+            _camera = Camera.main;
             HideImmediate();
-        }
-
-        private void OnEnable()
-        {
-            if (_bubbleRoot)
-                _bubbleRoot.SetActive(false);
         }
 
         private void OnDisable()
@@ -60,7 +57,7 @@ namespace Synaptik.Game
 
         public void Show(string text, float duration)
         {
-            EnsureHierarchy();
+            EnsureInstance();
 
             if (!_label)
                 return;
@@ -68,8 +65,8 @@ namespace Synaptik.Game
             _label.text = text ?? string.Empty;
             AdjustBubbleSize();
 
-            if (_bubbleRoot && !_bubbleRoot.activeSelf)
-                _bubbleRoot.SetActive(true);
+            if (!_bubbleInstance.activeSelf)
+                _bubbleInstance.SetActive(true);
 
             _remainingTime = duration > 0f ? duration : _defaultLifetime;
             UpdateLookAt();
@@ -78,62 +75,47 @@ namespace Synaptik.Game
         public void HideImmediate()
         {
             _remainingTime = 0f;
-            if (_bubbleRoot)
-                _bubbleRoot.SetActive(false);
+            if (_bubbleInstance)
+                _bubbleInstance.SetActive(false);
         }
 
-        private void EnsureHierarchy()
+        private void EnsureInstance()
         {
-            if (_bubbleRoot && _label)
+            if (_bubbleInstance)
                 return;
+
+            if (!_bubblePrefab)
+            {
+                Debug.LogError("[PlayerComboBubble] No bubble prefab assigned!");
+                return;
+            }
 
             _camera = Camera.main;
 
-            _bubbleRoot = new GameObject("PlayerComboBubble", typeof(RectTransform));
-            _bubbleRoot.transform.SetParent(transform, false);
-            _bubbleRect = (RectTransform)_bubbleRoot.transform;
+            _bubbleInstance = Instantiate(_bubblePrefab, transform);
+            _bubbleRect = _bubbleInstance.GetComponent<RectTransform>();
             _bubbleRect.localPosition = new Vector3(0f, _verticalOffset, 0f);
             _bubbleRect.localScale = Vector3.one * Mathf.Max(0.0001f, _worldScale);
             _bubbleRect.pivot = new Vector2(0.5f, 0f);
 
-            var canvas = _bubbleRoot.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.WorldSpace;
-            canvas.worldCamera = _camera;
+            _label = _bubbleInstance.GetComponentInChildren<TextMeshProUGUI>(true);
+            _backgroundImage = _bubbleInstance.GetComponentInChildren<Image>(true);
 
-            var scaler = _bubbleRoot.AddComponent<CanvasScaler>();
-            scaler.dynamicPixelsPerUnit = 10f;
+            if (_label)
+            {
+                _label.color = _textColor;
+                if (_fontAsset)
+                    _label.font = _fontAsset;
+                else if (TMP_Settings.defaultFontAsset)
+                    _label.font = TMP_Settings.defaultFontAsset;
+            }
 
-            var panel = new GameObject("Panel", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-            panel.transform.SetParent(_bubbleRect, false);
+            if (_backgroundImage)
+                _backgroundImage.color = _backgroundColor;
 
-            _panelRect = (RectTransform)panel.transform;
-            _panelRect.anchorMin = Vector2.zero;
-            _panelRect.anchorMax = Vector2.one;
-            _panelRect.offsetMin = new Vector2(PanelPadding, PanelPadding);
-            _panelRect.offsetMax = new Vector2(-PanelPadding, -PanelPadding);
-
-            var panelImage = panel.GetComponent<Image>();
-            panelImage.color = _backgroundColor;
-            panelImage.raycastTarget = false;
-
-            var textObject = new GameObject("Text", typeof(RectTransform), typeof(CanvasRenderer));
-            textObject.transform.SetParent(panel.transform, false);
-
-            var textRect = (RectTransform)textObject.transform;
-            textRect.anchorMin = Vector2.zero;
-            textRect.anchorMax = Vector2.one;
-            textRect.offsetMin = new Vector2(_padding.x, _padding.y);
-            textRect.offsetMax = new Vector2(-_padding.x, -_padding.y);
-
-            _label = textObject.AddComponent<TextMeshProUGUI>();
-            _label.font = _fontAsset ? _fontAsset : TMP_Settings.defaultFontAsset;
-            _label.color = _textColor;
-            _label.alignment = TextAlignmentOptions.Center;
-            _label.textWrappingMode = TextWrappingModes.Normal;
-            _label.raycastTarget = false;
-            _label.text = string.Empty;
+            _bubbleInstance.SetActive(false);
         }
-        
+
         private void AdjustBubbleSize()
         {
             if (!_label || !_bubbleRect)
