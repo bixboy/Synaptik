@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -20,10 +21,25 @@ namespace Synaptik.Game
 
         private readonly Dictionary<string, AlienQuestRuntime> _questRuntimes = new Dictionary<string, AlienQuestRuntime>();
         private readonly Dictionary<string, int> _receivedItemQuantities = new Dictionary<string, int>();
+        private readonly Dictionary<InteractionLookupKey, InterractionRule> _cachedInteractionRules = new Dictionary<InteractionLookupKey, InterractionRule>();
 
         private void Awake()
         {
             _anim = GetComponent<Animator>();
+
+            if (_dialogueBubble == null)
+            {
+                _dialogueBubble = GetComponentInChildren<DialogueBubble>(true);
+            }
+
+            if (_dialogueBubble != null && !_dialogueBubble.gameObject.scene.IsValid())
+            {
+                var prefabBubble = _dialogueBubble;
+                _dialogueBubble = Instantiate(prefabBubble, transform);
+                _dialogueBubble.transform.localPosition = prefabBubble.transform.localPosition;
+                _dialogueBubble.transform.localRotation = prefabBubble.transform.localRotation;
+                _dialogueBubble.transform.localScale = prefabBubble.transform.localScale;
+            }
 
             if (_def != null && _def.Animator != null)
             {
@@ -136,12 +152,32 @@ namespace Synaptik.Game
                 return;
             }
 
+            Debug.Log($"[Alien] {name} received combo {channel}/{playerEmotion}");
+
+            var interactionKey = new InteractionLookupKey(channel, playerEmotion);
             if (!_def.Reactions.TryFindRule(channel, playerEmotion, IsInteractionRuleAvailable, out var rule))
             {
+                if (_cachedInteractionRules.TryGetValue(interactionKey, out var cachedRule))
+                {
+                    Debug.Log($"[Alien] No interaction rule available for {name} with combo {channel}/{playerEmotion}. Using cached fallback.");
+                    HandleInteractionRule(cachedRule, channel, playerEmotion, false);
+                    return;
+                }
+
+                if (_def.Reactions.TryFindRule(channel, playerEmotion, null, out var fallbackRule))
+                {
+                    Debug.Log($"[Alien] No interaction rule available for {name} with combo {channel}/{playerEmotion}. Using definition fallback.");
+                    _cachedInteractionRules[interactionKey] = fallbackRule;
+                    HandleInteractionRule(fallbackRule, channel, playerEmotion, false);
+                    return;
+                }
+
+                Debug.LogWarning($"[Alien] No interaction rule found for {name} with combo {channel}/{playerEmotion}");
                 return;
             }
 
-            HandleInteractionRule(rule, channel);
+            _cachedInteractionRules[interactionKey] = rule;
+            HandleInteractionRule(rule, channel, playerEmotion);
         }
 
         public bool TryReceiveItem(string itemId)
@@ -200,19 +236,31 @@ namespace Synaptik.Game
             _dialogueBubble.ShowFor(emojiLine, duration);
         }
 
-        private void HandleInteractionRule(InterractionRule rule, Behavior channel)
+        private void HandleInteractionRule(InterractionRule rule, Behavior channel, Emotion playerEmotion, bool allowQuestProgress = true)
         {
-            var handled = ProcessQuestStep(rule.QuestId, rule.QuestStepId, QuestStepType.Talk);
+            var handled = allowQuestProgress && ProcessQuestStep(rule.QuestId, rule.QuestStepId, QuestStepType.Talk);
 
             if (rule.SetNewEmotion)
             {
                 SetEmotion(rule.NewEmotion);
             }
 
-            TryShowDialogue(Emotion, channel);
+            if (!TryShowDialogue(playerEmotion, channel, "player emotion"))
+            {
+                var displayEmotion = Emotion;
+                if (rule.SetNewEmotion)
+                {
+                    displayEmotion = rule.NewEmotion;
+                }
+
+                if (displayEmotion != playerEmotion)
+                {
+                    TryShowDialogue(displayEmotion, channel, "alien emotion fallback");
+                }
+            }
             ApplySuspicionDelta(rule.SuspicionDelta);
 
-            if (!handled && !string.IsNullOrWhiteSpace(rule.QuestId))
+            if (allowQuestProgress && !handled && !string.IsNullOrWhiteSpace(rule.QuestId))
             {
                 GameManager.Instance?.SetMissionFinished(rule.QuestId);
             }
@@ -220,7 +268,7 @@ namespace Synaptik.Game
 
         private bool IsInteractionRuleAvailable(InterractionRule rule)
         {
-            if (string.IsNullOrWhiteSpace(rule.QuestId) || string.IsNullOrWhiteSpace(rule.QuestStepId))
+            if (string.IsNullOrWhiteSpace(rule.QuestId))
             {
                 return true;
             }
@@ -246,17 +294,23 @@ namespace Synaptik.Game
             }
         }
 
-        private void TryShowDialogue(Emotion emotion, Behavior behavior)
+        private bool TryShowDialogue(Emotion emotion, Behavior behavior, string source)
         {
             if (_dialogueBubble == null || _def?.Dialogue == null)
             {
-                return;
+                Debug.LogWarning($"[Alien] Cannot show dialogue for {name}. Missing dialogue bubble or database.");
+                return false;
             }
 
             if (_def.Dialogue.TryGet(emotion, behavior, out var entry))
             {
+                Debug.Log($"[Alien] Showing dialogue '{entry.EmojiLine}' from {source} for {name} using key {behavior}/{emotion}.");
                 ShowDialogue(entry.EmojiLine, entry.Duration);
+                return true;
             }
+
+            Debug.LogWarning($"[Alien] No dialogue entry found for {name} using key {behavior}/{emotion} from {source}.");
+            return false;
         }
 
         private void TryShowItemDialogue(string itemId)
@@ -291,31 +345,39 @@ namespace Synaptik.Game
 
         private bool ProcessQuestStep(string questId, string questStepId, QuestStepType triggerType)
         {
-            if (string.IsNullOrWhiteSpace(questId) || string.IsNullOrWhiteSpace(questStepId))
+            if (string.IsNullOrWhiteSpace(questId))
             {
+                Debug.Log($"[Alien] {name} processed interaction without quest (trigger {triggerType}).");
                 return false;
             }
 
             if (_questRuntimes.TryGetValue(questId, out var runtime))
             {
-                return runtime.TryHandleStep(questStepId, triggerType);
+                var handled = runtime.TryHandleStep(questStepId, triggerType);
+                Debug.Log($"[Alien] {name} quest '{questId}' step '{questStepId ?? "<current>"}' handled={handled} for trigger {triggerType}.");
+                return handled;
             }
 
+            Debug.LogWarning($"[Alien] {name} has no runtime for quest '{questId}'.");
             return false;
         }
 
         private bool IsQuestStepActive(string questId, string questStepId, QuestStepType triggerType)
         {
-            if (string.IsNullOrWhiteSpace(questId) || string.IsNullOrWhiteSpace(questStepId))
+            if (string.IsNullOrWhiteSpace(questId))
             {
+                Debug.Log($"[Alien] {name} checking interaction rule without quest binding (trigger {triggerType}).");
                 return false;
             }
 
             if (_questRuntimes.TryGetValue(questId, out var runtime))
             {
-                return runtime.IsStepActive(questStepId, triggerType);
+                var active = runtime.IsStepActive(questStepId, triggerType);
+                Debug.Log($"[Alien] {name} quest '{questId}' step '{questStepId ?? "<current>"}' active={active} for trigger {triggerType}.");
+                return active;
             }
 
+            Debug.LogWarning($"[Alien] {name} has no runtime for quest '{questId}' while checking rule availability.");
             return false;
         }
 
@@ -347,7 +409,37 @@ namespace Synaptik.Game
             _receivedItemQuantities[itemId] = 0;
         }
 
-        
-        
+        private readonly struct InteractionLookupKey : IEquatable<InteractionLookupKey>
+        {
+            private readonly Behavior _behavior;
+            private readonly Emotion _emotion;
+
+            public InteractionLookupKey(Behavior behavior, Emotion emotion)
+            {
+                _behavior = behavior;
+                _emotion = emotion;
+            }
+
+            public bool Equals(InteractionLookupKey other)
+            {
+                return _behavior == other._behavior && _emotion == other._emotion;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is InteractionLookupKey other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    return ((int)_behavior * 397) ^ (int)_emotion;
+                }
+            }
+        }
+
+
+
     }
 }

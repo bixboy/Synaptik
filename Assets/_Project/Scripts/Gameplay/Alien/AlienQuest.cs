@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Synaptik.Game
 {
     [Serializable]
-    public struct AlienQuest
+    public struct AlienQuest : IEquatable<AlienQuest>
     {
         [SerializeField] private string _questId;
         [SerializeField] private string _title;
@@ -25,6 +25,26 @@ namespace Synaptik.Game
         public QuestStep GetStepAt(int index)
         {
             return _steps != null && index >= 0 && index < _steps.Length ? _steps[index] : default;
+        }
+
+        public bool Equals(AlienQuest other)
+        {
+            return _questId == other._questId &&
+                   _title == other._title && 
+                   _description == other._description && 
+                   _autoRegisterMission == other._autoRegisterMission && 
+                   _autoCompleteMissionOnQuestEnd == other._autoCompleteMissionOnQuestEnd && 
+                   Equals(_steps, other._steps);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is AlienQuest other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(_questId, _title, _description, _autoRegisterMission, _autoCompleteMissionOnQuestEnd, _steps);
         }
     }
 
