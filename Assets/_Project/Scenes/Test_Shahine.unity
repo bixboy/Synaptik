@@ -1833,6 +1833,8 @@ GameObject:
   - component: {fileID: 1460663264}
   - component: {fileID: 1460663263}
   - component: {fileID: 1460663270}
+  - component: {fileID: 1460663272}
+  - component: {fileID: 1460663271}
   m_Layer: 7
   m_Name: Alien
   m_TagString: Player
@@ -1902,7 +1904,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 126
   m_CollisionDetection: 0
 --- !u!136 &1460663266
 CapsuleCollider:
@@ -2012,6 +2014,49 @@ MonoBehaviour:
   _label: {fileID: 1787017529}
   _lookAtCamera: 1
   _camera: {fileID: 359247498}
+--- !u!143 &1460663271
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1460663262}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 1.9999999
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1460663272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1460663262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42c9039e811abaa488081d4a27598f81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canMove: 1
+  moveRadius: 5
+  moveSpeed: 2
+  waitTimeMin: 1
+  waitTimeMax: 3
+  rotationSpeed: 5
 --- !u!1 &1506398999
 GameObject:
   m_ObjectHideFlags: 0
@@ -2204,6 +2249,7 @@ GameObject:
   - component: {fileID: 1714252157}
   - component: {fileID: 1714252156}
   - component: {fileID: 1714252162}
+  - component: {fileID: 1714252163}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2372,6 +2418,61 @@ MonoBehaviour:
   _interactMask:
     serializedVersion: 2
     m_Bits: 192
+  _defaultComboBubbleDuration: 1.75
+  _comboSymbolDefinitions:
+  - Emotion: 1
+    Behavior: 1
+    Symbols: "\U0001F4AC\u26A1"
+    Duration: 2
+  - Emotion: 2
+    Behavior: 1
+    Symbols: "\U0001F4AC\u2764\uFE0F"
+    Duration: 2
+  - Emotion: 3
+    Behavior: 1
+    Symbols: "\U0001F4AC\u2753"
+    Duration: 2
+  - Emotion: 4
+    Behavior: 1
+    Symbols: "\U0001F4AC\U0001F631"
+    Duration: 2
+  - Emotion: 1
+    Behavior: 2
+    Symbols: "\u270B\u26A1"
+    Duration: 1.75
+  - Emotion: 2
+    Behavior: 2
+    Symbols: "\u270B\u2764\uFE0F"
+    Duration: 1.75
+  - Emotion: 3
+    Behavior: 2
+    Symbols: "\u270B\u2753"
+    Duration: 1.75
+  - Emotion: 4
+    Behavior: 2
+    Symbols: "\u270B\U0001F631"
+    Duration: 1.75
+--- !u!114 &1714252163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1714252155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74eea693354e43b0be0532c44d043ed4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bubblePrefab: {fileID: 3989471895941643016, guid: 4263e1fd48922eb4bbaf2025a83e5e5f, type: 3}
+  _verticalOffset: 1.5
+  _worldScale: 0.03
+  _minBubbleSize: {x: 120, y: 60}
+  _padding: {x: 16, y: 10}
+  _defaultLifetime: 1.75
+  _backgroundColor: {r: 1, g: 1, b: 1, a: 0.4}
+  _textColor: {r: 0, g: 0, b: 0, a: 1}
+  _fontAsset: {fileID: 11400000, guid: 3944eaaf70beffa4097d8c293604125e, type: 2}
 --- !u!1 &1787017528
 GameObject:
   m_ObjectHideFlags: 0
@@ -2694,7 +2795,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -14.342987}
+  m_AnchoredPosition: {x: 0, y: -14.343018}
   m_SizeDelta: {x: 364, y: 28.685}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2066461958
@@ -2710,7 +2811,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _outputLeft: {fileID: 2006503672}
-  _outputRight: {fileID: 0}
+  _outputRight: {fileID: 1037807579}
   _defaultActionColor: {r: 0, g: 0, b: 0, a: 1}
   _talkColor: {r: 1, g: 1, b: 1, a: 1}
   _actionColor: {r: 0.31024948, g: 0.18128152, b: 0.78113204, a: 1}
