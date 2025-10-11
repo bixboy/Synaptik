@@ -44,6 +44,7 @@ public sealed class GameManager : MonoBehaviour
     private void Start()
     {
         IsInitialized = true;
+        Debug.Log("[GameManager] Initialisation terminée.");
     }
 
     public bool RegisterMission(Mission mission)
@@ -60,6 +61,7 @@ public sealed class GameManager : MonoBehaviour
         }
 
         missions.Add(mission);
+        Debug.Log($"[GameManager] Mission '{mission.MissionID}' enregistrée (total: {missions.Count}).");
         return true;
     }
 
@@ -75,12 +77,14 @@ public sealed class GameManager : MonoBehaviour
             var mission = missions[i];
             if (mission.IsFinished)
             {
+                Debug.LogWarning($"[GameManager] Mission '{missionId}' déjà marquée comme terminée.");
                 return;
             }
 
             mission.IsFinished = true;
             missions[i] = mission;
 
+            Debug.Log($"[GameManager] Mission '{missionId}' passe en statut terminé.");
             OnTaskEnd?.Invoke(mission);
             Debug.Log($"Mission '{missionId}' terminée !");
             return;
@@ -94,7 +98,7 @@ public sealed class GameManager : MonoBehaviour
         missions.Clear();
         MistrustManager.Instance?.RemoveMistrust(1000);
 
-        Debug.Log("Toutes les missions et abonnements ont été nettoyés.");
+        Debug.Log("[GameManager] Toutes les missions et abonnements ont été nettoyés.");
     }
 
     public IReadOnlyList<Mission> GetMissions()
