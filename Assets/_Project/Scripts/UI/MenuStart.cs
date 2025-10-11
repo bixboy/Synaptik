@@ -1,102 +1,150 @@
 using UnityEngine;
+using UnityEngine.Events;
 
-public class MenuStart : MonoBehaviour
+public sealed class MenuStart : MonoBehaviour
 {
     [Header("Assign the UI")]
-    public RectTransform imageToShake;
-    public GameObject helpPanel;
-    public GameObject quitPanel;
+    [SerializeField]
+    private RectTransform imageToShake;
+
+    [SerializeField]
+    private GameObject helpPanel;
+
+    [SerializeField]
+    private GameObject quitPanel;
 
     [Header("Shake Settings")]
-    public float maxShakeIntensity = 30f;
-    public float chargeTime = 3f;
-    public AnimationCurve intensityCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+    [SerializeField]
+    private float maxShakeIntensity = 30f;
+
+    [SerializeField]
+    private float chargeTime = 3f;
+
+    [SerializeField]
+    private AnimationCurve intensityCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
     [Header("Events")]
-    public UnityEngine.Events.UnityEvent onFullyCharged;
+    public UnityEvent onFullyCharged;
 
     private float chargeProgress;
     private bool isCharging;
     private bool fullyCharged;
     private Vector3 originalPos;
-    
-    private bool panelHelpEnable;
-    private bool panelQuitEnable;
+    private bool panelHelpEnabled;
+    private bool panelQuitEnabled;
+    private InputsDetection inputsDetection;
+    private bool subscribedToInputs;
 
-    private void Start()
+    private void Awake()
     {
         if (imageToShake != null)
+        {
             originalPos = imageToShake.anchoredPosition;
+        }
 
-        InputsDetection.Instance.OnEmotion += HandleEmotion;
-        InputsDetection.Instance.OnAction += HandleAction;
-        InputsDetection.Instance.OnTowActionPressed += HandleTowAction;
+        InitializePanels();
+    }
 
-        if (helpPanel)
+    private void OnEnable()
+    {
+        TrySubscribeToInputs();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeFromInputs();
+    }
+
+    private void InitializePanels()
+    {
+        if (helpPanel != null)
         {
             helpPanel.SetActive(false);
-            panelHelpEnable = false;
         }
 
-        if (quitPanel)
+        if (quitPanel != null)
         {
             quitPanel.SetActive(false);
-            panelQuitEnable = false;
         }
+
+        panelHelpEnabled = false;
+        panelQuitEnabled = false;
     }
-    
-    private void OnDestroy()
+
+    private bool TrySubscribeToInputs()
     {
-        if (InputsDetection.Instance != null)
+        var instance = InputsDetection.Instance;
+        if (instance == null)
         {
-            InputsDetection.Instance.OnEmotion -= HandleEmotion;
-            InputsDetection.Instance.OnAction -= HandleAction;
-            InputsDetection.Instance.OnTowActionPressed -= HandleTowAction;   
+            return false;
         }
+
+        if (inputsDetection == instance && subscribedToInputs)
+        {
+            return true;
+        }
+
+        UnsubscribeFromInputs();
+
+        inputsDetection = instance;
+        inputsDetection.OnEmotion += HandleEmotion;
+        inputsDetection.OnAction += HandleAction;
+        inputsDetection.OnTowActionPressed += HandleTwoAction;
+        subscribedToInputs = true;
+
+        return true;
+    }
+
+    private void UnsubscribeFromInputs()
+    {
+        if (!subscribedToInputs || inputsDetection == null)
+        {
+            return;
+        }
+
+        inputsDetection.OnEmotion -= HandleEmotion;
+        inputsDetection.OnAction -= HandleAction;
+        inputsDetection.OnTowActionPressed -= HandleTwoAction;
+        subscribedToInputs = false;
     }
 
     private void HandleEmotion(Emotion emotion, bool keyUp)
     {
-        if (emotion == Emotion.Anger)
+        switch (emotion)
         {
-            Debug.Log("Quit");
-
-            if (!keyUp)
-            {
-                quitPanel.SetActive(true);
-                panelQuitEnable = true;   
-            }
-            else
-            {
-                quitPanel.SetActive(false);
-                panelQuitEnable = false;
-            }
-        }
-
-        if (emotion == Emotion.Curious)
-        {
-            Debug.Log("Help");
-            ShowHelp();
+            case Emotion.Anger:
+                ToggleQuitPanel(!keyUp);
+                break;
+            case Emotion.Curious when !keyUp:
+                ToggleHelpPanel();
+                break;
         }
     }
 
-    private void HandleAction(Behavior action, bool keyUp)
+    private void HandleAction(Behavior action, bool isKeyUp)
     {
-        if (panelQuitEnable)
+        if (isKeyUp)
         {
-            if (action == Behavior.Action)
-            {
-                Quit(true);
-            }
+            return;
+        }
 
-            if (action == Behavior.Talking)
-            {
-                Quit(false);
-            }
+        if (!panelQuitEnabled)
+        {
+            return;
+        }
+
+        switch (action)
+        {
+            case Behavior.Action:
+                HandleQuitChoice(true);
+                break;
+            case Behavior.Talking:
+                HandleQuitChoice(false);
+                break;
         }
     }
 
-    private void HandleTowAction(bool towPressed)
+    private void HandleTwoAction(bool towPressed)
     {
         if (towPressed)
         {
@@ -107,7 +155,7 @@ public class MenuStart : MonoBehaviour
             StopCharging();
         }
     }
-    
+
     private void StartCharging()
     {
         isCharging = true;
@@ -121,11 +169,13 @@ public class MenuStart : MonoBehaviour
 
     private void Update()
     {
-        if (!InputsDetection.Instance) 
+        if (!subscribedToInputs && !TrySubscribeToInputs())
+        {
             return;
-        
-        bool comboActif = InputsDetection.Instance.MoveVector == Vector2.zero;
-        if (!comboActif && isCharging)
+        }
+
+        var comboActive = inputsDetection.MoveVector == Vector2.zero;
+        if (!comboActive && isCharging)
         {
             StopCharging();
         }
@@ -147,55 +197,58 @@ public class MenuStart : MonoBehaviour
 
         chargeProgress = Mathf.Clamp01(chargeProgress);
 
-        if (imageToShake)
+        if (imageToShake != null)
         {
-            float intensity = intensityCurve.Evaluate(chargeProgress) * maxShakeIntensity;
-            Vector2 offset = Random.insideUnitCircle * intensity;
-            imageToShake.anchoredPosition = originalPos + new Vector3(offset.x, offset.y, 0);
+            var intensity = intensityCurve.Evaluate(chargeProgress) * maxShakeIntensity;
+            var offset = Random.insideUnitCircle * intensity;
+            imageToShake.anchoredPosition = originalPos + new Vector3(offset.x, offset.y, 0f);
         }
 
-        if (chargeProgress <= 0.001f && imageToShake)
+        if (chargeProgress <= 0.001f && imageToShake != null)
         {
             imageToShake.anchoredPosition = originalPos;
         }
     }
 
-    private void Quit(bool accept)
+    private void ToggleQuitPanel(bool enable)
     {
-        if (panelQuitEnable)
+        panelQuitEnabled = enable;
+        if (quitPanel != null)
         {
-            if (accept)
-            {
-                Application.Quit();
-            }
-            else
-            {
-                quitPanel.SetActive(false);
-                panelQuitEnable = false;
-            }
+            quitPanel.SetActive(enable);
         }
     }
 
-    private void ShowHelp()
+    private void ToggleHelpPanel()
     {
-        if (!helpPanel)
+        if (helpPanel == null)
+        {
             return;
-        
-        if (!panelHelpEnable)
-        {
-            helpPanel.SetActive(true);
-            panelHelpEnable = true;
         }
-        else
-        {
-            helpPanel.SetActive(false);
-            panelHelpEnable = false;
-        }
+
+        panelHelpEnabled = !panelHelpEnabled;
+        helpPanel.SetActive(panelHelpEnabled);
     }
-    
+
+    private void HandleQuitChoice(bool accept)
+    {
+        if (!panelQuitEnabled)
+        {
+            return;
+        }
+
+        if (accept)
+        {
+            Application.Quit();
+            return;
+        }
+
+        ToggleQuitPanel(false);
+    }
+
     public void TestStart()
     {
         Debug.Log("TestStart");
-        LoadingScreenManager.Instance.LoadScene("Test_Shahine");
+        LoadingScreenManager.Instance?.LoadScene("Test_Shahine");
     }
 }

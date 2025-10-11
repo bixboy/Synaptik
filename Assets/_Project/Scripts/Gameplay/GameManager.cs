@@ -1,16 +1,14 @@
- using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Mission associée à un UFO.
-/// </summary>
+[System.Serializable]
 public struct Mission
 {
     public string MissionID;
     public string Title;
     public string Description;
     public bool IsFinished;
-    
+
     public Mission(string missionID, string title, string description)
     {
         MissionID = missionID;
@@ -20,19 +18,14 @@ public struct Mission
     }
 }
 
-
-public class GameManager : MonoBehaviour
+public sealed class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    public bool IsInitialized { get; private set; } = false;
+    public bool IsInitialized { get; private set; }
 
+    [SerializeField]
+    private List<Mission> missions = new();
 
-    // --- Données des missions ---
-    [SerializeField] 
-    private List<Mission> _missions = new List<Mission>();
-    
-    
-    
     public delegate void TaskEndHandler(Mission mission);
     public event TaskEndHandler OnTaskEnd;
 
@@ -53,62 +46,59 @@ public class GameManager : MonoBehaviour
         IsInitialized = true;
     }
 
-    // --- Gestion des missions ---
     public bool RegisterMission(Mission mission)
     {
-        foreach (var existingMission in _missions)
+        foreach (var existingMission in missions)
         {
-            if (existingMission.MissionID == mission.MissionID)
+            if (existingMission.MissionID != mission.MissionID)
             {
-                Debug.LogWarning($"Mission '{mission.MissionID}' already registered.");
-                return false;
+                continue;
             }
+
+            Debug.LogWarning($"Mission '{mission.MissionID}' already registered.");
+            return false;
         }
 
-        _missions.Add(mission);
+        missions.Add(mission);
         return true;
     }
 
-    public void SetMissionFinished(string missionName)
+    public void SetMissionFinished(string missionId)
     {
-        for (int i = 0; i < _missions.Count; i++)
+        for (var i = 0; i < missions.Count; i++)
         {
-            if (_missions[i].MissionID == missionName)
+            if (missions[i].MissionID != missionId)
             {
-                var mission = _missions[i];
-                if (mission.IsFinished)
-                {
-                    return;
-                }
-                mission.IsFinished = true;
-                _missions[i] = mission;
+                continue;
+            }
 
-                OnTaskEnd?.Invoke(mission);
-
-                Debug.Log($"Mission '{missionName}' terminée !");
+            var mission = missions[i];
+            if (mission.IsFinished)
+            {
                 return;
             }
+
+            mission.IsFinished = true;
+            missions[i] = mission;
+
+            OnTaskEnd?.Invoke(mission);
+            Debug.Log($"Mission '{missionId}' terminée !");
+            return;
         }
 
-        Debug.LogWarning($"Aucune mission trouvée avec le nom '{missionName}'.");
+        Debug.LogWarning($"Aucune mission trouvée avec le nom '{missionId}'.");
     }
 
     public void ClearAll()
     {
-        foreach (var mission in _missions)
-        {
-            // if (mission.UfoRef is UFO ufo)
-            //     ufo.OnUfoInteract -= HandleUfoInteract;
-        }
-
-        _missions.Clear();
-        MistrustManager.Instance.RemoveMistrust(1000);
+        missions.Clear();
+        MistrustManager.Instance?.RemoveMistrust(1000);
 
         Debug.Log("Toutes les missions et abonnements ont été nettoyés.");
     }
 
-    public List<Mission> GetMissions()
+    public IReadOnlyList<Mission> GetMissions()
     {
-        return _missions;
+        return missions;
     }
 }

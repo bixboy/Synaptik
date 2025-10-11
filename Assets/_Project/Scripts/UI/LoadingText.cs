@@ -1,47 +1,54 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using TextTools;
 using TMPro;
 using UnityEngine;
 
-public class LoadingText : MonoBehaviour
+public sealed class LoadingText : MonoBehaviour
 {
-    public TextMeshProUGUI Text;
-    public TextMeshProUGUI LoaddingText;
+    [SerializeField]
+    private TextMeshProUGUI mainText;
+
+    [SerializeField]
+    private TextMeshProUGUI loadingText;
+
+    [SerializeField]
+    private float delayBetweenLines = 0.2f;
+
+    [SerializeField]
+    private float characterSpacing = 0.01f;
 
     private float currentTime;
-    private string currentLine;
-    private string fullText;
-
+    private string currentLine = string.Empty;
+    private string fullText = string.Empty;
     private bool isDisplaying;
-
-    [SerializeField] private float delayBetweenLines = 0.2f;
 
     private void Start()
     {
-        Loading(0);
+        SetLoadingProgress(0f);
     }
 
-    public void StartText(List<string> lines)
+    public void StartText(IReadOnlyList<string> lines)
     {
         StopAllCoroutines();
         StartCoroutine(DisplayLinesRoutine(lines));
     }
 
-    private IEnumerator DisplayLinesRoutine(List<string> lines)
+    private IEnumerator DisplayLinesRoutine(IReadOnlyList<string> lines)
     {
-        fullText = "";
-        currentLine = "";
-        Text.text = "";
+        fullText = string.Empty;
+        currentLine = string.Empty;
+        if (mainText != null)
+        {
+            mainText.text = string.Empty;
+        }
+
         isDisplaying = false;
-        
-        foreach (string line in lines)
+
+        foreach (var line in lines)
         {
             AddNewLine(line);
-            
-            yield return new WaitUntil(() => isDisplaying == false);
 
+            yield return new WaitUntil(() => !isDisplaying);
             yield return new WaitForSeconds(delayBetweenLines);
         }
     }
@@ -49,32 +56,44 @@ public class LoadingText : MonoBehaviour
     public void AddNewLine(string text)
     {
         if (isDisplaying)
+        {
             fullText += currentLine + "\n";
+        }
 
         currentLine = text;
         currentTime = 0f;
         isDisplaying = true;
     }
 
-    public void Loading(float lerp)
+    public void SetLoadingProgress(float lerp)
     {
-        LoaddingText.text = $"[{TextFeedBack.ProgressiveDisplayLerp("000000000000000000000000", lerp, '-')}]";
+        if (loadingText == null)
+        {
+            return;
+        }
+
+        loadingText.text = $"[{TextFeedBack.ProgressiveDisplayLerp("000000000000000000000000", lerp, '-')}]";
     }
 
     private void Update()
     {
-        if (!isDisplaying) return;
+        if (!isDisplaying || mainText == null)
+        {
+            return;
+        }
 
-        string progressive = TextFeedBack.ProgressiveDisplayTimeSpacing(currentLine, 0.01f, currentTime);
-        Text.text = fullText + progressive;
+        var progressive = TextFeedBack.ProgressiveDisplayTimeSpacing(currentLine, characterSpacing, currentTime);
+        mainText.text = fullText + progressive;
 
         currentTime += Time.deltaTime;
 
-        if (progressive.Length >= currentLine.Length)
+        if (progressive.Length < currentLine.Length)
         {
-            fullText += currentLine + "\n";
-            currentLine = "";
-            isDisplaying = false;
+            return;
         }
+
+        fullText += currentLine + "\n";
+        currentLine = string.Empty;
+        isDisplaying = false;
     }
 }

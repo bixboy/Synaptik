@@ -1,73 +1,78 @@
-using System;
 using NaughtyAttributes;
 using TMPro;
 using UnityEngine;
 
-namespace Synaptik.Game
+public sealed class DialogueBubble : MonoBehaviour
 {
-    public class DialogueBubble : MonoBehaviour
+    [SerializeField]
+    private GameObject bubbleGameObject;
+
+    [SerializeField]
+    private TextMeshProUGUI label;
+
+    [SerializeField]
+    private bool lookAtCamera = true;
+
+    [SerializeField, ShowIf(nameof(lookAtCamera))]
+    private Camera targetCamera;
+
+    private float remainingTime;
+
+    private void Awake()
     {
-        [SerializeField] private GameObject _bubbleGameObject;
-        [SerializeField] private TextMeshProUGUI _label;
-        private float _remainingTime;
-        [SerializeField] private bool _lookAtCamera = true;
-        [SerializeField, ShowIf("_lookAtCamera")] private Camera _camera;
+        targetCamera = Camera.main;
+        Hide();
+    }
 
-        private void Awake()
+    private void Update()
+    {
+        if (bubbleGameObject == null || !bubbleGameObject.activeSelf)
         {
-            
-            _camera = Camera.main;
+            return;
+        }
+
+        if (remainingTime <= 0f)
+        {
             Hide();
+            return;
         }
 
-        private void Start()
-        {
-            if (_camera == null)
-            {
-                _camera = Camera.main;
-            }
-        }
+        remainingTime -= Time.deltaTime;
 
-        private void Update()
-        {
-            if (_bubbleGameObject != null && _bubbleGameObject.activeSelf)
-            {
-                if (_remainingTime <= 0f)
-                {
-                    Hide();
-                }
-                else
-                {
-                    _remainingTime -= Time.deltaTime;
-                    if (_lookAtCamera && _camera != null)
-                    {
-                        transform.LookAt(transform.position + _camera.transform.rotation * Vector3.forward,
-                            _camera.transform.rotation * Vector3.up);
-                    }
-                }
-            }
-            
-        }
+        if (!lookAtCamera)
+            return;
 
-        public void ShowFor(string emojiLine, float duration)
-        {
-            if (string.IsNullOrEmpty(emojiLine) || duration <= 0f)
-            {
-                return;
-            }
-            if (_label != null)
-            {
-                _label.text = emojiLine;
-            }
-            _bubbleGameObject?.SetActive(true);
-            _remainingTime = duration;
-            
-        }
+        if (!targetCamera)
+            targetCamera = Camera.main;
 
-        private void Hide()
+        if (!targetCamera)
+            return;
+
+        var forward = targetCamera.transform.rotation * Vector3.forward;
+        var up = targetCamera.transform.rotation * Vector3.up;
+        transform.LookAt(transform.position + forward, up);
+    }
+
+    public void ShowFor(string emojiLine, float duration)
+    {
+        if (string.IsNullOrEmpty(emojiLine) || duration <= 0f)
+            return;
+
+        if (label)
+            label.text = emojiLine;
+
+        if (bubbleGameObject)
+            bubbleGameObject.SetActive(true);
+
+        remainingTime = duration;
+    }
+
+    private void Hide()
+    {
+        if (bubbleGameObject)
         {
-            _bubbleGameObject?.SetActive(false);
-            _remainingTime = 0f;
+            bubbleGameObject.SetActive(false);
         }
+        remainingTime = 0f;
     }
 }

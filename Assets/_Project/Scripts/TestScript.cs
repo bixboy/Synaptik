@@ -1,11 +1,10 @@
 using UnityEngine;
-using TextTools;
 
-public class TestScript : MonoBehaviour
+public sealed class TestScript : MonoBehaviour
 {
     private void Start()
     {
-        string text = "Hello World!";
+        const string text = "Hello World!";
 
         Debug.Log(TextFeedBack.ProgressiveDisplayLerp(text, 0.0f, '-'));
         Debug.Log(TextFeedBack.ProgressiveDisplayLerp(text, 0.5f, '_'));
