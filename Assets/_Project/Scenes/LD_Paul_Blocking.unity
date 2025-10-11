@@ -154,10 +154,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1da35ae1245e7c04199f380954e64277, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bubbleGameObject: {fileID: 1791379701}
-  _label: {fileID: 348956983}
-  _lookAtCamera: 1
-  _camera: {fileID: 0}
+  bubbleGameObject: {fileID: 0}
+  label: {fileID: 0}
+  lookAtCamera: 1
+  targetCamera: {fileID: 0}
 --- !u!114 &158043347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -423,10 +423,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9144285521d24d0298849b7fefa4a1c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemId: 24
-  _respawnDelay: 5
-  _despawnTime: 0.5
-  _despawnAnim:
+  itemId: 
+  respawnDelay: 5
+  despawnTime: 0.5
+  despawnAnim:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -450,7 +450,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _despawnVFXPrefab: {fileID: 0}
+  despawnVfxPrefab: {fileID: 0}
 --- !u!54 &166906664
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -792,6 +792,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c46c1fcaf4143e941a3f94b7927d82ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  missions: []
 --- !u!4 &245239260
 Transform:
   m_ObjectHideFlags: 0
@@ -884,7 +885,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4234874ad69410d9b57c979311ae940, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ItemToSpawnOnDeath: {fileID: 1345591815463597200, guid: 3eefb09e789b0714d9dd218668760688, type: 3}
+  itemToSpawnOnDeath: {fileID: 0}
 --- !u!54 &336148076
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1858,10 +1859,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9144285521d24d0298849b7fefa4a1c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemId: Fleur
-  _respawnDelay: 5
-  _despawnTime: 0.5
-  _despawnAnim:
+  itemId: 
+  respawnDelay: 5
+  despawnTime: 0.5
+  despawnAnim:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -1885,7 +1886,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _despawnVFXPrefab: {fileID: 0}
+  despawnVfxPrefab: {fileID: 0}
 --- !u!54 &533628105
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2278,10 +2279,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1da35ae1245e7c04199f380954e64277, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bubbleGameObject: {fileID: 2051800743}
-  _label: {fileID: 491145200}
-  _lookAtCamera: 1
-  _camera: {fileID: 0}
+  bubbleGameObject: {fileID: 0}
+  label: {fileID: 0}
+  lookAtCamera: 1
+  targetCamera: {fileID: 0}
 --- !u!114 &864276456
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2650,9 +2651,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10efbeb94b0a6de43998beae462a50d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mistrustSlider: {fileID: 947534219}
-  _mistrustRange: {x: 0, y: 100}
-  _initialMistrust: 50
+  mistrustSlider: {fileID: 0}
+  mistrustRange: {x: 0, y: 100}
+  initialMistrust: 50
 --- !u!1 &1009453556
 GameObject:
   m_ObjectHideFlags: 0
@@ -3488,10 +3489,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1da35ae1245e7c04199f380954e64277, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bubbleGameObject: {fileID: 1390055223}
-  _label: {fileID: 1787017529}
-  _lookAtCamera: 1
-  _camera: {fileID: 359247498}
+  bubbleGameObject: {fileID: 0}
+  label: {fileID: 0}
+  lookAtCamera: 1
+  targetCamera: {fileID: 0}
 --- !u!1 &1469768439
 GameObject:
   m_ObjectHideFlags: 0
@@ -3527,10 +3528,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1da35ae1245e7c04199f380954e64277, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bubbleGameObject: {fileID: 166091328}
-  _label: {fileID: 2026684117}
-  _lookAtCamera: 1
-  _camera: {fileID: 0}
+  bubbleGameObject: {fileID: 0}
+  label: {fileID: 0}
+  lookAtCamera: 1
+  targetCamera: {fileID: 0}
 --- !u!114 &1469768441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4007,12 +4008,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 125b18129fc78bd4896d0afa7e29d5b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rb: {fileID: 1714252157}
-  _maxSpeed: 5
-  _acceleration: 20
-  _deceleration: 25
-  _cameraRelative: 0
-  _camera: {fileID: 0}
+  rigidbodyComponent: {fileID: 0}
+  maxSpeed: 5
+  acceleration: 20
+  deceleration: 25
+  cameraRelative: 1
+  targetCamera: {fileID: 0}
 --- !u!54 &1714252157
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4144,18 +4145,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f17a219a07eaff4d8661351ee4701a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _handSocket: {fileID: 715469668}
-  _pickupRadius: 1.2
-  _pickupMask:
+  handSocket: {fileID: 0}
+  pickupRadius: 1.2
+  pickupMask:
     serializedVersion: 2
-    m_Bits: 64
-  _dropForwardSpeed: 0
-  _aimZone: {fileID: 715469668}
-  _interactRadius: 2.94
-  _interactHalfFov: 45
-  _interactMask:
+    m_Bits: 4294967295
+  dropForwardSpeed: 0
+  aimZone: {fileID: 0}
+  interactRadius: 2
+  interactHalfFov: 45
+  interactMask:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 0
+  defaultComboBubbleDuration: 1.75
+  comboSymbolDefinitions:
+  - Emotion: 1
+    Behavior: 1
+    Symbols: "\U0001F4AC\u26A1"
+    Duration: 2
+  - Emotion: 2
+    Behavior: 1
+    Symbols: "\U0001F4AC\u2764\uFE0F"
+    Duration: 2
+  - Emotion: 3
+    Behavior: 1
+    Symbols: "\U0001F4AC\u2753"
+    Duration: 2
+  - Emotion: 4
+    Behavior: 1
+    Symbols: "\U0001F4AC\U0001F631"
+    Duration: 2
+  - Emotion: 1
+    Behavior: 2
+    Symbols: "\u270B\u26A1"
+    Duration: 1.75
+  - Emotion: 2
+    Behavior: 2
+    Symbols: "\u270B\u2764\uFE0F"
+    Duration: 1.75
+  - Emotion: 3
+    Behavior: 2
+    Symbols: "\u270B\u2753"
+    Duration: 1.75
+  - Emotion: 4
+    Behavior: 2
+    Symbols: "\u270B\U0001F631"
+    Duration: 1.75
 --- !u!1 &1787017528
 GameObject:
   m_ObjectHideFlags: 0
@@ -4196,7 +4231,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 35a8e7bf7ac51ae418bb13bcac301ef6, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -4262,7 +4297,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1787017530
@@ -4781,16 +4816,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26aa59a43001e77459522a47104b08f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _outputLeft: {fileID: 2006503672}
-  _outputRight: {fileID: 0}
-  _defaultActionColor: {r: 0, g: 0, b: 0, a: 1}
-  _talkColor: {r: 1, g: 1, b: 1, a: 1}
-  _actionColor: {r: 0.31024948, g: 0.18128152, b: 0.78113204, a: 1}
-  _defaultEmotionColor: {r: 0, g: 0, b: 0, a: 1}
-  _curiousColor: {r: 0.49803925, g: 0.8352942, b: 0.36862746, a: 1}
-  _angryColor: {r: 0.9960785, g: 0.34509805, b: 0.34509805, a: 1}
-  _fearfulColor: {r: 0.058823533, g: 0.75294125, b: 0.8705883, a: 1}
-  _friendlyColor: {r: 0.98823535, g: 0.854902, b: 0.37647063, a: 1}
+  outputLeft: {fileID: 0}
+  outputRight: {fileID: 0}
+  defaultActionColor: {r: 1, g: 1, b: 1, a: 1}
+  talkColor: {r: 0, g: 0, b: 0, a: 0}
+  actionColor: {r: 0, g: 0, b: 0, a: 0}
+  defaultEmotionColor: {r: 1, g: 1, b: 1, a: 1}
+  curiousColor: {r: 127, g: 213, b: 93, a: 255}
+  angryColor: {r: 240, g: 83, b: 83, a: 255}
+  fearfulColor: {r: 15, g: 192, b: 222, a: 255}
+  friendlyColor: {r: 255, g: 221, b: 97, a: 255}
 --- !u!224 &1761744693404252518 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1761744693043487691, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}

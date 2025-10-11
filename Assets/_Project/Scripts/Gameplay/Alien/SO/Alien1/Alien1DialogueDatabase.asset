@@ -17,10 +17,10 @@ MonoBehaviour:
     behavior: 1
     emojiLine: Test Anger
     duration: 2
-  - emotion: 0
-    behavior: 0
-    emojiLine: 
-    duration: 0
+  - emotion: 2
+    behavior: 1
+    emojiLine: friendly
+    duration: 3
   - emotion: 0
     behavior: 0
     emojiLine: 

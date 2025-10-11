@@ -10,17 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 58f9ab1e10ce5b64b965e1fd1a0a9980, type: 3}
-  m_Name: Alien1
+  m_Name: Alien2
   m_EditorClassIdentifier: 
-  alienId: 4
+  alienId: 
   startEmotion: 3
   animator: {fileID: 0}
-  reactions: {fileID: 11400000, guid: 73d53233d08b9ba49be514744243debc, type: 2}
-  dialogue: {fileID: 11400000, guid: c610a60b133dc6d42b56d74c2e752b4e, type: 2}
+  reactions: {fileID: 0}
+  dialogue: {fileID: 0}
   quests:
-  - questId: labubu
-    title: "R\xE9conforter l'alien pr\xE8s du quiosque"
-    description: il semble vouloir un objet
+  - questId: vomi
+    title: faites vomir un alien
+    description: 'trouver ce qui peut les rendre ainsi '
     autoRegisterMission: 1
     autoCompleteMissionOnQuestEnd: 0
-    steps: []
+    steps:
+    - stepId: 0
+      stepType: 0
+      completesQuest: 0
+      nextStepId: 
+    - stepId: 1
+      stepType: 0
+      completesQuest: 1
+      nextStepId: 
