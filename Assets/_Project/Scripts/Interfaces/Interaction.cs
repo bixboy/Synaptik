@@ -1,16 +1,13 @@
 
-using Synaptik.Game;
-
-[System.Serializable]
 public enum Emotion
 {
-  None = 0,
-  Anger = 1,
-  Friendly = 2,
-  Curious = 3,
-  Fearful = 4
+    None = 0,
+    Anger = 1,
+    Friendly = 2,
+    Curious = 3,
+    Fearful = 4
 }
-[System.Serializable]
+
 public enum Behavior
 {
     None,
@@ -18,13 +15,12 @@ public enum Behavior
     Action
 }
 
-
 [System.Serializable]
 public struct ActionValues
 {
     public Emotion _emotion;
     public Behavior _behavior;
-    
+
     public ActionValues(Emotion emotion, Behavior behavior)
     {
         _emotion = emotion;
@@ -34,5 +30,5 @@ public struct ActionValues
 
 public interface IInteraction
 {
-    public void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null);
+    void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null);
 }

@@ -1,80 +1,156 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using TextTools;
 using TMPro;
 using UnityEngine;
 
-public class LoadingText : MonoBehaviour
+[RequireComponent(typeof(AudioSource))]
+public sealed class LoadingText : MonoBehaviour
 {
-    public TextMeshProUGUI Text;
-    public TextMeshProUGUI LoaddingText;
+    [Header("UI References")]
+    [SerializeField] private TextMeshProUGUI mainText;
+    [SerializeField] private TextMeshProUGUI loadingText;
+    [SerializeField] private TextMeshProUGUI progressText;
 
-    private float currentTime;
-    private string currentLine;
-    private string fullText;
+    [Header("Typing Settings")]
+    [SerializeField] private float minCharDelay = 0.01f;
+    [SerializeField] private float maxCharDelay = 0.05f;
+    [SerializeField] private bool randomizeDelay = true;
+    [SerializeField] private bool showCursor = true;
+    [SerializeField] private string cursorSymbol = "_";
 
-    private bool isDisplaying;
+    [Header("Audio Feedback")]
+    [SerializeField] private AudioClip typeSound;
+    [SerializeField] private float typeSoundVolume = 0.1f;
 
-    [SerializeField] private float delayBetweenLines = 0.2f;
+    [Header("Loading Animation")]
+    [SerializeField] private string loadingPattern = "LOADING";
+    [SerializeField] private float loadingCycleSpeed = 0.3f;
+
+    [Header("Cursor Blink")]
+    [SerializeField] private float cursorBlinkSpeed = 0.5f;
+
+    private AudioSource audioSource;
+    private Coroutine typingCoroutine;
+    private Coroutine loopCoroutine;
+    private Coroutine cursorCoroutine;
+
+    private bool stopTyping;
+    private bool cursorVisible = true;
+    private float currentProgress = 0f;
+    private int dotCount = 0;
+
+    private string currentText = "";
+
+    private void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+    }
 
     private void Start()
     {
-        Loading(0);
+        if (mainText) mainText.text = "";
+        if (loadingText) loadingText.text = "";
+        if (progressText) progressText.text = "";
     }
 
-    public void StartText(List<string> lines)
+    public void StartText(IReadOnlyList<string> lines)
     {
         StopAllCoroutines();
-        StartCoroutine(DisplayLinesRoutine(lines));
+        typingCoroutine = StartCoroutine(DisplayLinesRoutine(lines));
+        if (showCursor)
+            cursorCoroutine = StartCoroutine(CursorBlinkRoutine());
     }
 
-    private IEnumerator DisplayLinesRoutine(List<string> lines)
+    private IEnumerator DisplayLinesRoutine(IReadOnlyList<string> lines)
     {
-        fullText = "";
-        currentLine = "";
-        Text.text = "";
-        isDisplaying = false;
+        stopTyping = false;
+        if (mainText) mainText.text = "";
+
+        currentText = "";
+
+        foreach (var line in lines)
+        {
+            for (int i = 0; i < line.Length; i++)
+            {
+                if (stopTyping) yield break;
+
+                currentText += line[i];
+                UpdateDisplayedText();
+
+                if (typeSound)
+                    audioSource.PlayOneShot(typeSound, typeSoundVolume);
+
+                float delay = randomizeDelay ? Random.Range(minCharDelay, maxCharDelay) : minCharDelay;
+                yield return new WaitForSeconds(delay);
+            }
+
+            currentText += "\n";
+        }
+
+        loopCoroutine = StartCoroutine(LoadingLoop());
+    }
+
+    private IEnumerator LoadingLoop()
+    {
+        while (!stopTyping)
+        {
+            dotCount = (dotCount + 1) % 4;
+            string dots = new string('.', dotCount);
+
+            if (loadingText)
+                loadingText.text = $"{loadingPattern}{dots}";
+
+            if (progressText)
+            {
+                float progress = Mathf.Clamp01(currentProgress);
+                progress *= 1.2f;
+                progressText.text = $"[{TextFeedBack.ProgressiveDisplayLerp("000000000000000000000000", progress, '-')}]";
+            }
+
+            yield return new WaitForSeconds(loadingCycleSpeed);
+        }
+    }
+
+    private IEnumerator CursorBlinkRoutine()
+    {
+        while (!stopTyping)
+        {
+            cursorVisible = !cursorVisible;
+            UpdateDisplayedText();
+            yield return new WaitForSeconds(cursorBlinkSpeed);
+        }
+    }
+
+    private void UpdateDisplayedText()
+    {
+        if (!mainText) return;
+
+        if (showCursor && cursorVisible)
+            mainText.text = currentText + cursorSymbol;
+        else
+            mainText.text = currentText;
+    }
+
+    public void SetLoadingProgress(float lerp)
+    {
+        currentProgress = Mathf.Clamp01(lerp);
+    }
+
+    public void StopAll()
+    {
+        stopTyping = true;
+
+        if (typingCoroutine != null)
+            StopCoroutine(typingCoroutine);
         
-        foreach (string line in lines)
-        {
-            AddNewLine(line);
-            
-            yield return new WaitUntil(() => isDisplaying == false);
+        if (loopCoroutine != null)
+            StopCoroutine(loopCoroutine);
+        
+        if (cursorCoroutine != null)
+            StopCoroutine(cursorCoroutine);
 
-            yield return new WaitForSeconds(delayBetweenLines);
-        }
-    }
-
-    public void AddNewLine(string text)
-    {
-        if (isDisplaying)
-            fullText += currentLine + "\n";
-
-        currentLine = text;
-        currentTime = 0f;
-        isDisplaying = true;
-    }
-
-    public void Loading(float lerp)
-    {
-        LoaddingText.text = $"[{TextFeedBack.ProgressiveDisplayLerp("000000000000000000000000", lerp, '-')}]";
-    }
-
-    private void Update()
-    {
-        if (!isDisplaying) return;
-
-        string progressive = TextFeedBack.ProgressiveDisplayTimeSpacing(currentLine, 0.01f, currentTime);
-        Text.text = fullText + progressive;
-
-        currentTime += Time.deltaTime;
-
-        if (progressive.Length >= currentLine.Length)
-        {
-            fullText += currentLine + "\n";
-            currentLine = "";
-            isDisplaying = false;
-        }
+        if (loadingText) loadingText.text = "";
+        if (progressText) progressText.text = "";
     }
 }

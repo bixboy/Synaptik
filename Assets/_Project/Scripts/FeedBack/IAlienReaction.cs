@@ -2,9 +2,7 @@ using UnityEngine;
 
 public interface IAlienReaction
 {
-    public void FeedbackColor(Color a_color);
-    
-    public void FeedbackAnimation(Animation a_animation);
-    
-    public void FeedbackTalking(string a_text);
+    void FeedbackColor(Color color);
+    void FeedbackAnimation(Animation animation);
+    void FeedbackTalking(string text);
 }

@@ -12,40 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f51f73ad4fe47a418864255c2f02c7c, type: 3}
   m_Name: Alien1DialogueDatabase
   m_EditorClassIdentifier: 
-  _entries:
-  - _emotion: 1
-    _behavior: 1
-    _emojiLine: '[Angry][Cry]'
-    _duration: 3
-  - _emotion: 3
-    _behavior: 1
-    _emojiLine: '[Sad][BlueFlower][Want]'
-    _duration: 3
-  - _emotion: 2
-    _behavior: 1
-    _emojiLine: '[sad]'
-    _duration: 3
-  - _emotion: 4
-    _behavior: 1
-    _emojiLine: '[?]'
-    _duration: 3
-  - _emotion: 1
-    _behavior: 2
-    _emojiLine: '[Cry]'
-    _duration: 3
-  - _emotion: 2
-    _behavior: 2
-    _emojiLine: '[?]'
-    _duration: 3
-  - _emotion: 3
-    _behavior: 2
-    _emojiLine: '[?]'
-    _duration: 3
-  - _emotion: 4
-    _behavior: 2
-    _emojiLine: '[?]'
-    _duration: 3
-  _itemEntries:
-  - _itemID: Fleur
-    _emojiLine: '[Happy] '
-    _duration: 4
+  entries:
+  - emotion: 1
+    behavior: 1
+    emojiLine: Test Anger
+    duration: 2
+  - emotion: 0
+    behavior: 0
+    emojiLine: 
+    duration: 0
+  - emotion: 0
+    behavior: 0
+    emojiLine: 
+    duration: 0
+  - emotion: 0
+    behavior: 0
+    emojiLine: 
+    duration: 0
+  itemEntries: []

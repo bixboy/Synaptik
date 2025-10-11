@@ -1,127 +1,152 @@
-using UnityEngine;
-using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class LoadingScreenManager : MonoBehaviour
+public sealed class LoadingScreenManager : MonoBehaviour
 {
-    public static LoadingScreenManager Instance;
+    public static LoadingScreenManager Instance { get; private set; }
 
     [Header("Références")]
-    private LoadingText loadingText;
     [SerializeField] private GameObject loadingScreenPrefab;
 
-    [Header("Paramètres")]
+    [Header("Durées")]
     [SerializeField] private float fadeDuration = 1f;
     [SerializeField] private float holdDurationBeforeLoad = 0.5f;
     [SerializeField] private float holdDurationAfterSceneLoaded = 0.5f;
 
-    [Header("Text")]
-    public List<string> TextFiller = new List<string>();
+    [Header("Texte")]
+    public List<string> textFiller = new();
 
-    private CanvasGroup _currentCanvasGroup;
-    private GameObject _currentLoadingInstance;
+    private LoadingText loadingText;
+    private CanvasGroup currentCanvasGroup;
+    private GameObject currentLoadingInstance;
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
+            return;
         }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     public void LoadScene(string sceneName)
     {
+        if (currentLoadingInstance != null)
+        {
+            Debug.LogWarning("Une scène est déjà en cours de chargement.");
+            return;
+        }
+
         StartCoroutine(LoadSceneRoutine(sceneName));
     }
 
     private IEnumerator LoadSceneRoutine(string sceneName)
     {
-        _currentLoadingInstance = Instantiate(loadingScreenPrefab);
-        DontDestroyOnLoad(_currentLoadingInstance);
-        
-        _currentCanvasGroup = _currentLoadingInstance.GetComponentInChildren<CanvasGroup>();
-        loadingText = _currentLoadingInstance.GetComponentInChildren<LoadingText>();
+        currentLoadingInstance = Instantiate(loadingScreenPrefab);
+        DontDestroyOnLoad(currentLoadingInstance);
 
-        if (!_currentCanvasGroup)
+        currentCanvasGroup = currentLoadingInstance.GetComponentInChildren<CanvasGroup>();
+        loadingText = currentLoadingInstance.GetComponentInChildren<LoadingText>();
+
+        if (!currentCanvasGroup)
         {
             Debug.LogError("Le prefab de loading screen doit contenir un CanvasGroup !");
+            CleanupLoadingInstance();
             yield break;
         }
 
-        _currentCanvasGroup.alpha = 0f;
+        currentCanvasGroup.alpha = 0f;
+        loadingText?.StartText(textFiller);
 
-        if (loadingText)
-            loadingText.StartText(TextFiller);
+        // On calcule la durée totale
+        float totalTime = fadeDuration * 2 + holdDurationBeforeLoad + holdDurationAfterSceneLoaded;
+        float elapsed = 0f;
 
-        float estimatedTotalDuration = fadeDuration * 2 + holdDurationBeforeLoad + holdDurationAfterSceneLoaded;
-        StartCoroutine(UpdateLoadingProgress(estimatedTotalDuration));
+        // On crée une fonction locale pour MAJ la progression
+        void UpdateProgress()
+        {
+            float progress = Mathf.Clamp01(elapsed / totalTime);
+            loadingText?.SetLoadingProgress(progress);
+        }
 
-        yield return StartCoroutine(Fade(0f, 1f));
+        // --- Fade In ---
+        float t = 0f;
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            elapsed += Time.deltaTime;
+            if (currentCanvasGroup)
+                currentCanvasGroup.alpha = Mathf.Lerp(0f, 1f, t / fadeDuration);
+            UpdateProgress();
+            yield return null;
+        }
 
-        yield return new WaitForSeconds(holdDurationBeforeLoad);
+        // --- Hold avant load ---
+        t = 0f;
+        while (t < holdDurationBeforeLoad)
+        {
+            t += Time.deltaTime;
+            elapsed += Time.deltaTime;
+            UpdateProgress();
+            yield return null;
+        }
 
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+        // --- Load Scene Async ---
+        var asyncLoad = SceneManager.LoadSceneAsync(sceneName);
         asyncLoad.allowSceneActivation = false;
 
         while (asyncLoad.progress < 0.9f)
         {
-            if (loadingText)
-                loadingText.Loading(asyncLoad.progress);
-            
+            t = Time.deltaTime;
+            elapsed += t;
+            UpdateProgress();
             yield return null;
         }
 
         asyncLoad.allowSceneActivation = true;
+        yield return new WaitUntil(() => SceneManager.GetActiveScene().name == sceneName);
 
-       yield return new WaitUntil(() => SceneManager.GetActiveScene().name == sceneName);
-
-        yield return new WaitForSeconds(holdDurationAfterSceneLoaded);
-
-       yield return StartCoroutine(Fade(1f, 0f));
-
-        Destroy(_currentLoadingInstance);
-        _currentLoadingInstance = null;
-        _currentCanvasGroup = null;
-    }
-
-    private IEnumerator Fade(float from, float to)
-    {
-        float time = 0f;
-        while (time < fadeDuration)
+        // --- Hold après load ---
+        t = 0f;
+        while (t < holdDurationAfterSceneLoaded)
         {
-            time += Time.deltaTime;
-            if (_currentCanvasGroup)
-                _currentCanvasGroup.alpha = Mathf.Lerp(from, to, time / fadeDuration);
+            t += Time.deltaTime;
+            elapsed += Time.deltaTime;
+            UpdateProgress();
             yield return null;
         }
 
-        if (_currentCanvasGroup)
-            _currentCanvasGroup.alpha = to;
-    }
-
-    private IEnumerator UpdateLoadingProgress(float duration)
-    {
-        if (!loadingText) 
-            yield break;
-
-        duration *= 0.9f;
-
-        float time = 0f;
-        while (time < duration)
+        // --- Fade Out ---
+        t = 0f;
+        while (t < fadeDuration)
         {
-            time += Time.deltaTime;
-            float progress = Mathf.Clamp01(time / duration);
-            loadingText.Loading(progress);
-            
+            t += Time.deltaTime;
+            elapsed += Time.deltaTime;
+            if (currentCanvasGroup)
+                currentCanvasGroup.alpha = Mathf.Lerp(1f, 0f, t / fadeDuration);
+            UpdateProgress();
             yield return null;
         }
 
-        loadingText.Loading(1f);
+        // Assure 100 %
+        loadingText?.SetLoadingProgress(1f);
+
+        // --- Fin ---
+        CleanupLoadingInstance();
+    }
+
+    private void CleanupLoadingInstance()
+    {
+        if (currentLoadingInstance)
+            Destroy(currentLoadingInstance);
+
+        currentLoadingInstance = null;
+        currentCanvasGroup = null;
+        loadingText = null;
     }
 }

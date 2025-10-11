@@ -1,59 +1,98 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using UnityEngine.UI;
 
-public class NoteBook : MonoBehaviour
+public sealed class NoteBook : MonoBehaviour
 {
     [Header("UI Elements")]
-    [SerializeField] private Transform missionListContainer;
-    [SerializeField] private GameObject missionEntryPrefab;
-    [SerializeField] private ScrollRect scrollRect;
+    [SerializeField]
+    private Transform missionListContainer;
 
-    private List<Mission> _missions = new List<Mission>();
+    [SerializeField]
+    private GameObject missionEntryPrefab;
+
+    [SerializeField]
+    private ScrollRect scrollRect;
+
+    private readonly List<Mission> missions = new();
+    private GameManager gameManager;
 
     private IEnumerator Start()
     {
-        // Attendre que le GameManager soit prêt
-        yield return new WaitUntil(() => GameManager.Instance != null && GameManager.Instance.IsInitialized);
+        yield return new WaitUntil(TryCacheGameManager);
 
-        GameManager.Instance.OnTaskEnd += HandleTaskEnd; 
-        _missions = GameManager.Instance.GetMissions();
+        if (gameManager == null)
+        {
+            yield break;
+        }
+
+        gameManager.OnTaskEnd += HandleTaskEnd;
+        SyncMissions();
         RefreshNotebookUI();
+    }
+
+    private bool TryCacheGameManager()
+    {
+        gameManager = GameManager.Instance;
+        return gameManager != null && gameManager.IsInitialized;
     }
 
     private void OnDestroy()
     {
-        if (GameManager.Instance)
-            GameManager.Instance.OnTaskEnd -= HandleTaskEnd;
+        if (gameManager != null)
+        {
+            gameManager.OnTaskEnd -= HandleTaskEnd;
+        }
     }
 
     private void HandleTaskEnd(Mission mission)
     {
-       // _missions = GameManager.Instance.GetMissions();
+        SyncMissions();
         RefreshNotebookUI();
-        
+    }
+
+    private void SyncMissions()
+    {
+        missions.Clear();
+
+        if (gameManager == null)
+        {
+            return;
+        }
+
+        missions.AddRange(gameManager.GetMissions());
     }
 
     private void RefreshNotebookUI()
     {
-        foreach (Transform child in missionListContainer)
-            Destroy(child.gameObject);
-
-        foreach (var mission in _missions)
+        if (missionListContainer == null || missionEntryPrefab == null)
         {
-            GameObject entry = Instantiate(missionEntryPrefab, missionListContainer);
-            NotebookEntry notebookEntry = entry.GetComponentInChildren<NotebookEntry>();
-
-            if (notebookEntry != null)
-            {
-                notebookEntry.Initialize(mission);
-                notebookEntry.SetToggle(mission.IsFinished);
-            }
+            return;
         }
 
-        if (scrollRect)
+        for (var i = missionListContainer.childCount - 1; i >= 0; i--)
+        {
+            Destroy(missionListContainer.GetChild(i).gameObject);
+        }
+
+        foreach (var mission in missions)
+        {
+            var entry = Instantiate(missionEntryPrefab, missionListContainer);
+            var notebookEntry = entry.GetComponentInChildren<NotebookEntry>();
+
+            if (notebookEntry == null)
+            {
+                continue;
+            }
+
+            notebookEntry.Initialize(mission);
+            notebookEntry.SetToggle(mission.IsFinished);
+        }
+
+        if (scrollRect != null)
+        {
             scrollRect.verticalNormalizedPosition = 1f;
+        }
     }
 }

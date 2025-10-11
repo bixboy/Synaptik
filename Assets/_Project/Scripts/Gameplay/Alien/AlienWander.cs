@@ -1,73 +1,86 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-public class AlienWander : MonoBehaviour
+public sealed class AlienWander : MonoBehaviour
 {
     [Header("Cible à surveiller")]
-    public Transform player;
-    public float detectionRadius = 6f;
+    [SerializeField]
+    private Transform player;
+
+    [SerializeField]
+    private float detectionRadius = 6f;
 
     [Header("Paramètres de déplacement")]
-    public bool canMove = true;
-    public float moveRadius = 5f;
-    public float moveSpeed = 2f;
-    public float waitTimeMin = 1f;
-    public float waitTimeMax = 3f;
+    [SerializeField]
+    private bool canMove = true;
+
+    [SerializeField]
+    private float moveRadius = 5f;
+
+    [SerializeField]
+    private float moveSpeed = 2f;
+
+    [SerializeField]
+    private float waitTimeMin = 1f;
+
+    [SerializeField]
+    private float waitTimeMax = 3f;
 
     [Header("Paramètres de rotation")]
-    public float rotationSpeed = 5f;
+    [SerializeField]
+    private float rotationSpeed = 5f;
 
-    private Vector3 _origin;
-    private Vector3 _target;
-    private CharacterController _controller;
-    private bool _isMoving;
-    
-    private float _verticalVelocity = 0f;
-    private float gravity = -9.81f;
+    private Vector3 origin;
+    private Vector3 target;
+    private CharacterController controller;
+    private float verticalVelocity;
+    private const float Gravity = -9.81f;
 
-    void Start()
+    private void Start()
     {
-        _controller = GetComponent<CharacterController>();
-        _origin = transform.position;
+        controller = GetComponent<CharacterController>();
+        origin = transform.position;
 
         if (canMove)
+        {
             StartCoroutine(WanderRoutine());
+        }
     }
 
-    IEnumerator WanderRoutine()
+    private IEnumerator WanderRoutine()
     {
         while (true)
         {
-            yield return StartCoroutine(CheckPlayerProximity());
+            yield return CheckPlayerProximity();
 
-            _target = GetRandomPointAround(_origin, moveRadius);
-            _isMoving = true;
+            target = GetRandomPointAround(origin, moveRadius);
 
             while (!HasReachedTarget())
             {
                 if (IsPlayerClose())
+                {
                     break;
+                }
 
                 MoveTowardsTarget();
                 yield return null;
             }
 
-            _isMoving = false;
-
             if (!IsPlayerClose())
             {
-                float waitTime = Random.Range(waitTimeMin, waitTimeMax);
+                var waitTime = Random.Range(waitTimeMin, waitTimeMax);
                 yield return new WaitForSeconds(waitTime);
             }
         }
     }
 
-    // --- Nouvelle méthode ---
-    IEnumerator CheckPlayerProximity()
+    private IEnumerator CheckPlayerProximity()
     {
-        if (!player)
+        if (player == null)
+        {
             yield break;
+        }
 
         while (IsPlayerClose())
         {
@@ -78,71 +91,79 @@ public class AlienWander : MonoBehaviour
 
     private bool IsPlayerClose()
     {
-        if (player == null) return false;
+        if (player == null)
+        {
+            return false;
+        }
 
-        float dist = Vector3.Distance(
-            new Vector3(transform.position.x, 0, transform.position.z),
-            new Vector3(player.position.x, 0, player.position.z)
-        );
-        return dist <= detectionRadius;
+        var current = new Vector3(transform.position.x, 0f, transform.position.z);
+        var targetPos = new Vector3(player.position.x, 0f, player.position.z);
+        return Vector3.Distance(current, targetPos) <= detectionRadius;
     }
 
     private void LookAtPlayer()
     {
-        Vector3 direction = (player.position - transform.position).normalized;
+        if (player == null)
+        {
+            return;
+        }
+
+        var direction = (player.position - transform.position).normalized;
         direction.y = 0f;
 
-        if (direction != Vector3.zero)
+        if (direction == Vector3.zero)
         {
-            Quaternion targetRot = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * rotationSpeed);
+            return;
         }
+
+        var targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
     }
 
     private void MoveTowardsTarget()
     {
-        Vector3 direction = (_target - transform.position).normalized;
+        var direction = (target - transform.position).normalized;
         direction.y = 0f;
 
         if (direction != Vector3.zero)
         {
-            Quaternion targetRot = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * rotationSpeed);
+            var targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         }
 
-        if (_controller.isGrounded)
-            _verticalVelocity = -1f;
-        else
-            _verticalVelocity += gravity * Time.deltaTime;
-
-        Vector3 velocity = direction * moveSpeed + Vector3.up * _verticalVelocity;
-        _controller.Move(velocity * Time.deltaTime);
+        verticalVelocity = controller.isGrounded ? -1f : verticalVelocity + Gravity * Time.deltaTime;
+        var velocity = direction * moveSpeed + Vector3.up * verticalVelocity;
+        controller.Move(velocity * Time.deltaTime);
     }
 
     private Vector3 GetRandomPointAround(Vector3 center, float radius)
     {
-        Vector2 randomCircle = Random.insideUnitCircle * radius;
-        Vector3 point = new Vector3(center.x + randomCircle.x, center.y + 10f, center.z + randomCircle.y);
+        var randomCircle = Random.insideUnitCircle * radius;
+        var point = new Vector3(center.x + randomCircle.x, center.y + 10f, center.z + randomCircle.y);
 
-        if (Physics.Raycast(point, Vector3.down, out RaycastHit hit, 20f))
+        if (Physics.Raycast(point, Vector3.down, out var hit, 20f))
+        {
             point.y = hit.point.y;
+        }
         else
+        {
             point.y = center.y;
+        }
 
         return point;
     }
 
     private bool HasReachedTarget()
     {
-        Vector3 flatPos = new Vector3(transform.position.x, 0f, transform.position.z);
-        Vector3 flatTarget = new Vector3(_target.x, 0f, _target.z);
+        var flatPos = new Vector3(transform.position.x, 0f, transform.position.z);
+        var flatTarget = new Vector3(target.x, 0f, target.z);
         return Vector3.Distance(flatPos, flatTarget) < 0.3f;
     }
 
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(Application.isPlaying ? _origin : transform.position, moveRadius);
+        Gizmos.DrawWireSphere(Application.isPlaying ? origin : transform.position, moveRadius);
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);

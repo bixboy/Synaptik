@@ -2,29 +2,40 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NotebookEntry : MonoBehaviour
+[DisallowMultipleComponent]
+public sealed class NotebookEntry : MonoBehaviour
 {
-    
-    [SerializeField] private TextMeshProUGUI _titleText;
-    [SerializeField] private TextMeshProUGUI _descriptionText;
-    [SerializeField] private Toggle _notebookToggle;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    
+    [SerializeField]
+    private TextMeshProUGUI titleText;
+
+    [SerializeField]
+    private TextMeshProUGUI descriptionText;
+
+    [SerializeField]
+    private Toggle notebookToggle;
+
     public void Initialize(Mission mission)
     {
-        if (_titleText != null)
-            _titleText.text = mission.Title;
+        if (titleText != null)
+        {
+            titleText.text = mission.Title;
+        }
 
-        if (_descriptionText != null)
-            _descriptionText.text = mission.Description;
+        if (descriptionText != null)
+        {
+            descriptionText.text = mission.Description;
+        }
 
-        if (_notebookToggle != null)
-            _notebookToggle.isOn = mission.IsFinished;
+        SetToggle(mission.IsFinished);
     }
-    
+
     public void SetToggle(bool isOn)
     {
-        if (_notebookToggle != null)
-            _notebookToggle.isOn = isOn;
+        if (notebookToggle == null)
+        {
+            return;
+        }
+
+        notebookToggle.isOn = isOn;
     }
 }

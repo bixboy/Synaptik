@@ -2,74 +2,89 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Synaptik.Game
+[Serializable]
+public struct AlienQuest : IEquatable<AlienQuest>
 {
-    [Serializable]
-    public struct AlienQuest : IEquatable<AlienQuest>
+    [SerializeField]
+    private string questId;
+
+    [SerializeField]
+    private string title;
+
+    [SerializeField, TextArea]
+    private string description;
+
+    [SerializeField]
+    private bool autoRegisterMission;
+
+    [SerializeField]
+    private bool autoCompleteMissionOnQuestEnd;
+
+    [SerializeField]
+    private QuestStep[] steps;
+
+    public string QuestId => questId;
+    public string Title => title;
+    public string Description => description;
+    public bool AutoRegisterMission => autoRegisterMission;
+    public bool AutoCompleteMissionOnQuestEnd => autoCompleteMissionOnQuestEnd;
+    public IReadOnlyList<QuestStep> Steps => steps ?? Array.Empty<QuestStep>();
+    public bool HasSteps => steps is { Length: > 0 };
+
+    public QuestStep GetStepAt(int index)
     {
-        [SerializeField] private string _questId;
-        [SerializeField] private string _title;
-        [SerializeField, TextArea] private string _description;
-        [SerializeField] private bool _autoRegisterMission;
-        [SerializeField] private bool _autoCompleteMissionOnQuestEnd;
-        [SerializeField] private QuestStep[] _steps;
-
-        public string QuestId => _questId;
-        public string Title => _title;
-        public string Description => _description;
-        public bool AutoRegisterMission => _autoRegisterMission;
-        public bool AutoCompleteMissionOnQuestEnd => _autoCompleteMissionOnQuestEnd;
-        public IReadOnlyList<QuestStep> Steps => _steps ?? Array.Empty<QuestStep>();
-        public bool HasSteps => _steps != null && _steps.Length > 0;
-
-        public QuestStep GetStepAt(int index)
-        {
-            return _steps != null && index >= 0 && index < _steps.Length ? _steps[index] : default;
-        }
-
-        public bool Equals(AlienQuest other)
-        {
-            return _questId == other._questId &&
-                   _title == other._title && 
-                   _description == other._description && 
-                   _autoRegisterMission == other._autoRegisterMission && 
-                   _autoCompleteMissionOnQuestEnd == other._autoCompleteMissionOnQuestEnd && 
-                   Equals(_steps, other._steps);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is AlienQuest other && Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(_questId, _title, _description, _autoRegisterMission, _autoCompleteMissionOnQuestEnd, _steps);
-        }
+        return steps != null && index >= 0 && index < steps.Length ? steps[index] : default;
     }
 
-    [Serializable]
-    public struct QuestStep
+    public bool Equals(AlienQuest other)
     {
-        [SerializeField] private string _stepId;
-        [SerializeField] private QuestStepType _stepType;
-        [SerializeField] private bool _completesQuest;
-        [SerializeField] private string _nextStepId;
-
-        public string StepId => _stepId;
-        public QuestStepType StepType => _stepType;
-        public bool CompletesQuest => _completesQuest;
-        public string NextStepId => _nextStepId;
-
-        public string ResolveStepId(int index)
-        {
-            return string.IsNullOrWhiteSpace(_stepId) ? $"step_{index}" : _stepId;
-        }
+        return questId == other.questId &&
+               title == other.title &&
+               description == other.description &&
+               autoRegisterMission == other.autoRegisterMission &&
+               autoCompleteMissionOnQuestEnd == other.autoCompleteMissionOnQuestEnd &&
+               Equals(steps, other.steps);
     }
 
-    public enum QuestStepType
+    public override bool Equals(object obj)
     {
-        Talk = 0,
-        GiveItem = 1
+        return obj is AlienQuest other && Equals(other);
     }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(questId, title, description, autoRegisterMission, autoCompleteMissionOnQuestEnd, steps);
+    }
+}
+
+[Serializable]
+public struct QuestStep
+{
+    [SerializeField]
+    private string stepId;
+
+    [SerializeField]
+    private QuestStepType stepType;
+
+    [SerializeField]
+    private bool completesQuest;
+
+    [SerializeField]
+    private string nextStepId;
+
+    public string StepId => stepId;
+    public QuestStepType StepType => stepType;
+    public bool CompletesQuest => completesQuest;
+    public string NextStepId => nextStepId;
+
+    public string ResolveStepId(int index)
+    {
+        return string.IsNullOrWhiteSpace(stepId) ? $"step_{index}" : stepId;
+    }
+}
+
+public enum QuestStepType
+{
+    Talk = 0,
+    GiveItem = 1
 }
