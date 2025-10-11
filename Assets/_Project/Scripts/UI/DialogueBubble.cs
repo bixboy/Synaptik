@@ -1,42 +1,69 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
-public class DialogueBubble : MonoBehaviour
+namespace Synaptik.UI
 {
-    [Header("Références")]
-    public TextMeshProUGUI dialogueText;
-
-    [Header("Paramètres")]
-    public float lifetime = 3f;
-    public float typingSpeed = 0.03f;
-
-    private Transform _mainCamera;
-
-    void Start()
+    public sealed class DialogueBubble : MonoBehaviour
     {
-        _mainCamera = Camera.main.transform;
-        Destroy(gameObject, lifetime);
-    }
+        [Header("Références")]
+        [SerializeField]
+        private TextMeshProUGUI dialogueText;
 
-    void LateUpdate()
-    {
-        transform.LookAt(transform.position + _mainCamera.forward);
-    }
+        [Header("Paramètres")]
+        [SerializeField]
+        private float lifetime = 3f;
 
-    public void SetText(string text)
-    {
-        StartCoroutine(TypeText(text));
-    }
+        [SerializeField]
+        private float typingSpeed = 0.03f;
 
-    private IEnumerator TypeText(string text)
-    {
-        dialogueText.text = "";
-        foreach (char letter in text)
+        private Transform mainCamera;
+
+        private void Start()
         {
-            dialogueText.text += letter;
-            yield return new WaitForSeconds(typingSpeed);
+            var camera = Camera.main;
+            if (camera != null)
+            {
+                mainCamera = camera.transform;
+            }
+
+            Destroy(gameObject, lifetime);
+        }
+
+        private void LateUpdate()
+        {
+            if (mainCamera == null)
+            {
+                return;
+            }
+
+            transform.LookAt(transform.position + mainCamera.forward);
+        }
+
+        public void SetText(string text)
+        {
+            if (!gameObject.activeInHierarchy)
+            {
+                return;
+            }
+
+            StopAllCoroutines();
+            StartCoroutine(TypeText(text));
+        }
+
+        private IEnumerator TypeText(string text)
+        {
+            if (dialogueText == null)
+            {
+                yield break;
+            }
+
+            dialogueText.text = string.Empty;
+            foreach (var letter in text)
+            {
+                dialogueText.text += letter;
+                yield return new WaitForSeconds(typingSpeed);
+            }
         }
     }
 }

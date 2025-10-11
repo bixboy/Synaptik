@@ -1,7 +1,8 @@
 using System;
+using Synaptik.Interfaces;
 using UnityEngine;
 
-namespace Synaptik.Game
+namespace Synaptik.Gameplay.Alien
 {
     [CreateAssetMenu(menuName = "Synaptik/Alien/Dialogue Database", fileName = "DialogueDatabase")]
     public class DialogueDatabase : ScriptableObject
@@ -9,37 +10,50 @@ namespace Synaptik.Game
         [Serializable]
         public struct Entry
         {
-            [SerializeField] private Emotion _emotion;
-            [SerializeField] private Behavior _behavior;
-            [SerializeField] private string _emojiLine;
-            [SerializeField] private float _duration;
+            [SerializeField]
+            private Emotion emotion;
 
-            public Emotion Emotion => _emotion;
-            public Behavior Behavior => _behavior;
-            public string EmojiLine => _emojiLine;
-            public float Duration => _duration <= 0f ? 2f : _duration;
+            [SerializeField]
+            private Behavior behavior;
+
+            [SerializeField]
+            private string emojiLine;
+
+            [SerializeField]
+            private float duration;
+
+            public Emotion Emotion => emotion;
+            public Behavior Behavior => behavior;
+            public string EmojiLine => emojiLine;
+            public float Duration => duration <= 0f ? 2f : duration;
         }
-        
+
         [Serializable]
         public struct ItemEntry
         {
-            [SerializeField] private string _itemID;
-            [SerializeField] private string _emojiLine;
-            [SerializeField] private float _duration;
+            [SerializeField]
+            private string itemId;
 
-            public string ItemId => _itemID;
-            public string EmojiLine => _emojiLine;
-            public float Duration => _duration <= 0f ? 2f : _duration;
+            [SerializeField]
+            private string emojiLine;
+
+            [SerializeField]
+            private float duration;
+
+            public string ItemId => itemId;
+            public string EmojiLine => emojiLine;
+            public float Duration => duration <= 0f ? 2f : duration;
         }
 
+        [SerializeField]
+        private Entry[] entries = Array.Empty<Entry>();
 
-        [SerializeField] private Entry[] _entries = Array.Empty<Entry>();
-        [SerializeField] private ItemEntry[] _itemEntries = Array.Empty<ItemEntry>();
+        [SerializeField]
+        private ItemEntry[] itemEntries = Array.Empty<ItemEntry>();
 
         public bool TryGet(Emotion emotion, Behavior behavior, out Entry entry)
         {
-            var entries = _entries;
-            for (int i = 0; i < entries.Length; i++)
+            for (var i = 0; i < entries.Length; i++)
             {
                 if (entries[i].Emotion == emotion && entries[i].Behavior == behavior)
                 {
@@ -51,15 +65,14 @@ namespace Synaptik.Game
             entry = default;
             return false;
         }
-        
-        public bool TryGet(string itemID, out ItemEntry entry)
+
+        public bool TryGet(string itemId, out ItemEntry entry)
         {
-            var itemEntries = _itemEntries;
-            for (int i = 0; i < _itemEntries.Length; i++)
+            for (var i = 0; i < itemEntries.Length; i++)
             {
-                if (itemEntries[i].ItemId == itemID)
+                if (itemEntries[i].ItemId == itemId)
                 {
-                    entry = _itemEntries[i];
+                    entry = itemEntries[i];
                     return true;
                 }
             }
@@ -67,7 +80,5 @@ namespace Synaptik.Game
             entry = default;
             return false;
         }
-        
-        
     }
 }

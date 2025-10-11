@@ -1,59 +1,101 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using UnityEngine.UI;
 
-public class NoteBook : MonoBehaviour
+namespace Synaptik.UI
 {
-    [Header("UI Elements")]
-    [SerializeField] private Transform missionListContainer;
-    [SerializeField] private GameObject missionEntryPrefab;
-    [SerializeField] private ScrollRect scrollRect;
-
-    private List<Mission> _missions = new List<Mission>();
-
-    private IEnumerator Start()
+    public sealed class NoteBook : MonoBehaviour
     {
-        // Attendre que le GameManager soit prêt
-        yield return new WaitUntil(() => GameManager.Instance != null && GameManager.Instance.IsInitialized);
+        [Header("UI Elements")]
+        [SerializeField]
+        private Transform missionListContainer;
 
-        GameManager.Instance.OnTaskEnd += HandleTaskEnd; 
-        _missions = GameManager.Instance.GetMissions();
-        RefreshNotebookUI();
-    }
+        [SerializeField]
+        private GameObject missionEntryPrefab;
 
-    private void OnDestroy()
-    {
-        if (GameManager.Instance)
-            GameManager.Instance.OnTaskEnd -= HandleTaskEnd;
-    }
+        [SerializeField]
+        private ScrollRect scrollRect;
 
-    private void HandleTaskEnd(Mission mission)
-    {
-       // _missions = GameManager.Instance.GetMissions();
-        RefreshNotebookUI();
-        
-    }
+        private readonly List<Gameplay.Mission> missions = new();
+        private Gameplay.GameManager gameManager;
 
-    private void RefreshNotebookUI()
-    {
-        foreach (Transform child in missionListContainer)
-            Destroy(child.gameObject);
-
-        foreach (var mission in _missions)
+        private IEnumerator Start()
         {
-            GameObject entry = Instantiate(missionEntryPrefab, missionListContainer);
-            NotebookEntry notebookEntry = entry.GetComponentInChildren<NotebookEntry>();
+            yield return new WaitUntil(TryCacheGameManager);
 
-            if (notebookEntry != null)
+            if (gameManager == null)
             {
-                notebookEntry.Initialize(mission);
-                notebookEntry.SetToggle(mission.IsFinished);
+                yield break;
+            }
+
+            gameManager.OnTaskEnd += HandleTaskEnd;
+            SyncMissions();
+            RefreshNotebookUI();
+        }
+
+        private bool TryCacheGameManager()
+        {
+            gameManager = Gameplay.GameManager.Instance;
+            return gameManager != null && gameManager.IsInitialized;
+        }
+
+        private void OnDestroy()
+        {
+            if (gameManager != null)
+            {
+                gameManager.OnTaskEnd -= HandleTaskEnd;
             }
         }
 
-        if (scrollRect)
-            scrollRect.verticalNormalizedPosition = 1f;
+        private void HandleTaskEnd(Gameplay.Mission mission)
+        {
+            SyncMissions();
+            RefreshNotebookUI();
+        }
+
+        private void SyncMissions()
+        {
+            missions.Clear();
+
+            if (gameManager == null)
+            {
+                return;
+            }
+
+            missions.AddRange(gameManager.GetMissions());
+        }
+
+        private void RefreshNotebookUI()
+        {
+            if (missionListContainer == null || missionEntryPrefab == null)
+            {
+                return;
+            }
+
+            for (var i = missionListContainer.childCount - 1; i >= 0; i--)
+            {
+                Destroy(missionListContainer.GetChild(i).gameObject);
+            }
+
+            foreach (var mission in missions)
+            {
+                var entry = Instantiate(missionEntryPrefab, missionListContainer);
+                var notebookEntry = entry.GetComponentInChildren<NotebookEntry>();
+
+                if (notebookEntry == null)
+                {
+                    continue;
+                }
+
+                notebookEntry.Initialize(mission);
+                notebookEntry.SetToggle(mission.IsFinished);
+            }
+
+            if (scrollRect != null)
+            {
+                scrollRect.verticalNormalizedPosition = 1f;
+            }
+        }
     }
 }

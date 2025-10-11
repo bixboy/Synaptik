@@ -1,52 +1,64 @@
-using System;
 using NaughtyAttributes;
 using TMPro;
 using UnityEngine;
 
-namespace Synaptik.Game
+namespace Synaptik.Gameplay.Alien
 {
-    public class DialogueBubble : MonoBehaviour
+    public sealed class DialogueBubble : MonoBehaviour
     {
-        [SerializeField] private GameObject _bubbleGameObject;
-        [SerializeField] private TextMeshProUGUI _label;
-        private float _remainingTime;
-        [SerializeField] private bool _lookAtCamera = true;
-        [SerializeField, ShowIf("_lookAtCamera")] private Camera _camera;
+        [SerializeField]
+        private GameObject bubbleGameObject;
+
+        [SerializeField]
+        private TextMeshProUGUI label;
+
+        [SerializeField]
+        private bool lookAtCamera = true;
+
+        [SerializeField, ShowIf(nameof(lookAtCamera))]
+        private Camera targetCamera;
+
+        private float remainingTime;
 
         private void Awake()
         {
-            
-            _camera = Camera.main;
+            targetCamera = Camera.main;
             Hide();
-        }
-
-        private void Start()
-        {
-            if (_camera == null)
-            {
-                _camera = Camera.main;
-            }
         }
 
         private void Update()
         {
-            if (_bubbleGameObject != null && _bubbleGameObject.activeSelf)
+            if (bubbleGameObject == null || !bubbleGameObject.activeSelf)
             {
-                if (_remainingTime <= 0f)
-                {
-                    Hide();
-                }
-                else
-                {
-                    _remainingTime -= Time.deltaTime;
-                    if (_lookAtCamera && _camera != null)
-                    {
-                        transform.LookAt(transform.position + _camera.transform.rotation * Vector3.forward,
-                            _camera.transform.rotation * Vector3.up);
-                    }
-                }
+                return;
             }
-            
+
+            if (remainingTime <= 0f)
+            {
+                Hide();
+                return;
+            }
+
+            remainingTime -= Time.deltaTime;
+
+            if (!lookAtCamera)
+            {
+                return;
+            }
+
+            if (targetCamera == null)
+            {
+                targetCamera = Camera.main;
+            }
+
+            if (targetCamera == null)
+            {
+                return;
+            }
+
+            var forward = targetCamera.transform.rotation * Vector3.forward;
+            var up = targetCamera.transform.rotation * Vector3.up;
+            transform.LookAt(transform.position + forward, up);
         }
 
         public void ShowFor(string emojiLine, float duration)
@@ -55,19 +67,28 @@ namespace Synaptik.Game
             {
                 return;
             }
-            if (_label != null)
+
+            if (label != null)
             {
-                _label.text = emojiLine;
+                label.text = emojiLine;
             }
-            _bubbleGameObject?.SetActive(true);
-            _remainingTime = duration;
-            
+
+            if (bubbleGameObject != null)
+            {
+                bubbleGameObject.SetActive(true);
+            }
+
+            remainingTime = duration;
         }
 
         private void Hide()
         {
-            _bubbleGameObject?.SetActive(false);
-            _remainingTime = 0f;
+            if (bubbleGameObject != null)
+            {
+                bubbleGameObject.SetActive(false);
+            }
+
+            remainingTime = 0f;
         }
     }
 }

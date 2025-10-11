@@ -1,63 +1,66 @@
 using System.Collections.Generic;
-using Synaptik.Game;
 using UnityEngine;
 
-public class AlienManager : MonoBehaviour
+namespace Synaptik.Gameplay.Alien
 {
-    private List<Alien> _aliens = new List<Alien>();
-    
-    
-    public static AlienManager Instance;
-    private bool _initialized = false;
-    private void Awake()
+    public sealed class AlienManager : MonoBehaviour
     {
-        if (Instance != null && Instance != this)
+        public static AlienManager Instance { get; private set; }
+
+        private readonly List<Alien> aliens = new();
+        private bool initialized;
+
+        private void Awake()
         {
-            Destroy(this.gameObject);
-        }
-        else
-        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             Instance = this;
         }
-    }
-    
-    public void RegisterAlien(Alien alien)
-    {
-        if (alien != null && !_aliens.Contains(alien))
+
+        private void Update()
         {
-            _aliens.Add(alien);
-        }
-    }
-    
-    public void UnregisterAlien(Alien alien)
-    {
-        if (alien != null && _aliens.Contains(alien))
-        {
-            _aliens.Remove(alien);
-        }
-    }
-    
-    
-    private void SetAliensUniqueIds()
-    {
-        for (int i = 0; i < _aliens.Count; i++)
-        {
-            var alien = _aliens[i];
-            if (alien != null && alien.Definition != null)
+            if (initialized)
             {
-                string uniqueId = (i + 1).ToString();
+                return;
+            }
+
+            initialized = true;
+            SetAliensUniqueIds();
+        }
+
+        public void RegisterAlien(Alien alien)
+        {
+            if (alien != null && !aliens.Contains(alien))
+            {
+                aliens.Add(alien);
+            }
+        }
+
+        public void UnregisterAlien(Alien alien)
+        {
+            if (alien != null)
+            {
+                aliens.Remove(alien);
+            }
+        }
+
+        private void SetAliensUniqueIds()
+        {
+            for (var i = 0; i < aliens.Count; i++)
+            {
+                var alien = aliens[i];
+                if (alien == null || alien.Definition == null)
+                {
+                    continue;
+                }
+
+                var uniqueId = (i + 1).ToString();
                 alien.Definition.SetUniqueId(uniqueId);
             }
         }
     }
-    void Update()
-    {
-        if (!_initialized)
-        {
-            _initialized = true;
-            SetAliensUniqueIds();
-        }
-    }
-    
-    
 }

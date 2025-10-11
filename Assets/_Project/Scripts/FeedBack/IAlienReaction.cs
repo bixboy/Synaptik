@@ -1,10 +1,11 @@
 using UnityEngine;
 
-public interface IAlienReaction
+namespace Synaptik.FeedBack
 {
-    public void FeedbackColor(Color a_color);
-    
-    public void FeedbackAnimation(Animation a_animation);
-    
-    public void FeedbackTalking(string a_text);
+    public interface IAlienReaction
+    {
+        void FeedbackColor(Color color);
+        void FeedbackAnimation(Animation animation);
+        void FeedbackTalking(string text);
+    }
 }

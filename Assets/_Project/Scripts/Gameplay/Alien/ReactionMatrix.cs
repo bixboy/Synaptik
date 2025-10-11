@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Synaptik.Interfaces;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Synaptik.Game
+namespace Synaptik.Gameplay.Alien
 {
     [CreateAssetMenu(menuName = "Synaptik/Alien/Reaction Matrix", fileName = "ReactionMatrix")]
     public class ReactionMatrix : ScriptableObject

@@ -2,36 +2,51 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Synaptik.Game
+namespace Synaptik.Gameplay.Player
 {
     [DisallowMultipleComponent]
-    public class PlayerComboBubble : MonoBehaviour
+    public sealed class PlayerComboBubble : MonoBehaviour
     {
         [Header("Bubble Setup")]
-        [SerializeField] private GameObject _bubblePrefab;
-        [SerializeField] private float _verticalOffset = 2.6f;
-        [SerializeField] private float _worldScale = 0.03f;
+        [SerializeField]
+        private GameObject bubblePrefab;
+
+        [SerializeField]
+        private float verticalOffset = 2.6f;
+
+        [SerializeField]
+        private float worldScale = 0.03f;
 
         [Header("Layout Settings")]
-        [SerializeField] private Vector2 _minBubbleSize = new Vector2(120f, 60f);
-        [SerializeField] private Vector2 _padding = new Vector2(16f, 10f);
-        [SerializeField] private float _defaultLifetime = 1.75f;
+        [SerializeField]
+        private Vector2 minBubbleSize = new(120f, 60f);
+
+        [SerializeField]
+        private Vector2 padding = new(16f, 10f);
+
+        [SerializeField]
+        private float defaultLifetime = 1.75f;
 
         [Header("Visual Settings")]
-        [SerializeField] private Color _backgroundColor = new Color(1f, 1f, 1f, 0.4f);
-        [SerializeField] private Color _textColor = Color.black;
-        [SerializeField] private TMP_FontAsset _fontAsset;
+        [SerializeField]
+        private Color backgroundColor = new(1f, 1f, 1f, 0.4f);
 
-        private GameObject _bubbleInstance;
-        private RectTransform _bubbleRect;
-        private Image _backgroundImage;
-        private TextMeshProUGUI _label;
-        private float _remainingTime;
-        private Camera _camera;
+        [SerializeField]
+        private Color textColor = Color.black;
+
+        [SerializeField]
+        private TMP_FontAsset fontAsset;
+
+        private GameObject bubbleInstance;
+        private RectTransform bubbleRect;
+        private Image backgroundImage;
+        private TextMeshProUGUI label;
+        private float remainingTime;
+        private Camera targetCamera;
 
         private void Awake()
         {
-            _camera = Camera.main;
+            targetCamera = Camera.main;
             HideImmediate();
         }
 
@@ -42,11 +57,13 @@ namespace Synaptik.Game
 
         private void LateUpdate()
         {
-            if (_remainingTime <= 0f)
+            if (remainingTime <= 0f)
+            {
                 return;
+            }
 
-            _remainingTime -= Time.deltaTime;
-            if (_remainingTime <= 0f)
+            remainingTime -= Time.deltaTime;
+            if (remainingTime <= 0f)
             {
                 HideImmediate();
                 return;
@@ -59,93 +76,108 @@ namespace Synaptik.Game
         {
             EnsureInstance();
 
-            if (!_label)
+            if (label == null)
+            {
                 return;
+            }
 
-            _label.text = text ?? string.Empty;
+            label.text = text ?? string.Empty;
             AdjustBubbleSize();
 
-            if (!_bubbleInstance.activeSelf)
-                _bubbleInstance.SetActive(true);
+            if (bubbleInstance != null && !bubbleInstance.activeSelf)
+            {
+                bubbleInstance.SetActive(true);
+            }
 
-            _remainingTime = duration > 0f ? duration : _defaultLifetime;
+            remainingTime = duration > 0f ? duration : defaultLifetime;
             UpdateLookAt();
         }
 
         public void HideImmediate()
         {
-            _remainingTime = 0f;
-            if (_bubbleInstance)
-                _bubbleInstance.SetActive(false);
+            remainingTime = 0f;
+            if (bubbleInstance != null)
+            {
+                bubbleInstance.SetActive(false);
+            }
         }
 
         private void EnsureInstance()
         {
-            if (_bubbleInstance)
+            if (bubbleInstance != null)
+            {
                 return;
+            }
 
-            if (!_bubblePrefab)
+            if (bubblePrefab == null)
             {
                 Debug.LogError("[PlayerComboBubble] No bubble prefab assigned!");
                 return;
             }
 
-            _camera = Camera.main;
+            targetCamera = Camera.main;
 
-            _bubbleInstance = Instantiate(_bubblePrefab, transform);
-            _bubbleRect = _bubbleInstance.GetComponent<RectTransform>();
-            _bubbleRect.localPosition = new Vector3(0f, _verticalOffset, 0f);
-            _bubbleRect.localScale = Vector3.one * Mathf.Max(0.0001f, _worldScale);
-            _bubbleRect.pivot = new Vector2(0.5f, 0f);
+            bubbleInstance = Instantiate(bubblePrefab, transform);
+            bubbleRect = bubbleInstance.GetComponent<RectTransform>();
+            bubbleRect.localPosition = new Vector3(0f, verticalOffset, 0f);
+            bubbleRect.localScale = Vector3.one * Mathf.Max(0.0001f, worldScale);
+            bubbleRect.pivot = new Vector2(0.5f, 0f);
 
-            _label = _bubbleInstance.GetComponentInChildren<TextMeshProUGUI>(true);
-            _backgroundImage = _bubbleInstance.GetComponentInChildren<Image>(true);
+            label = bubbleInstance.GetComponentInChildren<TextMeshProUGUI>(true);
+            backgroundImage = bubbleInstance.GetComponentInChildren<Image>(true);
 
-            if (_label)
+            if (label != null)
             {
-                _label.color = _textColor;
-                if (_fontAsset)
-                    _label.font = _fontAsset;
-                else if (TMP_Settings.defaultFontAsset)
-                    _label.font = TMP_Settings.defaultFontAsset;
+                label.color = textColor;
+                label.font = fontAsset != null ? fontAsset : TMP_Settings.defaultFontAsset;
             }
 
-            if (_backgroundImage)
-                _backgroundImage.color = _backgroundColor;
+            if (backgroundImage != null)
+            {
+                backgroundImage.color = backgroundColor;
+            }
 
-            _bubbleInstance.SetActive(false);
+            bubbleInstance.SetActive(false);
         }
 
         private void AdjustBubbleSize()
         {
-            if (!_label || !_bubbleRect)
+            if (label == null || bubbleRect == null)
+            {
                 return;
+            }
 
-            _label.ForceMeshUpdate();
-            Vector2 textSize = _label.GetPreferredValues(_label.text);
+            label.ForceMeshUpdate();
+            var textSize = label.GetPreferredValues(label.text);
 
-            Vector2 finalSize = new Vector2(
-                Mathf.Max(_minBubbleSize.x, textSize.x + _padding.x * 2f),
-                Mathf.Max(_minBubbleSize.y, textSize.y + _padding.y * 2f)
+            var finalSize = new Vector2(
+                Mathf.Max(minBubbleSize.x, textSize.x + padding.x * 2f),
+                Mathf.Max(minBubbleSize.y, textSize.y + padding.y * 2f)
             );
 
-            _bubbleRect.sizeDelta = finalSize;
+            bubbleRect.sizeDelta = finalSize;
         }
 
         private void UpdateLookAt()
         {
-            if (!_bubbleRect)
+            if (bubbleRect == null)
+            {
                 return;
+            }
 
-            if (!_camera)
-                _camera = Camera.main;
+            if (targetCamera == null)
+            {
+                targetCamera = Camera.main;
+            }
 
-            if (!_camera)
+            if (targetCamera == null)
+            {
                 return;
+            }
 
-            var forward = _camera.transform.rotation * Vector3.forward;
-            var up = _camera.transform.rotation * Vector3.up;
-            _bubbleRect.rotation = Quaternion.LookRotation(forward, up);
+            var forward = targetCamera.transform.rotation * Vector3.forward;
+            var up = targetCamera.transform.rotation * Vector3.up;
+            bubbleRect.rotation = Quaternion.LookRotation(forward, up);
         }
     }
 }

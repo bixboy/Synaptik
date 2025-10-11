@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using Synaptik.Gameplay;
 using UnityEngine;
 
-namespace Synaptik.Game
+namespace Synaptik.Gameplay.Alien
 {
     public sealed class AlienQuestRuntime
     {

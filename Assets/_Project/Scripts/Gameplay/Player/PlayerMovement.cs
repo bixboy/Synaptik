@@ -1,71 +1,90 @@
 using NaughtyAttributes;
+using Synaptik.Core;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class PlayerMovement : MonoBehaviour
+namespace Synaptik.Gameplay.Player
 {
-    [SerializeField] private Rigidbody _rb;
-
-    [Header("Movement (plan XZ)")]
-    [SerializeField, Min(0f)] private float _maxSpeed = 5f;       // m/s (vitesse de croisière)
-    [SerializeField, Min(0f)] private float _acceleration = 20f;  // m/s² quand input ≠ 0
-    [SerializeField, Min(0f)] private float _deceleration = 25f;  // m/s² quand input = 0
-
-    [Header("Camera-relative ?")]
-    [SerializeField] private bool _cameraRelative = true;
-    [SerializeField, ShowIf("_cameraRelative")] private Camera _camera; // si null et cameraRelative=true, prendra Camera.main
-
-    private void Reset()
+    [RequireComponent(typeof(Rigidbody))]
+    public sealed class PlayerMovement : MonoBehaviour
     {
-        _rb = GetComponent<Rigidbody>();
-    }
+        [SerializeField]
+        private Rigidbody rigidbodyComponent;
 
-    private void Awake()
-    {
-        if (_rb == null) _rb = GetComponent<Rigidbody>();
-        if (_cameraRelative && _camera == null) _camera = Camera.main;
+        [Header("Movement (plan XZ)")]
+        [SerializeField, Min(0f)]
+        private float maxSpeed = 5f;
 
-        // Optionnel : évite que le rigidbody “tombe” sur les côtés.
-        _rb.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-        _rb.interpolation = RigidbodyInterpolation.Interpolate;
-    }
+        [SerializeField, Min(0f)]
+        private float acceleration = 20f;
 
-    private void FixedUpdate()
-    {
-        // 1) Récupère l'input 2D (déjà normalisé côté InputsDetection)
-        Vector2 input = InputsDetection.Instance ? InputsDetection.Instance.MoveVector : Vector2.zero;
+        [SerializeField, Min(0f)]
+        private float deceleration = 25f;
 
-        // 2) Direction voulue sur XZ
-        Vector3 dir;
-        if (_cameraRelative && _camera != null)
+        [Header("Camera-relative ?")]
+        [SerializeField]
+        private bool cameraRelative = true;
+
+        [SerializeField, ShowIf(nameof(cameraRelative))]
+        private Camera targetCamera;
+
+        private void Reset()
         {
-            Vector3 fwd = _camera.transform.forward; fwd.y = 0f; fwd.Normalize();
-            Vector3 right = _camera.transform.right; right.y = 0f; right.Normalize();
-            dir = right * input.x + fwd * input.y;   // x → droite, y → avant
-        }
-        else
-        {
-            dir = new Vector3(input.x, 0f, input.y); // world-relative
+            rigidbodyComponent = GetComponent<Rigidbody>();
         }
 
-        // 3) Vitesse cible horizontale (on garde la gravité sur Y)
-        Vector3 v = _rb.linearVelocity;
-        Vector3 vHoriz = new Vector3(v.x, 0f, v.z);
-        Vector3 targetHoriz = dir * _maxSpeed;
+        private void Awake()
+        {
+            if (rigidbodyComponent == null)
+            {
+                rigidbodyComponent = GetComponent<Rigidbody>();
+            }
 
-        // 4) Accélérer vers la cible (ou freiner si pas d'input)
-        float accel = (dir.sqrMagnitude > 0.0001f) ? _acceleration : _deceleration;
+            if (cameraRelative && targetCamera == null)
+            {
+                targetCamera = Camera.main;
+            }
 
-        // Delta-v max autorisé sur ce pas
-        float maxDeltaV = accel * Time.fixedDeltaTime;
+            rigidbodyComponent.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            rigidbodyComponent.interpolation = RigidbodyInterpolation.Interpolate;
+        }
 
-        // Delta-v horizontal voulu
-        Vector3 deltaV = targetHoriz - vHoriz;
-        if (deltaV.sqrMagnitude > maxDeltaV * maxDeltaV)
-            deltaV = deltaV.normalized * maxDeltaV;
+        private void FixedUpdate()
+        {
+            var input = InputsDetection.Instance != null ? InputsDetection.Instance.MoveVector : Vector2.zero;
+            var direction = GetMovementDirection(input);
 
-        // 5) Applique une *VelocityChange* (indépendant de la masse, pas de double dt)
-        _rb.AddForce(deltaV, ForceMode.VelocityChange);
-        // (On n'affecte que l'horizontal ⇒ Y conserve la gravité)
+            var currentVelocity = rigidbodyComponent.velocity;
+            var horizontalVelocity = new Vector3(currentVelocity.x, 0f, currentVelocity.z);
+            var targetHorizontalVelocity = direction * maxSpeed;
+
+            var currentAcceleration = direction.sqrMagnitude > 0.0001f ? acceleration : deceleration;
+            var maxDeltaV = currentAcceleration * Time.fixedDeltaTime;
+            var deltaV = targetHorizontalVelocity - horizontalVelocity;
+
+            if (deltaV.sqrMagnitude > maxDeltaV * maxDeltaV)
+            {
+                deltaV = deltaV.normalized * maxDeltaV;
+            }
+
+            rigidbodyComponent.AddForce(deltaV, ForceMode.VelocityChange);
+        }
+
+        private Vector3 GetMovementDirection(Vector2 input)
+        {
+            if (!cameraRelative || targetCamera == null)
+            {
+                return new Vector3(input.x, 0f, input.y);
+            }
+
+            var forward = targetCamera.transform.forward;
+            forward.y = 0f;
+            forward.Normalize();
+
+            var right = targetCamera.transform.right;
+            right.y = 0f;
+            right.Normalize();
+
+            return right * input.x + forward * input.y;
+        }
     }
 }

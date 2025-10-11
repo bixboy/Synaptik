@@ -1,17 +1,19 @@
 using UnityEngine;
-using TextTools;
 
-public class TestScript : MonoBehaviour
+namespace Synaptik
 {
-    private void Start()
+    public sealed class TestScript : MonoBehaviour
     {
-        string text = "Hello World!";
+        private void Start()
+        {
+            const string text = "Hello World!";
 
-        Debug.Log(TextFeedBack.ProgressiveDisplayLerp(text, 0.0f, '-'));
-        Debug.Log(TextFeedBack.ProgressiveDisplayLerp(text, 0.5f, '_'));
-        Debug.Log(TextFeedBack.ProgressiveDisplayLerp(text, 0.867f, '='));
-        Debug.Log(TextFeedBack.ProgressiveDisplayLerp(text, 1.0f));
+            Debug.Log(Core.TextFeedBack.ProgressiveDisplayLerp(text, 0.0f, '-'));
+            Debug.Log(Core.TextFeedBack.ProgressiveDisplayLerp(text, 0.5f, '_'));
+            Debug.Log(Core.TextFeedBack.ProgressiveDisplayLerp(text, 0.867f, '='));
+            Debug.Log(Core.TextFeedBack.ProgressiveDisplayLerp(text, 1.0f));
 
-        TextFeedBack.ProgressiveDisplayTimeSpacing(text, 0.1f, 1);
+            Core.TextFeedBack.ProgressiveDisplayTimeSpacing(text, 0.1f, 1);
+        }
     }
 }

@@ -1,79 +1,101 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using TextTools;
 using TMPro;
 using UnityEngine;
 
-public class LoadingText : MonoBehaviour
+namespace Synaptik.UI
 {
-    public TextMeshProUGUI Text;
-    public TextMeshProUGUI LoaddingText;
-
-    private float currentTime;
-    private string currentLine;
-    private string fullText;
-
-    private bool isDisplaying;
-
-    [SerializeField] private float delayBetweenLines = 0.2f;
-
-    private void Start()
+    public sealed class LoadingText : MonoBehaviour
     {
-        Loading(0);
-    }
+        [SerializeField]
+        private TextMeshProUGUI mainText;
 
-    public void StartText(List<string> lines)
-    {
-        StopAllCoroutines();
-        StartCoroutine(DisplayLinesRoutine(lines));
-    }
+        [SerializeField]
+        private TextMeshProUGUI loadingText;
 
-    private IEnumerator DisplayLinesRoutine(List<string> lines)
-    {
-        fullText = "";
-        currentLine = "";
-        Text.text = "";
-        isDisplaying = false;
-        
-        foreach (string line in lines)
+        [SerializeField]
+        private float delayBetweenLines = 0.2f;
+
+        [SerializeField]
+        private float characterSpacing = 0.01f;
+
+        private float currentTime;
+        private string currentLine = string.Empty;
+        private string fullText = string.Empty;
+        private bool isDisplaying;
+
+        private void Start()
         {
-            AddNewLine(line);
-            
-            yield return new WaitUntil(() => isDisplaying == false);
-
-            yield return new WaitForSeconds(delayBetweenLines);
+            SetLoadingProgress(0f);
         }
-    }
 
-    public void AddNewLine(string text)
-    {
-        if (isDisplaying)
-            fullText += currentLine + "\n";
-
-        currentLine = text;
-        currentTime = 0f;
-        isDisplaying = true;
-    }
-
-    public void Loading(float lerp)
-    {
-        LoaddingText.text = $"[{TextFeedBack.ProgressiveDisplayLerp("000000000000000000000000", lerp, '-')}]";
-    }
-
-    private void Update()
-    {
-        if (!isDisplaying) return;
-
-        string progressive = TextFeedBack.ProgressiveDisplayTimeSpacing(currentLine, 0.01f, currentTime);
-        Text.text = fullText + progressive;
-
-        currentTime += Time.deltaTime;
-
-        if (progressive.Length >= currentLine.Length)
+        public void StartText(IReadOnlyList<string> lines)
         {
+            StopAllCoroutines();
+            StartCoroutine(DisplayLinesRoutine(lines));
+        }
+
+        private IEnumerator DisplayLinesRoutine(IReadOnlyList<string> lines)
+        {
+            fullText = string.Empty;
+            currentLine = string.Empty;
+            if (mainText != null)
+            {
+                mainText.text = string.Empty;
+            }
+
+            isDisplaying = false;
+
+            foreach (var line in lines)
+            {
+                AddNewLine(line);
+
+                yield return new WaitUntil(() => !isDisplaying);
+                yield return new WaitForSeconds(delayBetweenLines);
+            }
+        }
+
+        public void AddNewLine(string text)
+        {
+            if (isDisplaying)
+            {
+                fullText += currentLine + "\n";
+            }
+
+            currentLine = text;
+            currentTime = 0f;
+            isDisplaying = true;
+        }
+
+        public void SetLoadingProgress(float lerp)
+        {
+            if (loadingText == null)
+            {
+                return;
+            }
+
+            loadingText.text = $"[{Core.TextFeedBack.ProgressiveDisplayLerp("000000000000000000000000", lerp, '-')}]";
+        }
+
+        private void Update()
+        {
+            if (!isDisplaying || mainText == null)
+            {
+                return;
+            }
+
+            var progressive = Core.TextFeedBack.ProgressiveDisplayTimeSpacing(currentLine, characterSpacing, currentTime);
+            mainText.text = fullText + progressive;
+
+            currentTime += Time.deltaTime;
+
+            if (progressive.Length < currentLine.Length)
+            {
+                return;
+            }
+
             fullText += currentLine + "\n";
-            currentLine = "";
+            currentLine = string.Empty;
             isDisplaying = false;
         }
     }

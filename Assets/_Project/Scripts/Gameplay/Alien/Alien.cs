@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Synaptik.Gameplay;
+using Synaptik.Interfaces;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Synaptik.Game
+namespace Synaptik.Gameplay.Alien
 {
     [RequireComponent(typeof(Animator))]
     public class Alien : MonoBehaviour, IInteraction

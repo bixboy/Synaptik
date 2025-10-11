@@ -1,31 +1,67 @@
 using System;
 using System.Collections.Generic;
+using Synaptik.Core;
+using Synaptik.Gameplay;
+using Synaptik.Gameplay.Alien;
+using Synaptik.Interfaces;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace Synaptik.Game
+namespace Synaptik.Gameplay.Player
 {
     public class PlayerInteraction : MonoBehaviour
     {
-        
         [Header("Pickup/Drop Settings")]
-        [SerializeField] private Transform _handSocket;         // vide placé dans la main
-        [SerializeField] private float _pickupRadius = 1.2f;    // portée
-        [SerializeField] private LayerMask _pickupMask = ~0;    // couche(s) des objets
-        [SerializeField] private float _dropForwardSpeed = 0f;  // 0 = lâcher sans lancer
+        [SerializeField]
+        private Transform handSocket;
 
-        private HoldableItem _held;
-        private string _heldItemId;
-        
-        [Header("Interaction Settings")] 
-        [SerializeField] private Transform _aimZone;
-        [SerializeField] private float _interactRadius = 2f;
-        [SerializeField] private float _interactHalfFov = 45f;
-        [SerializeField] private LayerMask _interactMask;
+        [SerializeField]
+        private float pickupRadius = 1.2f;
 
-        private static readonly Collider[] _overlap = new Collider[64];
-        
-                [Serializable]
+        [SerializeField]
+        private LayerMask pickupMask = ~0;
+
+        [SerializeField]
+        private float dropForwardSpeed;
+
+        private HoldableItem heldItem;
+        private string heldItemId;
+
+        [Header("Interaction Settings")]
+        [SerializeField]
+        private Transform aimZone;
+
+        [SerializeField]
+        private float interactRadius = 2f;
+
+        [SerializeField]
+        private float interactHalfFov = 45f;
+
+        [SerializeField]
+        private LayerMask interactMask;
+
+        [Header("Combo Feedback")]
+        [SerializeField]
+        private float defaultComboBubbleDuration = 1.75f;
+
+        [SerializeField]
+        private ComboSymbolDefinition[] comboSymbolDefinitions =
+        {
+            new ComboSymbolDefinition(Emotion.Anger,    Behavior.Talking, "💬⚡", 2f),
+            new ComboSymbolDefinition(Emotion.Friendly, Behavior.Talking, "💬❤️", 2f),
+            new ComboSymbolDefinition(Emotion.Curious,  Behavior.Talking, "💬❓", 2f),
+            new ComboSymbolDefinition(Emotion.Fearful,  Behavior.Talking, "💬😱", 2f),
+            new ComboSymbolDefinition(Emotion.Anger,    Behavior.Action,  "✋⚡", 1.75f),
+            new ComboSymbolDefinition(Emotion.Friendly, Behavior.Action,  "✋❤️", 1.75f),
+            new ComboSymbolDefinition(Emotion.Curious,  Behavior.Action,  "✋❓", 1.75f),
+            new ComboSymbolDefinition(Emotion.Fearful,  Behavior.Action,  "✋😱", 1.75f)
+        };
+
+        private readonly Dictionary<ComboKey, ComboSymbolDefinition> comboLookup = new();
+        private PlayerComboBubble comboBubble;
+
+        private static readonly Collider[] overlap = new Collider[64];
+
+        [Serializable]
         private struct ComboSymbolDefinition
         {
             public Emotion Emotion;
@@ -86,38 +122,10 @@ namespace Synaptik.Game
             { Behavior.Action, "✋" }
         };
 
-        [Header("Combo Feedback")]
-        [SerializeField] private float _defaultComboBubbleDuration = 1.75f;
-        [SerializeField] private ComboSymbolDefinition[] _comboSymbolDefinitions =
-        {
-            new ComboSymbolDefinition(Emotion.Anger,    Behavior.Talking, "💬⚡", 2f),
-            new ComboSymbolDefinition(Emotion.Friendly, Behavior.Talking, "💬❤️", 2f),
-            new ComboSymbolDefinition(Emotion.Curious,  Behavior.Talking, "💬❓", 2f),
-            new ComboSymbolDefinition(Emotion.Fearful,  Behavior.Talking, "💬😱", 2f),
-            new ComboSymbolDefinition(Emotion.Anger,    Behavior.Action,  "✋⚡", 1.75f),
-            new ComboSymbolDefinition(Emotion.Friendly, Behavior.Action,  "✋❤️", 1.75f),
-            new ComboSymbolDefinition(Emotion.Curious,  Behavior.Action,  "✋❓", 1.75f),
-            new ComboSymbolDefinition(Emotion.Fearful,  Behavior.Action,  "✋😱", 1.75f),
-        };
-
-        private readonly Dictionary<ComboKey, ComboSymbolDefinition> _comboLookup = new();
-        private PlayerComboBubble _comboBubble;
-        
-        
         private void Awake()
         {
-            _comboBubble = GetComponent<PlayerComboBubble>();
-            if (_comboBubble == null)
-            {
-                _comboBubble = gameObject.AddComponent<PlayerComboBubble>();
-            }
-
+            comboBubble = GetComponent<PlayerComboBubble>() ?? gameObject.AddComponent<PlayerComboBubble>();
             RebuildComboLookup();
-        }
-        
-        private void Start()
-        {
-            InputsDetection.Instance.OnEmotionAction += HandleEmotionAction;
         }
 
         private void OnEnable()
@@ -135,7 +143,7 @@ namespace Synaptik.Game
                 InputsDetection.Instance.OnEmotionAction -= HandleEmotionAction;
             }
         }
-        
+
         private void OnValidate()
         {
             RebuildComboLookup();
@@ -143,13 +151,13 @@ namespace Synaptik.Game
 
         private void RebuildComboLookup()
         {
-            _comboLookup.Clear();
-            if (_comboSymbolDefinitions == null)
+            comboLookup.Clear();
+            if (comboSymbolDefinitions == null)
             {
                 return;
             }
 
-            foreach (var definition in _comboSymbolDefinitions)
+            foreach (var definition in comboSymbolDefinitions)
             {
                 if (definition.Behavior == Behavior.None || definition.Emotion == Emotion.None)
                 {
@@ -157,166 +165,157 @@ namespace Synaptik.Game
                 }
 
                 var key = new ComboKey(definition.Emotion, definition.Behavior);
-                if (_comboLookup.ContainsKey(key))
-                {
-                    _comboLookup[key] = definition;
-                }
-                else
-                {
-                    _comboLookup.Add(key, definition);
-                }
+                comboLookup[key] = definition;
             }
-        }
-
-        private void ShowComboFeedback(Emotion emotion, Behavior behavior)
-        {
-            if (_comboBubble == null || emotion == Emotion.None || behavior == Behavior.None)
-            {
-                return;
-            }
-
-            if (_comboLookup.Count == 0)
-            {
-                RebuildComboLookup();
-            }
-
-            var key = new ComboKey(emotion, behavior);
-            if (_comboLookup.TryGetValue(key, out var definition) && !string.IsNullOrWhiteSpace(definition.Symbols))
-            {
-                var duration = definition.Duration > 0f ? definition.Duration : _defaultComboBubbleDuration;
-                _comboBubble.Show(definition.Symbols, duration);
-                return;
-            }
-
-            if (!DefaultBehaviorSymbols.TryGetValue(behavior, out var behaviorSymbol) ||
-                !DefaultEmotionSymbols.TryGetValue(emotion, out var emotionSymbol))
-            {
-                return;
-            }
-
-            _comboBubble.Show(behaviorSymbol + emotionSymbol, _defaultComboBubbleDuration);
         }
 
         private void HandleEmotionAction(Emotion emotion, Behavior behavior)
         {
             ShowComboFeedback(emotion, behavior);
-            
-            Debug.Log($"HandleEmotionAction: {emotion} + {behavior}");
-            Transform origin = _aimZone != null ? _aimZone : transform;
-            IInteraction interactable = TargetingUtil.FindInteractionInFront(origin, _interactRadius, _interactHalfFov, _interactMask);
+
+            var origin = aimZone != null ? aimZone : transform;
+            var interactable = TargetingUtil.FindInteractionInFront(origin, interactRadius, interactHalfFov, interactMask);
 
             if (interactable != null)
             {
-                interactable?.Interact(new ActionValues(emotion, behavior), _held, this);   
+                interactable.Interact(new ActionValues(emotion, behavior), heldItem, this);
             }
-            else if (emotion == Emotion.Friendly && behavior == Behavior.Action && _held)
+            else if (emotion == Emotion.Friendly && behavior == Behavior.Action && heldItem != null)
             {
-                DropItem();   
+                DropItem();
             }
         }
 
-        
         public void PickUp()
         {
-            Vector3 origin = _handSocket ? _handSocket.position : transform.position;
-            int count = Physics.OverlapSphereNonAlloc(origin, _pickupRadius, _overlap, _pickupMask, QueryTriggerInteraction.Ignore);
+            var origin = handSocket != null ? handSocket.position : transform.position;
+            var count = Physics.OverlapSphereNonAlloc(origin, pickupRadius, overlap, pickupMask, QueryTriggerInteraction.Ignore);
             if (count <= 0)
             {
-                if (_held == null) Debug.Log("PickUp: aucun objet à portée");
                 return;
             }
 
-            HoldableItem best = null;
-            float bestSqr = float.MaxValue;
+            HoldableItem bestCandidate = null;
+            var bestDistance = float.MaxValue;
 
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
-                var col = _overlap[i];
-                if (!col || !col.gameObject.activeInHierarchy) continue;
+                var collider = overlap[i];
+                if (collider == null || !collider.gameObject.activeInHierarchy)
+                {
+                    continue;
+                }
 
-                var holdable = col.GetComponentInParent<HoldableItem>();
-                if (!holdable) continue;
+                var holdable = collider.GetComponentInParent<HoldableItem>();
+                if (holdable == null || !holdable.CanBePicked || holdable == heldItem)
+                {
+                    continue;
+                }
 
-                // ignore l'objet déjà en main ou momentanément non-prenable
-                if ((_held && holdable == _held) || !holdable.CanBePicked) continue;
-
-                float sqr = (holdable.transform.position - origin).sqrMagnitude;
-                if (sqr < bestSqr) { bestSqr = sqr; best = holdable; }
+                var distance = (holdable.transform.position - origin).sqrMagnitude;
+                if (distance < bestDistance)
+                {
+                    bestDistance = distance;
+                    bestCandidate = holdable;
+                }
             }
 
-            if (!best)
+            if (bestCandidate == null)
             {
-                if (_held == null) Debug.Log("PickUp: aucun objet à portée");
                 return;
             }
 
-            // swap si on tient déjà quelque chose
-            if (_held)
+            if (heldItem != null)
             {
-                Vector3 v = _dropForwardSpeed > 0f ? transform.forward * _dropForwardSpeed : Vector3.zero;
-                _held.Drop(v);
-                _held = null;
+                var velocity = dropForwardSpeed > 0f ? transform.forward * dropForwardSpeed : Vector3.zero;
+                heldItem.Drop(velocity);
+                heldItem = null;
             }
 
-            best.Pick(_handSocket ? _handSocket : transform);
-            _held = best;
-            _heldItemId = _held.ItemId;
+            bestCandidate.Pick(handSocket != null ? handSocket : transform);
+            heldItem = bestCandidate;
+            heldItemId = heldItem.ItemId;
         }
 
         public void DropItem(bool destroyItem = false)
         {
-            if (!_held) return;
-
-            if (destroyItem)
+            if (heldItem == null)
             {
-                Destroy(_held.gameObject);
-                _held = null;
-                _heldItemId = null; // si tu utilises un ID
                 return;
             }
 
-            // tenter un don à un alien (sinon drop au sol)
-            Transform origin = _aimZone ? _aimZone : transform;
-            Alien alien = TargetingUtil.FindAlienInFront(origin, _interactRadius, _interactHalfFov, _interactMask);
-
-            bool didGive = false;
-            if (alien && alien.IsWithinReceiveRadius(origin.position))
+            if (destroyItem)
             {
-                // l'alien accepte ?
-                didGive = alien.TryReceiveItem(_heldItemId);
+                Destroy(heldItem.gameObject);
+                heldItem = null;
+                heldItemId = null;
+                return;
             }
 
-            if (didGive)
+            var origin = aimZone != null ? aimZone : transform;
+            var alien = TargetingUtil.FindAlienInFront(origin, interactRadius, interactHalfFov, interactMask);
+
+            var gaveItem = false;
+            if (alien != null && alien.IsWithinReceiveRadius(origin.position))
             {
-                // consommé par l'alien
-                Destroy(_held.gameObject);
-                _held = null;
-                _heldItemId = null;
+                gaveItem = alien.TryReceiveItem(heldItemId);
+            }
+
+            if (gaveItem)
+            {
+                Destroy(heldItem.gameObject);
             }
             else
             {
-                // drop “au sol”
-                Vector3 v = _dropForwardSpeed > 0f ? transform.forward * _dropForwardSpeed : Vector3.zero;
-                _held.Drop(v);
-                _held = null;
-                _heldItemId = null;
+                var velocity = dropForwardSpeed > 0f ? transform.forward * dropForwardSpeed : Vector3.zero;
+                heldItem.Drop(velocity);
             }
+
+            heldItem = null;
+            heldItemId = null;
         }
 
         public void OnDrawGizmos()
         {
-            if (_handSocket != null)
+            if (handSocket != null)
             {
                 Gizmos.color = Color.yellow;
-                Gizmos.DrawWireSphere(_handSocket.position, _pickupRadius);
+                Gizmos.DrawWireSphere(handSocket.position, pickupRadius);
             }
 
-            if (_aimZone != null)
+            if (aimZone != null)
             {
                 Gizmos.color = Color.cyan;
-                Gizmos.DrawWireSphere(_aimZone.position, _interactRadius);
-                Gizmos.DrawLine(_aimZone.position, _aimZone.position + Quaternion.Euler(0f, _interactHalfFov, 0f) * _aimZone.forward * _interactRadius);
-                Gizmos.DrawLine(_aimZone.position, _aimZone.position + Quaternion.Euler(0f, -_interactHalfFov, 0f) * _aimZone.forward * _interactRadius);
+                Gizmos.DrawWireSphere(aimZone.position, interactRadius);
+                Gizmos.DrawLine(aimZone.position, aimZone.position + Quaternion.Euler(0f, interactHalfFov, 0f) * aimZone.forward * interactRadius);
+                Gizmos.DrawLine(aimZone.position, aimZone.position + Quaternion.Euler(0f, -interactHalfFov, 0f) * aimZone.forward * interactRadius);
+            }
+        }
+
+        private void ShowComboFeedback(Emotion emotion, Behavior behavior)
+        {
+            if (comboBubble == null || emotion == Emotion.None || behavior == Behavior.None)
+            {
+                return;
+            }
+
+            if (comboLookup.Count == 0)
+            {
+                RebuildComboLookup();
+            }
+
+            var key = new ComboKey(emotion, behavior);
+            if (comboLookup.TryGetValue(key, out var definition) && !string.IsNullOrWhiteSpace(definition.Symbols))
+            {
+                var duration = definition.Duration > 0f ? definition.Duration : defaultComboBubbleDuration;
+                comboBubble.Show(definition.Symbols, duration);
+                return;
+            }
+
+            if (DefaultBehaviorSymbols.TryGetValue(behavior, out var behaviorSymbol) &&
+                DefaultEmotionSymbols.TryGetValue(emotion, out var emotionSymbol))
+            {
+                comboBubble.Show(behaviorSymbol + emotionSymbol, defaultComboBubbleDuration);
             }
         }
     }

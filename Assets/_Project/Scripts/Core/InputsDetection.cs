@@ -1,223 +1,252 @@
+using System;
 using System.Collections.Generic;
+using Synaptik.Interfaces;
 using UnityEngine;
 
-/// <summary>
-/// Système de détection combinée : émotion + action
-/// Quand une touche "émotion" et une touche "action" sont pressées simultanément,
-/// un callback global est déclenché.
-/// </summary>
-public class InputsDetection : MonoBehaviour
+namespace Synaptik.Core
 {
-   public static InputsDetection Instance { get; private set; }
-
-    [Header("Configuration des touches ↔ émotions")]
-    public List<KeyEmotionBinding> emotionBindings = new List<KeyEmotionBinding>
+    /// <summary>
+    /// Système de détection combinée : émotion + action.
+    /// Quand une touche « émotion » et une touche « action » sont pressées simultanément,
+    /// un callback global est déclenché.
+    /// </summary>
+    public sealed class InputsDetection : MonoBehaviour
     {
-        new KeyEmotionBinding(KeyCode.F1, Emotion.Anger),
-        new KeyEmotionBinding(KeyCode.F2, Emotion.Curious),
-        new KeyEmotionBinding(KeyCode.F3, Emotion.Fearful),
-        new KeyEmotionBinding(KeyCode.F4, Emotion.Friendly),
-    };
+        public static InputsDetection Instance { get; private set; }
 
-    [Header("Configuration des touches ↔ actions")]
-    public List<KeyActionBinding> actionBindings = new List<KeyActionBinding>
-    {
-        new KeyActionBinding(KeyCode.F5, Behavior.Talking),
-        new KeyActionBinding(KeyCode.F6, Behavior.Action)
-    };
-
-    [Header("Configuration des touches ↔ mouvement")]
-    public List<KeyMovementBinding> movementBindings = new()
-    {
-        new KeyMovementBinding(KeyCode.UpArrow,    Vector2.up),
-        new KeyMovementBinding(KeyCode.DownArrow,  Vector2.down),
-        new KeyMovementBinding(KeyCode.LeftArrow,  Vector2.left),
-        new KeyMovementBinding(KeyCode.RightArrow, Vector2.right),
-        
-        new KeyMovementBinding(KeyCode.W, Vector2.up),
-        new KeyMovementBinding(KeyCode.S, Vector2.down),
-        new KeyMovementBinding(KeyCode.A, Vector2.left),
-        new KeyMovementBinding(KeyCode.D, Vector2.right),
-    };
-    
-
-    private Dictionary<KeyCode, Emotion> _emotionMap;
-    private Dictionary<KeyCode, Behavior> _actionMap;
-
-    private HashSet<KeyCode> _pressedEmotionKeys = new HashSet<KeyCode>();
-    private HashSet<KeyCode> _pressedActionKeys = new HashSet<KeyCode>();
-    private KeyCode[] _moveKeys;
-    private Vector2[] _moveDirs;
-    
-    [SerializeField] private Vector2 _moveVector;
-    public Vector2 MoveVector => _moveVector;
-    
-    
-    public delegate void EmotionActionDelegate(Emotion emotion, Behavior action);
-    public event EmotionActionDelegate OnEmotionAction;
-    
-    public delegate void EmotionDelegate(Emotion emotion, bool keyUp);
-    public event EmotionDelegate OnEmotion;
-    
-    public delegate void ActionDelegate(Behavior action, bool keyUp);
-    public event ActionDelegate OnAction;
-    
-    public delegate void TowActionPressedDelegate(bool towPressed);
-    public event TowActionPressedDelegate OnTowActionPressed;
-    
-    private int actionInputPressed = 0;
-    
-    void Awake()
-    {
-        if (Instance != null && Instance != this)
+        [Header("Configuration des touches ↔ émotions")]
+        public List<KeyEmotionBinding> emotionBindings = new()
         {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
-    }
+            new KeyEmotionBinding(KeyCode.F1, Emotion.Anger),
+            new KeyEmotionBinding(KeyCode.F2, Emotion.Curious),
+            new KeyEmotionBinding(KeyCode.F3, Emotion.Fearful),
+            new KeyEmotionBinding(KeyCode.F4, Emotion.Friendly)
+        };
 
-    void Start()
-    {
-        _emotionMap = new Dictionary<KeyCode, Emotion>();
-        _actionMap = new Dictionary<KeyCode, Behavior>();
-        _moveKeys = new KeyCode[movementBindings.Count];
-        _moveDirs = new Vector2[movementBindings.Count];
-
-        foreach (var e in emotionBindings)
-            if (!_emotionMap.ContainsKey(e.key))
-                _emotionMap.Add(e.key, e.emotion);
-
-        foreach (var a in actionBindings)
-            if (!_actionMap.ContainsKey(a.key))
-                _actionMap.Add(a.key, a.action);
-
-        for (int i = 0; i < movementBindings.Count; i++)
+        [Header("Configuration des touches ↔ actions")]
+        public List<KeyActionBinding> actionBindings = new()
         {
-            _moveKeys[i] = movementBindings[i].key;
-            _moveDirs[i] = movementBindings[i].direction;
+            new KeyActionBinding(KeyCode.F5, Behavior.Talking),
+            new KeyActionBinding(KeyCode.F6, Behavior.Action)
+        };
+
+        [Header("Configuration des touches ↔ mouvement")]
+        public List<KeyMovementBinding> movementBindings = new()
+        {
+            new KeyMovementBinding(KeyCode.UpArrow,    Vector2.up),
+            new KeyMovementBinding(KeyCode.DownArrow,  Vector2.down),
+            new KeyMovementBinding(KeyCode.LeftArrow,  Vector2.left),
+            new KeyMovementBinding(KeyCode.RightArrow, Vector2.right),
+            new KeyMovementBinding(KeyCode.W, Vector2.up),
+            new KeyMovementBinding(KeyCode.S, Vector2.down),
+            new KeyMovementBinding(KeyCode.A, Vector2.left),
+            new KeyMovementBinding(KeyCode.D, Vector2.right)
+        };
+
+        private readonly HashSet<KeyCode> _pressedEmotionKeys = new();
+        private readonly HashSet<KeyCode> _pressedActionKeys = new();
+
+        private readonly Dictionary<KeyCode, Emotion> _emotionMap = new();
+        private readonly Dictionary<KeyCode, Behavior> _actionMap = new();
+
+        private KeyCode[] _moveKeys = Array.Empty<KeyCode>();
+        private Vector2[] _moveDirs = Array.Empty<Vector2>();
+
+        [SerializeField]
+        private Vector2 _moveVector;
+
+        private int _actionInputPressed;
+
+        public Vector2 MoveVector => _moveVector;
+
+        public event Action<Emotion, Behavior> OnEmotionAction;
+        public event Action<Emotion, bool> OnEmotion;
+        public event Action<Behavior, bool> OnAction;
+        public event Action<bool> OnTowActionPressed;
+
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
 
-        Debug.Log($"[InputsDetection] {_emotionMap.Count} émotions / {_actionMap.Count} actions configurées.");
-    }
+        private void Start()
+        {
+            _moveKeys = new KeyCode[movementBindings.Count];
+            _moveDirs = new Vector2[movementBindings.Count];
 
-    void Update()
-    {
-        // --- Détection du mouvement ---
-        Vector2 sum = Vector2.zero;
-        for (int i = 0; i < _moveKeys.Length; i++)
-            if (Input.GetKey(_moveKeys[i])) sum += _moveDirs[i];
+            foreach (var binding in emotionBindings)
+            {
+                if (_emotionMap.ContainsKey(binding.key))
+                {
+                    continue;
+                }
 
-        if (sum.sqrMagnitude > 1f) sum.Normalize();
+                _emotionMap.Add(binding.key, binding.emotion);
+            }
+
+            foreach (var binding in actionBindings)
+            {
+                if (_actionMap.ContainsKey(binding.key))
+                {
+                    continue;
+                }
+
+                _actionMap.Add(binding.key, binding.action);
+            }
+
+            for (var i = 0; i < movementBindings.Count; i++)
+            {
+                _moveKeys[i] = movementBindings[i].key;
+                _moveDirs[i] = movementBindings[i].direction;
+            }
+
+            Debug.Log($"[InputsDetection] {_emotionMap.Count} émotions / {_actionMap.Count} actions configurées.");
+        }
+
+        private void Update()
+        {
+            UpdateMovement();
+            UpdateEmotionInputs();
+            UpdateActionInputs();
+        }
+
+        private void UpdateMovement()
+        {
+            var sum = Vector2.zero;
+            for (var i = 0; i < _moveKeys.Length; i++)
+            {
+                if (Input.GetKey(_moveKeys[i]))
+                {
+                    sum += _moveDirs[i];
+                }
+            }
+
+            if (sum.sqrMagnitude > 1f)
+            {
+                sum.Normalize();
+            }
+
             _moveVector = sum;
-        
-        foreach (var kvp in _emotionMap)
+        }
+
+        private void UpdateEmotionInputs()
         {
-            if (Input.GetKeyDown(kvp.Key))
+            foreach (var (keyCode, emotion) in _emotionMap)
             {
-                _pressedEmotionKeys.Add(kvp.Key);
-                TryTriggerCombos(kvp.Value);
-                
-                OnEmotion?.Invoke(kvp.Value, false);
-            }
-            if (Input.GetKeyUp(kvp.Key))
-            {
-                _pressedEmotionKeys.Remove(kvp.Key);
-                OnEmotion?.Invoke(kvp.Value, true);
+                if (Input.GetKeyDown(keyCode))
+                {
+                    _pressedEmotionKeys.Add(keyCode);
+                    TryTriggerCombos(emotion);
+                    OnEmotion?.Invoke(emotion, false);
+                }
+
+                if (Input.GetKeyUp(keyCode))
+                {
+                    _pressedEmotionKeys.Remove(keyCode);
+                    OnEmotion?.Invoke(emotion, true);
+                }
             }
         }
 
-        // --- Détection des actions ---
-        foreach (var kvp in _actionMap)
+        private void UpdateActionInputs()
         {
-            if (Input.GetKeyDown(kvp.Key))
+            foreach (var (keyCode, action) in _actionMap)
             {
-                _pressedActionKeys.Add(kvp.Key);
-                TryTriggerCombos(action: kvp.Value);
-                
-                OnAction?.Invoke(kvp.Value, false);
-                
-                actionInputPressed++;
-                if ( actionInputPressed >= 2)
-                    OnTowActionPressed?.Invoke(true);
-            }
-            if (Input.GetKeyUp(kvp.Key))
-            {
-                _pressedActionKeys.Remove(kvp.Key);
-                
-                actionInputPressed--;
-                OnTowActionPressed?.Invoke(false);
-                OnAction?.Invoke(kvp.Value, true);
-            }
-        }
+                if (Input.GetKeyDown(keyCode))
+                {
+                    _pressedActionKeys.Add(keyCode);
+                    TryTriggerCombos(action: action);
+                    OnAction?.Invoke(action, false);
 
-        
-    }
+                    _actionInputPressed++;
+                    if (_actionInputPressed >= 2)
+                    {
+                        OnTowActionPressed?.Invoke(true);
+                    }
+                }
 
-    private void TryTriggerCombos(Emotion emotion = Emotion.None, Behavior action = Behavior.None)
-    {
-        if (emotion != Emotion.None)
-        {
-            foreach (var aKey in _pressedActionKeys)
-            {
-                Behavior activeAction = _actionMap[aKey];
-                Trigger(emotion, activeAction);
+                if (Input.GetKeyUp(keyCode))
+                {
+                    _pressedActionKeys.Remove(keyCode);
+                    _actionInputPressed = Mathf.Max(0, _actionInputPressed - 1);
+                    OnTowActionPressed?.Invoke(false);
+                    OnAction?.Invoke(action, true);
+                }
             }
         }
 
-        if (action != Behavior.None)
+        private void TryTriggerCombos(Emotion emotion = Emotion.None, Behavior action = Behavior.None)
         {
-            foreach (var eKey in _pressedEmotionKeys)
+            if (emotion != Emotion.None)
             {
-                Emotion activeEmotion = _emotionMap[eKey];
+                foreach (var key in _pressedActionKeys)
+                {
+                    var activeAction = _actionMap[key];
+                    Trigger(emotion, activeAction);
+                }
+            }
+
+            if (action == Behavior.None)
+            {
+                return;
+            }
+
+            foreach (var key in _pressedEmotionKeys)
+            {
+                var activeEmotion = _emotionMap[key];
                 Trigger(activeEmotion, action);
             }
         }
-    }
 
-    private void Trigger(Emotion emotion, Behavior action)
-    {
-        // Debug.Log($"🎭 Combo détecté → Émotion: {emotion}, Action: {action}");
-        OnEmotionAction?.Invoke(emotion, action);
-    }
-
-    [System.Serializable]
-    public class KeyEmotionBinding
-    {
-        public KeyCode key;
-        public Emotion emotion;
-
-        public KeyEmotionBinding(KeyCode key, Emotion emotion)
+        private void Trigger(Emotion emotion, Behavior action)
         {
-            this.key = key;
-            this.emotion = emotion;
+            OnEmotionAction?.Invoke(emotion, action);
         }
-    }
 
-    [System.Serializable]
-    public class KeyActionBinding
-    {
-        public KeyCode key;
-        public Behavior action;
-
-        public KeyActionBinding(KeyCode key, Behavior action)
+        [Serializable]
+        public class KeyEmotionBinding
         {
-            this.key = key;
-            this.action = action;
+            public KeyCode key;
+            public Emotion emotion;
+
+            public KeyEmotionBinding(KeyCode key, Emotion emotion)
+            {
+                this.key = key;
+                this.emotion = emotion;
+            }
         }
-    }
 
-    [System.Serializable]
-    public class KeyMovementBinding
-    {
-        public KeyCode key;
-        public Vector2 direction;
-
-        public KeyMovementBinding(KeyCode key, Vector2 dir)
+        [Serializable]
+        public class KeyActionBinding
         {
-            this.key = key;
-            this.direction = dir.normalized;
+            public KeyCode key;
+            public Behavior action;
+
+            public KeyActionBinding(KeyCode key, Behavior action)
+            {
+                this.key = key;
+                this.action = action;
+            }
+        }
+
+        [Serializable]
+        public class KeyMovementBinding
+        {
+            public KeyCode key;
+            public Vector2 direction;
+
+            public KeyMovementBinding(KeyCode key, Vector2 dir)
+            {
+                this.key = key;
+                direction = dir.normalized;
+            }
         }
     }
 }

@@ -1,63 +1,75 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MistrustManager : MonoBehaviour
+namespace Synaptik.Gameplay.Alien
 {
-    
-    [SerializeField] private Slider _mistrustSlider;
-    [SerializeField] private Vector2 _mistrustRange = new Vector2(0, 100);
-    [SerializeField] private int _initialMistrust = 50;
-    
-    private int _mistrustValue;
-    
-    public static MistrustManager Instance;
-    
-    public delegate void MistrustDelegate(float value);
-    public event MistrustDelegate OnMistrust;
-    
-    private void Awake()
+    public sealed class MistrustManager : MonoBehaviour
     {
-        _mistrustValue = Mathf.Clamp(_initialMistrust, (int)_mistrustRange.x, (int)_mistrustRange.y);
-        if (_mistrustSlider != null)
+        public static MistrustManager Instance { get; private set; }
+
+        [SerializeField]
+        private Slider mistrustSlider;
+
+        [SerializeField]
+        private Vector2 mistrustRange = new(0f, 100f);
+
+        [SerializeField]
+        private int initialMistrust = 50;
+
+        private int mistrustValue;
+
+        public delegate void MistrustDelegate(float valueDelta);
+        public event MistrustDelegate OnMistrust;
+
+        private void Awake()
         {
-            _mistrustSlider.minValue = _mistrustRange.x;
-            _mistrustSlider.maxValue = _mistrustRange.y;
-            _mistrustSlider.value = _mistrustValue;
-        }
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
+            mistrustValue = Mathf.Clamp(initialMistrust, (int)mistrustRange.x, (int)mistrustRange.y);
+            if (mistrustSlider != null)
+            {
+                mistrustSlider.minValue = mistrustRange.x;
+                mistrustSlider.maxValue = mistrustRange.y;
+                mistrustSlider.value = mistrustValue;
+            }
+
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             Instance = this;
         }
-    }
-    
-    public void AddMistrust(int amount)
-    {
-        _mistrustValue = Mathf.Clamp(_mistrustValue + amount, (int)_mistrustRange.x, (int)_mistrustRange.y);
-        
-        if (_mistrustSlider)
-        {
-            _mistrustSlider.value = _mistrustValue;
-            OnMistrust?.Invoke(amount);
-        }
-    }
-    
-    public void RemoveMistrust(int amount)
-    {
-        _mistrustValue = Mathf.Clamp(_mistrustValue - amount, (int)_mistrustRange.x, (int)_mistrustRange.y);
-        
-        if (_mistrustSlider)
-        {
-            _mistrustSlider.value = _mistrustValue;
-            OnMistrust?.Invoke(-amount);
-        }
-    }
 
-    private void OnValidate()
-    {
-        _initialMistrust = Mathf.Clamp(_initialMistrust, (int)_mistrustRange.x, (int)_mistrustRange.y);
+        public void AddMistrust(int amount)
+        {
+            UpdateMistrust(amount);
+        }
+
+        public void RemoveMistrust(int amount)
+        {
+            UpdateMistrust(-amount);
+        }
+
+        private void UpdateMistrust(int delta)
+        {
+            var clamped = Mathf.Clamp(mistrustValue + delta, (int)mistrustRange.x, (int)mistrustRange.y);
+            var appliedDelta = clamped - mistrustValue;
+            mistrustValue = clamped;
+
+            if (mistrustSlider != null)
+            {
+                mistrustSlider.value = mistrustValue;
+            }
+
+            if (appliedDelta != 0)
+            {
+                OnMistrust?.Invoke(appliedDelta);
+            }
+        }
+
+        private void OnValidate()
+        {
+            initialMistrust = Mathf.Clamp(initialMistrust, (int)mistrustRange.x, (int)mistrustRange.y);
+        }
     }
 }

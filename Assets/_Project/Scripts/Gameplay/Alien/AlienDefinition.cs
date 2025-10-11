@@ -1,31 +1,41 @@
 using System.Collections.Generic;
+using Synaptik.Interfaces;
 using Unity.Collections;
 using UnityEngine;
 
-namespace Synaptik.Game
+namespace Synaptik.Gameplay.Alien
 {
     [CreateAssetMenu(menuName = "Synaptik/Alien/Definition", fileName = "AlienDefinition")]
     public class AlienDefinition : ScriptableObject
     {
-        [SerializeField, ReadOnly] private string _alienId;
-        [SerializeField] private Emotion _startEmotion = Emotion.Curious;
-        [SerializeField] private RuntimeAnimatorController _animator;
-        [SerializeField] private ReactionMatrix _reactions;
-        [SerializeField] private DialogueDatabase _dialogue;
-        [SerializeField] private List<AlienQuest> _quests = new List<AlienQuest>();
+        [SerializeField, ReadOnly]
+        private string alienId;
 
-        public string AlienId => _alienId;
-        public Emotion StartEmotion => _startEmotion;
+        [SerializeField]
+        private Emotion startEmotion = Emotion.Curious;
 
-        public RuntimeAnimatorController Animator => _animator;
-        public ReactionMatrix Reactions => _reactions;
-        public DialogueDatabase Dialogue => _dialogue;
-        
-        public List<AlienQuest> Quests => _quests;
-        
+        [SerializeField]
+        private RuntimeAnimatorController animator;
+
+        [SerializeField]
+        private ReactionMatrix reactions;
+
+        [SerializeField]
+        private DialogueDatabase dialogue;
+
+        [SerializeField]
+        private List<AlienQuest> quests = new();
+
+        public string AlienId => alienId;
+        public Emotion StartEmotion => startEmotion;
+        public RuntimeAnimatorController Animator => animator;
+        public ReactionMatrix Reactions => reactions;
+        public DialogueDatabase Dialogue => dialogue;
+        public List<AlienQuest> Quests => quests;
+
         public void SetUniqueId(string id)
         {
-            _alienId = id;
+            alienId = id;
         }
     }
 }

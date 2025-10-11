@@ -1,137 +1,153 @@
-﻿using System.Collections;
-using Synaptik.Game;
+using System;
+using System.Collections;
+using Synaptik.Interfaces;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-[DisallowMultipleComponent]
-[RequireComponent(typeof(Rigidbody))]
-public class HoldableItem : MonoBehaviour, IInteraction
+namespace Synaptik.Gameplay
 {
-    private Rigidbody _rb;
-    private Collider[] _colliders;
-    private Transform _originalParent;
-
-    public bool IsHeld { get; private set; }
-    
-    [SerializeField] private string _itemId;
-    public string ItemId => _itemId;
-    public bool CanBePicked => _canTake && !IsHeld;
-    
-    [Header("Respawn")]
-    private Vector3 _spawnLocation;
-    private Quaternion _spawnRotation;
-    private Vector3 _spawnScale;
-    [Space(7)]
-    [SerializeField] private float _respawnDelay = 5.0f;
-    private float _delayCurrent;
-    [Space(5)]
-    [SerializeField] private float _despawnTime = 0.5f;
-    [SerializeField] private AnimationCurve _despawnAnim = AnimationCurve.Linear(0, 0, 1, 1);
-    private Coroutine _respawnCoroutine;
-    [Space(7)]
-    [SerializeField] private GameObject _despawnVFXPrefab;
-
-    private bool _canTake = true;
-
-    private void Awake()
+    [DisallowMultipleComponent]
+    [RequireComponent(typeof(Rigidbody))]
+    public sealed class HoldableItem : MonoBehaviour, IInteraction
     {
-        _rb = GetComponent<Rigidbody>();
-        _colliders = GetComponentsInChildren<Collider>(true);
-        
-        _spawnLocation = transform.position;
-        _spawnRotation = transform.rotation;
-        _spawnScale = transform.localScale;
-    }
-    
-    public void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null)
-    {
-        Behavior behavior = action._behavior;
-        Emotion emotion = action._emotion;
-        if (behavior == Behavior.Action)
+        [SerializeField]
+        private string itemId;
+
+        [Header("Respawn")]
+        [SerializeField]
+        private float respawnDelay = 5f;
+
+        [SerializeField]
+        private float despawnTime = 0.5f;
+
+        [SerializeField]
+        private AnimationCurve despawnAnim = AnimationCurve.Linear(0, 0, 1, 1);
+
+        [SerializeField]
+        private GameObject despawnVfxPrefab;
+
+        private Rigidbody rigidbodyComponent;
+        private Collider[] colliders = Array.Empty<Collider>();
+        private Transform originalParent;
+        private Vector3 spawnLocation;
+        private Quaternion spawnRotation;
+        private Vector3 spawnScale;
+        private Coroutine respawnCoroutine;
+        private float currentDelay;
+        private bool canTake = true;
+
+        public bool IsHeld { get; private set; }
+        public string ItemId => itemId;
+        public bool CanBePicked => canTake && !IsHeld;
+
+        private void Awake()
         {
-            if (emotion == Emotion.Curious)
+            rigidbodyComponent = GetComponent<Rigidbody>();
+            colliders = GetComponentsInChildren<Collider>(true);
+
+            spawnLocation = transform.position;
+            spawnRotation = transform.rotation;
+            spawnScale = transform.localScale;
+        }
+
+        public void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null)
+        {
+            if (action._behavior != Behavior.Action || playerInteraction == null)
             {
-                playerInteraction?.PickUp();
+                return;
             }
-            else if (emotion == Emotion.Friendly)
+
+            switch (action._emotion)
             {
-                if (item) playerInteraction?.DropItem();
+                case Emotion.Curious:
+                    playerInteraction.PickUp();
+                    break;
+                case Emotion.Friendly when item != null:
+                    playerInteraction.DropItem();
+                    break;
             }
         }
-    }
 
-    public void Pick(Transform handSocket)
-    {
-        if (IsHeld || !_canTake) return;
-        
-        if (_respawnCoroutine != null)
-            StopCoroutine(_respawnCoroutine);
-
-        IsHeld = true;
-        _originalParent = transform.parent;
-
-        // stop physique et collisions pendant la prise en main
-        _rb.linearVelocity = Vector3.zero;
-        _rb.angularVelocity = Vector3.zero;
-        _rb.isKinematic = true;
-        _rb.useGravity = false;
-        foreach (var c in _colliders) c.enabled = false;
-
-        // attache à la main (pose exacte via offsets)
-        transform.SetParent(handSocket, worldPositionStays: false);
-        transform.localPosition = handSocket.localPosition;
-    }
-
-    public void Drop(Vector3 inheritVelocity)
-    {
-        if (!IsHeld) return;
-        
-        _respawnCoroutine = StartCoroutine(Respawn());
-        
-        // détache et réactive la physique
-        transform.SetParent(_originalParent, worldPositionStays: true);
-        foreach (var c in _colliders) c.enabled = true;
-
-        _rb.isKinematic = false;
-        _rb.useGravity = true;
-        _rb.linearVelocity = inheritVelocity;
-
-        IsHeld = false;
-    }
-
-    private IEnumerator Respawn(float a_time = -1.0f)
-    {
-        if (a_time < 0)
-            _delayCurrent = _respawnDelay;
-        else
-            _delayCurrent = a_time;
-        
-        yield return new WaitForSeconds(_delayCurrent);
-
-        _canTake = false;
-        
-        _delayCurrent = _despawnTime;
-        Vector3 startScale = transform.localScale;
-
-        while (_delayCurrent > 0)
+        public void Pick(Transform handSocket)
         {
-            _delayCurrent -= Time.fixedDeltaTime;
-            transform.localScale = Vector3.Lerp(Vector3.zero, startScale, _despawnAnim.Evaluate(_delayCurrent / _despawnTime));
-            yield return new WaitForFixedUpdate();
+            if (IsHeld || !canTake)
+            {
+                return;
+            }
+
+            if (respawnCoroutine != null)
+            {
+                StopCoroutine(respawnCoroutine);
+            }
+
+            IsHeld = true;
+            originalParent = transform.parent;
+
+            rigidbodyComponent.velocity = Vector3.zero;
+            rigidbodyComponent.angularVelocity = Vector3.zero;
+            rigidbodyComponent.isKinematic = true;
+            rigidbodyComponent.useGravity = false;
+
+            foreach (var collider in colliders)
+            {
+                collider.enabled = false;
+            }
+
+            transform.SetParent(handSocket, false);
+            transform.localPosition = handSocket.localPosition;
         }
-        
-        if (_despawnVFXPrefab != null)
-            Instantiate(_despawnVFXPrefab, transform.position, Quaternion.Euler(Vector3.zero));
-        
-        _rb.linearVelocity = Vector3.zero;
-        _rb.angularVelocity = Vector3.zero;
-        
-        transform.position = _spawnLocation;
-        transform.rotation = _spawnRotation;
-        transform.localScale = _spawnScale;
 
-        _canTake = true;
+        public void Drop(Vector3 inheritVelocity)
+        {
+            if (!IsHeld)
+            {
+                return;
+            }
+
+            respawnCoroutine = StartCoroutine(Respawn());
+
+            transform.SetParent(originalParent, true);
+            foreach (var collider in colliders)
+            {
+                collider.enabled = true;
+            }
+
+            rigidbodyComponent.isKinematic = false;
+            rigidbodyComponent.useGravity = true;
+            rigidbodyComponent.velocity = inheritVelocity;
+
+            IsHeld = false;
+        }
+
+        private IEnumerator Respawn(float durationOverride = -1f)
+        {
+            currentDelay = durationOverride < 0f ? respawnDelay : durationOverride;
+            yield return new WaitForSeconds(currentDelay);
+
+            canTake = false;
+
+            currentDelay = despawnTime;
+            var startScale = transform.localScale;
+
+            while (currentDelay > 0f)
+            {
+                currentDelay -= Time.fixedDeltaTime;
+                var lerpFactor = despawnAnim.Evaluate(currentDelay / despawnTime);
+                transform.localScale = Vector3.Lerp(Vector3.zero, startScale, lerpFactor);
+                yield return new WaitForFixedUpdate();
+            }
+
+            if (despawnVfxPrefab != null)
+            {
+                Instantiate(despawnVfxPrefab, transform.position, Quaternion.identity);
+            }
+
+            rigidbodyComponent.velocity = Vector3.zero;
+            rigidbodyComponent.angularVelocity = Vector3.zero;
+
+            transform.SetPositionAndRotation(spawnLocation, spawnRotation);
+            transform.localScale = spawnScale;
+
+            canTake = true;
+        }
     }
-
-    
 }

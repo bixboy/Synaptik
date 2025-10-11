@@ -1,127 +1,153 @@
-using UnityEngine;
-using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class LoadingScreenManager : MonoBehaviour
+namespace Synaptik.UI
 {
-    public static LoadingScreenManager Instance;
-
-    [Header("Références")]
-    private LoadingText loadingText;
-    [SerializeField] private GameObject loadingScreenPrefab;
-
-    [Header("Paramètres")]
-    [SerializeField] private float fadeDuration = 1f;
-    [SerializeField] private float holdDurationBeforeLoad = 0.5f;
-    [SerializeField] private float holdDurationAfterSceneLoaded = 0.5f;
-
-    [Header("Text")]
-    public List<string> TextFiller = new List<string>();
-
-    private CanvasGroup _currentCanvasGroup;
-    private GameObject _currentLoadingInstance;
-
-    private void Awake()
+    public sealed class LoadingScreenManager : MonoBehaviour
     {
-        if (Instance == null)
+        public static LoadingScreenManager Instance { get; private set; }
+
+        [Header("Références")]
+        [SerializeField]
+        private GameObject loadingScreenPrefab;
+
+        [Header("Paramètres")]
+        [SerializeField]
+        private float fadeDuration = 1f;
+
+        [SerializeField]
+        private float holdDurationBeforeLoad = 0.5f;
+
+        [SerializeField]
+        private float holdDurationAfterSceneLoaded = 0.5f;
+
+        [Header("Text")]
+        public List<string> textFiller = new();
+
+        private LoadingText loadingText;
+        private CanvasGroup currentCanvasGroup;
+        private GameObject currentLoadingInstance;
+
+        private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else
+
+        public void LoadScene(string sceneName)
         {
-            Destroy(gameObject);
-        }
-    }
+            if (currentLoadingInstance != null)
+            {
+                Debug.LogWarning("Une scène est déjà en cours de chargement.");
+                return;
+            }
 
-    public void LoadScene(string sceneName)
-    {
-        StartCoroutine(LoadSceneRoutine(sceneName));
-    }
-
-    private IEnumerator LoadSceneRoutine(string sceneName)
-    {
-        _currentLoadingInstance = Instantiate(loadingScreenPrefab);
-        DontDestroyOnLoad(_currentLoadingInstance);
-        
-        _currentCanvasGroup = _currentLoadingInstance.GetComponentInChildren<CanvasGroup>();
-        loadingText = _currentLoadingInstance.GetComponentInChildren<LoadingText>();
-
-        if (!_currentCanvasGroup)
-        {
-            Debug.LogError("Le prefab de loading screen doit contenir un CanvasGroup !");
-            yield break;
+            StartCoroutine(LoadSceneRoutine(sceneName));
         }
 
-        _currentCanvasGroup.alpha = 0f;
-
-        if (loadingText)
-            loadingText.StartText(TextFiller);
-
-        float estimatedTotalDuration = fadeDuration * 2 + holdDurationBeforeLoad + holdDurationAfterSceneLoaded;
-        StartCoroutine(UpdateLoadingProgress(estimatedTotalDuration));
-
-        yield return StartCoroutine(Fade(0f, 1f));
-
-        yield return new WaitForSeconds(holdDurationBeforeLoad);
-
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-        asyncLoad.allowSceneActivation = false;
-
-        while (asyncLoad.progress < 0.9f)
+        private IEnumerator LoadSceneRoutine(string sceneName)
         {
-            if (loadingText)
-                loadingText.Loading(asyncLoad.progress);
-            
-            yield return null;
+            currentLoadingInstance = Instantiate(loadingScreenPrefab);
+            DontDestroyOnLoad(currentLoadingInstance);
+
+            currentCanvasGroup = currentLoadingInstance.GetComponentInChildren<CanvasGroup>();
+            loadingText = currentLoadingInstance.GetComponentInChildren<LoadingText>();
+
+            if (currentCanvasGroup == null)
+            {
+                Debug.LogError("Le prefab de loading screen doit contenir un CanvasGroup !");
+                CleanupLoadingInstance();
+                yield break;
+            }
+
+            currentCanvasGroup.alpha = 0f;
+
+            loadingText?.StartText(textFiller);
+
+            var estimatedTotalDuration = fadeDuration * 2 + holdDurationBeforeLoad + holdDurationAfterSceneLoaded;
+            StartCoroutine(UpdateLoadingProgress(estimatedTotalDuration));
+
+            yield return StartCoroutine(Fade(0f, 1f));
+            yield return new WaitForSeconds(holdDurationBeforeLoad);
+
+            var asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+            asyncLoad.allowSceneActivation = false;
+
+            while (asyncLoad.progress < 0.9f)
+            {
+                loadingText?.SetLoadingProgress(asyncLoad.progress);
+                yield return null;
+            }
+
+            asyncLoad.allowSceneActivation = true;
+
+            yield return new WaitUntil(() => SceneManager.GetActiveScene().name == sceneName);
+            yield return new WaitForSeconds(holdDurationAfterSceneLoaded);
+            yield return StartCoroutine(Fade(1f, 0f));
+
+            CleanupLoadingInstance();
         }
 
-        asyncLoad.allowSceneActivation = true;
-
-       yield return new WaitUntil(() => SceneManager.GetActiveScene().name == sceneName);
-
-        yield return new WaitForSeconds(holdDurationAfterSceneLoaded);
-
-       yield return StartCoroutine(Fade(1f, 0f));
-
-        Destroy(_currentLoadingInstance);
-        _currentLoadingInstance = null;
-        _currentCanvasGroup = null;
-    }
-
-    private IEnumerator Fade(float from, float to)
-    {
-        float time = 0f;
-        while (time < fadeDuration)
+        private IEnumerator Fade(float from, float to)
         {
-            time += Time.deltaTime;
-            if (_currentCanvasGroup)
-                _currentCanvasGroup.alpha = Mathf.Lerp(from, to, time / fadeDuration);
-            yield return null;
+            var time = 0f;
+            while (time < fadeDuration)
+            {
+                time += Time.deltaTime;
+                if (currentCanvasGroup != null)
+                {
+                    currentCanvasGroup.alpha = Mathf.Lerp(from, to, time / fadeDuration);
+                }
+
+                yield return null;
+            }
+
+            if (currentCanvasGroup != null)
+            {
+                currentCanvasGroup.alpha = to;
+            }
         }
 
-        if (_currentCanvasGroup)
-            _currentCanvasGroup.alpha = to;
-    }
-
-    private IEnumerator UpdateLoadingProgress(float duration)
-    {
-        if (!loadingText) 
-            yield break;
-
-        duration *= 0.9f;
-
-        float time = 0f;
-        while (time < duration)
+        private IEnumerator UpdateLoadingProgress(float duration)
         {
-            time += Time.deltaTime;
-            float progress = Mathf.Clamp01(time / duration);
-            loadingText.Loading(progress);
-            
-            yield return null;
+            if (loadingText == null)
+            {
+                yield break;
+            }
+
+            duration *= 0.9f;
+
+            var time = 0f;
+            while (time < duration)
+            {
+                time += Time.deltaTime;
+                var progress = Mathf.Clamp01(time / duration);
+                loadingText.SetLoadingProgress(progress);
+
+                yield return null;
+            }
+
+            loadingText.SetLoadingProgress(1f);
         }
 
-        loadingText.Loading(1f);
+        private void CleanupLoadingInstance()
+        {
+            if (currentLoadingInstance != null)
+            {
+                Destroy(currentLoadingInstance);
+            }
+
+            currentLoadingInstance = null;
+            currentCanvasGroup = null;
+            loadingText = null;
+        }
     }
 }
