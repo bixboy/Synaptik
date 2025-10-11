@@ -24,6 +24,10 @@ public sealed class PlayerMovement : MonoBehaviour
     [SerializeField, ShowIf(nameof(cameraRelative))]
     private Camera targetCamera;
 
+    [Header("Rotation")]
+    [SerializeField, Min(0f)]
+    private float rotationSpeed = 10f;
+
     private void Reset()
     {
         rigidbodyComponent = GetComponent<Rigidbody>();
@@ -32,14 +36,10 @@ public sealed class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         if (rigidbodyComponent == null)
-        {
             rigidbodyComponent = GetComponent<Rigidbody>();
-        }
 
         if (cameraRelative && targetCamera == null)
-        {
             targetCamera = Camera.main;
-        }
 
         rigidbodyComponent.constraints |= RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         rigidbodyComponent.interpolation = RigidbodyInterpolation.Interpolate;
@@ -59,19 +59,17 @@ public sealed class PlayerMovement : MonoBehaviour
         var deltaV = targetHorizontalVelocity - horizontalVelocity;
 
         if (deltaV.sqrMagnitude > maxDeltaV * maxDeltaV)
-        {
             deltaV = deltaV.normalized * maxDeltaV;
-        }
 
         rigidbodyComponent.AddForce(deltaV, ForceMode.VelocityChange);
+
+        UpdateRotation(direction, horizontalVelocity);
     }
 
     private Vector3 GetMovementDirection(Vector2 input)
     {
         if (!cameraRelative || targetCamera == null)
-        {
             return new Vector3(input.x, 0f, input.y);
-        }
 
         var forward = targetCamera.transform.forward;
         forward.y = 0f;
@@ -82,5 +80,16 @@ public sealed class PlayerMovement : MonoBehaviour
         right.Normalize();
 
         return right * input.x + forward * input.y;
+    }
+
+    private void UpdateRotation(Vector3 inputDir, Vector3 velocity)
+    {
+        Vector3 dir = inputDir.sqrMagnitude > 0.0001f ? inputDir : velocity.normalized;
+
+        if (dir.sqrMagnitude < 0.001f)
+            return;
+
+        Quaternion targetRot = Quaternion.LookRotation(dir, Vector3.up);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.fixedDeltaTime * rotationSpeed);
     }
 }
