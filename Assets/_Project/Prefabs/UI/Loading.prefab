@@ -484,7 +484,6 @@ MonoBehaviour:
   progressText: {fileID: 6949961344376185568}
   minCharDelay: 0.01
   maxCharDelay: 0.05
-  lineDelay: 0.3
   randomizeDelay: 1
   showCursor: 1
   cursorSymbol: _
@@ -492,6 +491,7 @@ MonoBehaviour:
   typeSoundVolume: 0.1
   loadingPattern: LOADING
   loadingCycleSpeed: 0.3
+  cursorBlinkSpeed: 0.5
 --- !u!82 &2675249013775441746
 AudioSource:
   m_ObjectHideFlags: 0

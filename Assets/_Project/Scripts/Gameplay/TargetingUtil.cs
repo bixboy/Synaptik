@@ -34,16 +34,12 @@ public static class TargetingUtil
         for (var i = 0; i < count; i++)
         {
             var collider = OverlapBuffer[i];
-            if (collider == null || !collider.gameObject.activeInHierarchy)
-            {
+            if (!collider  || !collider.gameObject.activeInHierarchy)
                 continue;
-            }
 
             var alien = collider.GetComponent<Alien>() ?? collider.GetComponentInParent<Alien>();
-            if (alien == null || !alien.gameObject.activeInHierarchy)
-            {
+            if (!alien || !alien.gameObject.activeInHierarchy)
                 continue;
-            }
 
             var toAlien = alien.transform.position - originPos;
             toAlien.y = 0f;
@@ -82,13 +78,11 @@ public static class TargetingUtil
 
     public static IInteraction FindInteractionInFront(Transform origin, float radius, float maxAngleDeg, int layerMask)
     {
-        if (origin == null)
-        {
+        if (!origin)
             return null;
-        }
 
         var camera = Camera.main;
-        if (camera == null)
+        if (!camera)
         {
             Debug.LogWarning("TargetingUtil: aucune caméra principale trouvée !");
             return null;
