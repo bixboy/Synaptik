@@ -17,16 +17,16 @@ MonoBehaviour:
     playerEmotion: 1
     questId: 
     questStepId: 
-    suspicionDelta: -10
+    suspicionDelta: -3
     setNewEmotion: 1
     newEmotion: 4
   - channel: 1
     playerEmotion: 2
     questId: 
     questStepId: 
-    suspicionDelta: 10
-    setNewEmotion: 1
-    newEmotion: 2
+    suspicionDelta: 0
+    setNewEmotion: 0
+    newEmotion: 0
   - channel: 1
     playerEmotion: 3
     questId: 
@@ -45,15 +45,15 @@ MonoBehaviour:
     playerEmotion: 1
     questId: 
     questStepId: 
-    suspicionDelta: -10
+    suspicionDelta: -5
     setNewEmotion: 1
     newEmotion: 1
   - channel: 2
     playerEmotion: 2
     questId: 
     questStepId: 
-    suspicionDelta: 10
-    setNewEmotion: 1
+    suspicionDelta: 0
+    setNewEmotion: 0
     newEmotion: 2
   - channel: 2
     playerEmotion: 3

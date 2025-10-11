@@ -15,18 +15,37 @@ MonoBehaviour:
   entries:
   - emotion: 1
     behavior: 1
-    emojiLine: Test Anger
-    duration: 2
+    emojiLine: "\U0001F62D"
+    duration: 3
   - emotion: 2
     behavior: 1
-    emojiLine: friendly
+    emojiLine: "\U0001F612"
     duration: 3
-  - emotion: 0
-    behavior: 0
-    emojiLine: 
+  - emotion: 3
+    behavior: 1
+    emojiLine: "\U0001F9F8\U0001F6AB\U0001F62D"
+    duration: 3
+  - emotion: 4
+    behavior: 1
+    emojiLine: "\U0001F928\u2753"
+    duration: 3
+  - emotion: 4
+    behavior: 2
+    emojiLine: "\U0001F62F\u2049"
+    duration: 3
+  - emotion: 3
+    behavior: 2
+    emojiLine: "\U0001FAF4\u2753"
+    duration: 3
+  - emotion: 2
+    behavior: 2
+    emojiLine: "\U0001FAF4\u2753"
+    duration: 3
+  - emotion: 1
+    behavior: 2
+    emojiLine: "\U0001F62F"
+    duration: 3
+  itemEntries:
+  - itemId: labubu
+    emojiLine: "\U0001F929"
     duration: 0
-  - emotion: 0
-    behavior: 0
-    emojiLine: 
-    duration: 0
-  itemEntries: []

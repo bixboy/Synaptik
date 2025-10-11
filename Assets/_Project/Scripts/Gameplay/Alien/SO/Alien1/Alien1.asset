@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58f9ab1e10ce5b64b965e1fd1a0a9980, type: 3}
   m_Name: Alien1
   m_EditorClassIdentifier: 
-  alienId: 1
+  alienId: 4
   startEmotion: 4
   animator: {fileID: 0}
   reactions: {fileID: 11400000, guid: 73d53233d08b9ba49be514744243debc, type: 2}
@@ -27,4 +27,4 @@ MonoBehaviour:
     - stepId: 0
       stepType: 1
       completesQuest: 1
-      nextStepId: 
+      nextStepId: 1
