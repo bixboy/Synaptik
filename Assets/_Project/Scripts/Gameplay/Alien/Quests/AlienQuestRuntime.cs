@@ -219,13 +219,10 @@ namespace Synaptik.Game
             }
 
             _questCompleted = true;
-
             Debug.Log($"[QuestRuntime:{questId}] Quest completed.");
 
-            if (_definition.AutoCompleteMissionOnQuestEnd && GameManager.Instance != null && !string.IsNullOrWhiteSpace(_definition.QuestId))
-            {
+            if (GameManager.Instance)
                 GameManager.Instance.SetMissionFinished(_definition.QuestId);
-            }
         }
     }
 }

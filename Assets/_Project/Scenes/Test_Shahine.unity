@@ -2051,6 +2051,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42c9039e811abaa488081d4a27598f81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 1714252161}
+  detectionRadius: 6
   canMove: 1
   moveRadius: 5
   moveSpeed: 2
