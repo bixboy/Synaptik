@@ -2,43 +2,40 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Synaptik.UI
+[DisallowMultipleComponent]
+public sealed class NotebookEntry : MonoBehaviour
 {
-    [DisallowMultipleComponent]
-    public sealed class NotebookEntry : MonoBehaviour
+    [SerializeField]
+    private TextMeshProUGUI titleText;
+
+    [SerializeField]
+    private TextMeshProUGUI descriptionText;
+
+    [SerializeField]
+    private Toggle notebookToggle;
+
+    public void Initialize(Gameplay.Mission mission)
     {
-        [SerializeField]
-        private TextMeshProUGUI titleText;
-
-        [SerializeField]
-        private TextMeshProUGUI descriptionText;
-
-        [SerializeField]
-        private Toggle notebookToggle;
-
-        public void Initialize(Gameplay.Mission mission)
+        if (titleText != null)
         {
-            if (titleText != null)
-            {
-                titleText.text = mission.Title;
-            }
-
-            if (descriptionText != null)
-            {
-                descriptionText.text = mission.Description;
-            }
-
-            SetToggle(mission.IsFinished);
+            titleText.text = mission.Title;
         }
 
-        public void SetToggle(bool isOn)
+        if (descriptionText != null)
         {
-            if (notebookToggle == null)
-            {
-                return;
-            }
-
-            notebookToggle.isOn = isOn;
+            descriptionText.text = mission.Description;
         }
+
+        SetToggle(mission.IsFinished);
+    }
+
+    public void SetToggle(bool isOn)
+    {
+        if (notebookToggle == null)
+        {
+            return;
+        }
+
+        notebookToggle.isOn = isOn;
     }
 }

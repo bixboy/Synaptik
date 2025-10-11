@@ -1,22 +1,19 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Synaptik.VFX
+public sealed class VFXDestroyer : MonoBehaviour
 {
-    public sealed class VFXDestroyer : MonoBehaviour
+    [SerializeField]
+    private float lifetime = 1.5f;
+
+    private void Start()
     {
-        [SerializeField]
-        private float lifetime = 1.5f;
+        StartCoroutine(DestroyVFX());
+    }
 
-        private void Start()
-        {
-            StartCoroutine(DestroyVFX());
-        }
-
-        private IEnumerator DestroyVFX()
-        {
-            yield return new WaitForSeconds(lifetime);
-            Destroy(gameObject);
-        }
+    private IEnumerator DestroyVFX()
+    {
+        yield return new WaitForSeconds(lifetime);
+        Destroy(gameObject);
     }
 }

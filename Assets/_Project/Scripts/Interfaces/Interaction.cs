@@ -1,38 +1,34 @@
-using Synaptik.Gameplay;
 
-namespace Synaptik.Interfaces
+public enum Emotion
 {
-    public enum Emotion
-    {
-        None = 0,
-        Anger = 1,
-        Friendly = 2,
-        Curious = 3,
-        Fearful = 4
-    }
+    None = 0,
+    Anger = 1,
+    Friendly = 2,
+    Curious = 3,
+    Fearful = 4
+}
 
-    public enum Behavior
-    {
-        None,
-        Talking,
-        Action
-    }
+public enum Behavior
+{
+    None,
+    Talking,
+    Action
+}
 
-    [System.Serializable]
-    public struct ActionValues
-    {
-        public Emotion _emotion;
-        public Behavior _behavior;
+[System.Serializable]
+public struct ActionValues
+{
+    public Emotion _emotion;
+    public Behavior _behavior;
 
-        public ActionValues(Emotion emotion, Behavior behavior)
-        {
-            _emotion = emotion;
-            _behavior = behavior;
-        }
-    }
-
-    public interface IInteraction
+    public ActionValues(Emotion emotion, Behavior behavior)
     {
-        void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null);
+        _emotion = emotion;
+        _behavior = behavior;
     }
+}
+
+public interface IInteraction
+{
+    void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null);
 }

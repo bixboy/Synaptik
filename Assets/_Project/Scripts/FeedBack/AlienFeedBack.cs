@@ -1,52 +1,48 @@
 using System;
 using System.Collections.Generic;
-using Synaptik.Interfaces;
 using UnityEngine;
 
-namespace Synaptik.FeedBack
+[Serializable]
+public struct FeedBack
 {
-    [Serializable]
-    public struct FeedBack
+    public Emotion emotion;
+    public Color emotionColor;
+    public string talkingReaction;
+}
+
+public sealed class AlienFeedBack : MonoBehaviour
+{
+    [Header("Feedbacks")]
+    [SerializeField]
+    private List<FeedBack> feedbackList = new();
+
+    private readonly Dictionary<Emotion, Color> feedbackColors = new();
+    private readonly Dictionary<Emotion, string> feedbackTalking = new();
+
+    private void Start()
     {
-        public Emotion emotion;
-        public Color emotionColor;
-        public string talkingReaction;
+        foreach (var feedback in feedbackList)
+        {
+            feedbackColors[feedback.emotion] = feedback.emotionColor;
+            feedbackTalking[feedback.emotion] = feedback.talkingReaction;
+        }
     }
 
-    public sealed class AlienFeedBack : MonoBehaviour
+    private void ActionFeedback(IAlienReaction alien, Emotion emotion, Behavior behavior)
     {
-        [Header("Feedbacks")]
-        [SerializeField]
-        private List<FeedBack> feedbackList = new();
-
-        private readonly Dictionary<Emotion, Color> feedbackColors = new();
-        private readonly Dictionary<Emotion, string> feedbackTalking = new();
-
-        private void Start()
+        if (alien == null)
         {
-            foreach (var feedback in feedbackList)
-            {
-                feedbackColors[feedback.emotion] = feedback.emotionColor;
-                feedbackTalking[feedback.emotion] = feedback.talkingReaction;
-            }
+            return;
         }
 
-        private void ActionFeedback(IAlienReaction alien, Emotion emotion, Behavior behavior)
+        if (feedbackColors.TryGetValue(emotion, out var color))
         {
-            if (alien == null)
-            {
-                return;
-            }
+            alien.FeedbackColor(color);
+        }
 
-            if (feedbackColors.TryGetValue(emotion, out var color))
-            {
-                alien.FeedbackColor(color);
-            }
-
-            if (behavior == Behavior.Talking && feedbackTalking.TryGetValue(emotion, out var reaction))
-            {
-                alien.FeedbackTalking(reaction);
-            }
+        if (behavior == Behavior.Talking && feedbackTalking.TryGetValue(emotion, out var reaction))
+        {
+            alien.FeedbackTalking(reaction);
         }
     }
 }

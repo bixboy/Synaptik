@@ -2,68 +2,65 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
-namespace Synaptik.UI
+public sealed class DialogueBubble : MonoBehaviour
 {
-    public sealed class DialogueBubble : MonoBehaviour
+    [Header("Références")]
+    [SerializeField]
+    private TextMeshProUGUI dialogueText;
+
+    [Header("Paramètres")]
+    [SerializeField]
+    private float lifetime = 3f;
+
+    [SerializeField]
+    private float typingSpeed = 0.03f;
+
+    private Transform mainCamera;
+
+    private void Start()
     {
-        [Header("Références")]
-        [SerializeField]
-        private TextMeshProUGUI dialogueText;
-
-        [Header("Paramètres")]
-        [SerializeField]
-        private float lifetime = 3f;
-
-        [SerializeField]
-        private float typingSpeed = 0.03f;
-
-        private Transform mainCamera;
-
-        private void Start()
+        var camera = Camera.main;
+        if (camera != null)
         {
-            var camera = Camera.main;
-            if (camera != null)
-            {
-                mainCamera = camera.transform;
-            }
-
-            Destroy(gameObject, lifetime);
+            mainCamera = camera.transform;
         }
 
-        private void LateUpdate()
-        {
-            if (mainCamera == null)
-            {
-                return;
-            }
+        Destroy(gameObject, lifetime);
+    }
 
-            transform.LookAt(transform.position + mainCamera.forward);
+    private void LateUpdate()
+    {
+        if (mainCamera == null)
+        {
+            return;
         }
 
-        public void SetText(string text)
-        {
-            if (!gameObject.activeInHierarchy)
-            {
-                return;
-            }
+        transform.LookAt(transform.position + mainCamera.forward);
+    }
 
-            StopAllCoroutines();
-            StartCoroutine(TypeText(text));
+    public void SetText(string text)
+    {
+        if (!gameObject.activeInHierarchy)
+        {
+            return;
         }
 
-        private IEnumerator TypeText(string text)
-        {
-            if (dialogueText == null)
-            {
-                yield break;
-            }
+        StopAllCoroutines();
+        StartCoroutine(TypeText(text));
+    }
 
-            dialogueText.text = string.Empty;
-            foreach (var letter in text)
-            {
-                dialogueText.text += letter;
-                yield return new WaitForSeconds(typingSpeed);
-            }
+    private IEnumerator TypeText(string text)
+    {
+        if (dialogueText == null)
+        {
+            yield break;
+        }
+
+        dialogueText.text = string.Empty;
+        foreach (var letter in text)
+        {
+            dialogueText.text += letter;
+            yield return new WaitForSeconds(typingSpeed);
         }
     }
 }

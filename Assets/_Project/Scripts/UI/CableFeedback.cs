@@ -1,106 +1,102 @@
-using Synaptik.Interfaces;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Synaptik.UI
+public sealed class CableFeedback : MonoBehaviour
 {
-    public sealed class CableFeedback : MonoBehaviour
+    [Header("Output References")]
+    [SerializeField]
+    private Image outputLeft;
+
+    [SerializeField]
+    private Image outputRight;
+
+    [Header("Action Colors")]
+    [SerializeField]
+    private Color defaultActionColor = Color.white;
+
+    [SerializeField]
+    private Color talkColor;
+
+    [SerializeField]
+    private Color actionColor;
+
+    [Header("Emotion Colors")]
+    [SerializeField]
+    private Color defaultEmotionColor = Color.white;
+
+    [SerializeField]
+    private Color curiousColor;
+
+    [SerializeField]
+    private Color angryColor;
+
+    [SerializeField]
+    private Color fearfulColor;
+
+    [SerializeField]
+    private Color friendlyColor;
+
+    private void Start()
     {
-        [Header("Output References")]
-        [SerializeField]
-        private Image outputLeft;
-
-        [SerializeField]
-        private Image outputRight;
-
-        [Header("Action Colors")]
-        [SerializeField]
-        private Color defaultActionColor = Color.white;
-
-        [SerializeField]
-        private Color talkColor;
-
-        [SerializeField]
-        private Color actionColor;
-
-        [Header("Emotion Colors")]
-        [SerializeField]
-        private Color defaultEmotionColor = Color.white;
-
-        [SerializeField]
-        private Color curiousColor;
-
-        [SerializeField]
-        private Color angryColor;
-
-        [SerializeField]
-        private Color fearfulColor;
-
-        [SerializeField]
-        private Color friendlyColor;
-
-        private void Start()
+        if (Core.InputsDetection.Instance == null)
         {
-            if (Core.InputsDetection.Instance == null)
-            {
-                return;
-            }
-
-            Core.InputsDetection.Instance.OnEmotion += HandleEmotion;
-            Core.InputsDetection.Instance.OnAction += HandleAction;
+            return;
         }
 
-        private void OnDestroy()
-        {
-            if (Core.InputsDetection.Instance == null)
-            {
-                return;
-            }
+        Core.InputsDetection.Instance.OnEmotion += HandleEmotion;
+        Core.InputsDetection.Instance.OnAction += HandleAction;
+    }
 
-            Core.InputsDetection.Instance.OnEmotion -= HandleEmotion;
-            Core.InputsDetection.Instance.OnAction -= HandleAction;
+    private void OnDestroy()
+    {
+        if (Core.InputsDetection.Instance == null)
+        {
+            return;
         }
 
-        private void HandleEmotion(Emotion emotion, bool keyReleased)
-        {
-            if (outputRight == null)
-            {
-                return;
-            }
+        Core.InputsDetection.Instance.OnEmotion -= HandleEmotion;
+        Core.InputsDetection.Instance.OnAction -= HandleAction;
+    }
 
-            outputRight.color = keyReleased ? defaultEmotionColor : GetEmotionColor(emotion);
+    private void HandleEmotion(Emotion emotion, bool keyReleased)
+    {
+        if (outputRight == null)
+        {
+            return;
         }
 
-        private void HandleAction(Behavior behavior, bool keyReleased)
-        {
-            if (outputLeft == null)
-            {
-                return;
-            }
+        outputRight.color = keyReleased ? defaultEmotionColor : GetEmotionColor(emotion);
+    }
 
-            outputLeft.color = keyReleased ? defaultActionColor : GetActionColor(behavior);
+    private void HandleAction(Behavior behavior, bool keyReleased)
+    {
+        if (outputLeft == null)
+        {
+            return;
         }
 
-        private Color GetEmotionColor(Emotion emotion)
-        {
-            return emotion switch
-            {
-                Emotion.Anger => angryColor,
-                Emotion.Curious => curiousColor,
-                Emotion.Fearful => fearfulColor,
-                Emotion.Friendly => friendlyColor,
-                _ => defaultEmotionColor
-            };
-        }
+        outputLeft.color = keyReleased ? defaultActionColor : GetActionColor(behavior);
+    }
 
-        private Color GetActionColor(Behavior behavior)
+    private Color GetEmotionColor(Emotion emotion)
+    {
+        return emotion switch
         {
-            return behavior switch
-            {
-                Behavior.Action => actionColor,
-                Behavior.Talking => talkColor,
-                _ => defaultActionColor
-            };
-        }
+            Emotion.Anger => angryColor,
+            Emotion.Curious => curiousColor,
+            Emotion.Fearful => fearfulColor,
+            Emotion.Friendly => friendlyColor,
+            _ => defaultEmotionColor
+        };
+    }
+
+    private Color GetActionColor(Behavior behavior)
+    {
+        return behavior switch
+        {
+            Behavior.Action => actionColor,
+            Behavior.Talking => talkColor,
+            _ => defaultActionColor
+        };
     }
 }
