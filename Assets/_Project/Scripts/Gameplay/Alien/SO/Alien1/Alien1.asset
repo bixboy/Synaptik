@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58f9ab1e10ce5b64b965e1fd1a0a9980, type: 3}
   m_Name: Alien1
   m_EditorClassIdentifier: 
-  alienId: 4
+  alienId: 1
   startEmotion: 3
   animator: {fileID: 0}
   reactions: {fileID: 11400000, guid: 73d53233d08b9ba49be514744243debc, type: 2}
@@ -22,5 +22,9 @@ MonoBehaviour:
     title: "R\xE9conforter l'alien pr\xE8s du quiosque"
     description: il semble vouloir un objet
     autoRegisterMission: 1
-    autoCompleteMissionOnQuestEnd: 0
-    steps: []
+    autoCompleteMissionOnQuestEnd: 1
+    steps:
+    - stepId: 0
+      stepType: 1
+      completesQuest: 1
+      nextStepId: 
