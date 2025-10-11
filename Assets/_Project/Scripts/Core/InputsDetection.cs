@@ -4,6 +4,7 @@ using UnityEngine;
 
 public sealed class InputsDetection : MonoBehaviour
 {
+    private const string LogPrefix = "[InputsDetection]";
     public static InputsDetection Instance { get; private set; }
 
     [Header("Configuration des touches ↔ émotions")]
@@ -60,14 +61,14 @@ public sealed class InputsDetection : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Debug.LogWarning("[InputsDetection] Duplicate instance detected, destroying the newest one.");
+            Debug.LogWarning($"{LogPrefix} Duplicate instance detected, destroying the newest one.");
             Destroy(gameObject);
             return;
         }
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        Debug.Log("[InputsDetection] Singleton instance initialisée.");
+        Debug.Log($"{LogPrefix} Instance ready.");
     }
 
     private void Start()
@@ -79,7 +80,7 @@ public sealed class InputsDetection : MonoBehaviour
         {
             if (_emotionMap.ContainsKey(binding.key))
             {
-                Debug.LogWarning($"[InputsDetection] Binding émotion déjà configuré pour {binding.key} (existante: {_emotionMap[binding.key]}, ignorée: {binding.emotion}).");
+                Debug.LogWarning($"{LogPrefix} Duplicate emotion binding for {binding.key} (existing: {_emotionMap[binding.key]}, ignored: {binding.emotion}).");
                 continue;
             }
 
@@ -90,7 +91,7 @@ public sealed class InputsDetection : MonoBehaviour
         {
             if (_actionMap.ContainsKey(binding.key))
             {
-                Debug.LogWarning($"[InputsDetection] Binding action déjà configuré pour {binding.key} (existante: {_actionMap[binding.key]}, ignorée: {binding.action}).");
+                Debug.LogWarning($"{LogPrefix} Duplicate action binding for {binding.key} (existing: {_actionMap[binding.key]}, ignored: {binding.action}).");
                 continue;
             }
 
@@ -103,7 +104,7 @@ public sealed class InputsDetection : MonoBehaviour
             _moveDirs[i] = movementBindings[i].direction;
         }
 
-        Debug.Log($"[InputsDetection] {_emotionMap.Count} émotions / {_actionMap.Count} actions configurées.");
+        Debug.Log($"{LogPrefix} {_emotionMap.Count} emotions / {_actionMap.Count} actions configured.");
     }
 
     private void Update()
@@ -141,14 +142,12 @@ public sealed class InputsDetection : MonoBehaviour
                 _pressedEmotionKeys.Add(keyCode);
                 TryTriggerCombos(emotion);
                 OnEmotion?.Invoke(emotion, false);
-                Debug.Log($"[InputsDetection] Touche émotion pressée: {keyCode} → {emotion}.");
             }
 
             if (Input.GetKeyUp(keyCode))
             {
                 _pressedEmotionKeys.Remove(keyCode);
                 OnEmotion?.Invoke(emotion, true);
-                Debug.Log($"[InputsDetection] Touche émotion relâchée: {keyCode} → {emotion}.");
             }
         }
     }
@@ -164,11 +163,10 @@ public sealed class InputsDetection : MonoBehaviour
                 OnAction?.Invoke(action, false);
 
                 _actionInputPressed++;
-                Debug.Log($"[InputsDetection] Touche action pressée: {keyCode} → {action}. Total actions pressées: {_actionInputPressed}.");
                 if (_actionInputPressed >= 2)
                 {
                     OnTowActionPressed?.Invoke(true);
-                    Debug.Log("[InputsDetection] Deux actions simultanées détectées.");
+                    Debug.Log($"{LogPrefix} Two actions pressed simultaneously.");
                 }
             }
 
@@ -178,7 +176,6 @@ public sealed class InputsDetection : MonoBehaviour
                 _actionInputPressed = Mathf.Max(0, _actionInputPressed - 1);
                 OnTowActionPressed?.Invoke(false);
                 OnAction?.Invoke(action, true);
-                Debug.Log($"[InputsDetection] Touche action relâchée: {keyCode} → {action}. Actions restantes: {_actionInputPressed}.");
             }
         }
     }
@@ -190,7 +187,6 @@ public sealed class InputsDetection : MonoBehaviour
             foreach (var key in _pressedActionKeys)
             {
                 var activeAction = _actionMap[key];
-                Debug.Log($"[InputsDetection] Combo détecté via émotion {emotion} + action active {activeAction}.");
                 Trigger(emotion, activeAction);
             }
         }
@@ -203,14 +199,13 @@ public sealed class InputsDetection : MonoBehaviour
         foreach (var key in _pressedEmotionKeys)
         {
             var activeEmotion = _emotionMap[key];
-            Debug.Log($"[InputsDetection] Combo détecté via action {action} + émotion active {activeEmotion}.");
             Trigger(activeEmotion, action);
         }
     }
 
     private void Trigger(Emotion emotion, Behavior action)
     {
-        Debug.Log($"[InputsDetection] Déclenchement combo final: émotion {emotion}, action {action}.");
+        Debug.Log($"{LogPrefix} Combo triggered → Emotion: {emotion}, Action: {action}.");
         OnEmotionAction?.Invoke(emotion, action);
     }
 

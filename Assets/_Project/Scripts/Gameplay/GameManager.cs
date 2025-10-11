@@ -20,6 +20,8 @@ public struct Mission
 
 public sealed class GameManager : MonoBehaviour
 {
+    private const string LogPrefix = "[GameManager]";
+
     public static GameManager Instance { get; private set; }
     public bool IsInitialized { get; private set; }
 
@@ -44,7 +46,7 @@ public sealed class GameManager : MonoBehaviour
     private void Start()
     {
         IsInitialized = true;
-        Debug.Log("[GameManager] Initialisation terminée.");
+        Debug.Log($"{LogPrefix} Initialisation terminée.");
     }
 
     public bool RegisterMission(Mission mission)
@@ -56,12 +58,12 @@ public sealed class GameManager : MonoBehaviour
                 continue;
             }
 
-            Debug.LogWarning($"Mission '{mission.MissionID}' already registered.");
+            Debug.LogWarning($"{LogPrefix} Mission '{mission.MissionID}' already registered.");
             return false;
         }
 
         missions.Add(mission);
-        Debug.Log($"[GameManager] Mission '{mission.MissionID}' enregistrée (total: {missions.Count}).");
+        Debug.Log($"{LogPrefix} Mission '{mission.MissionID}' enregistrée. Total missions: {missions.Count}.");
         return true;
     }
 
@@ -77,20 +79,19 @@ public sealed class GameManager : MonoBehaviour
             var mission = missions[i];
             if (mission.IsFinished)
             {
-                Debug.LogWarning($"[GameManager] Mission '{missionId}' déjà marquée comme terminée.");
+                Debug.LogWarning($"{LogPrefix} Mission '{missionId}' déjà terminée.");
                 return;
             }
 
             mission.IsFinished = true;
             missions[i] = mission;
 
-            Debug.Log($"[GameManager] Mission '{missionId}' passe en statut terminé.");
+            Debug.Log($"{LogPrefix} Mission '{missionId}' complétée.");
             OnTaskEnd?.Invoke(mission);
-            Debug.Log($"Mission '{missionId}' terminée !");
             return;
         }
 
-        Debug.LogWarning($"Aucune mission trouvée avec le nom '{missionId}'.");
+        Debug.LogWarning($"{LogPrefix} Aucune mission trouvée avec l'identifiant '{missionId}'.");
     }
 
     public void ClearAll()
@@ -98,7 +99,7 @@ public sealed class GameManager : MonoBehaviour
         missions.Clear();
         MistrustManager.Instance?.RemoveMistrust(1000);
 
-        Debug.Log("[GameManager] Toutes les missions et abonnements ont été nettoyés.");
+        Debug.Log($"{LogPrefix} Toutes les missions et abonnements ont été nettoyés.");
     }
 
     public IReadOnlyList<Mission> GetMissions()

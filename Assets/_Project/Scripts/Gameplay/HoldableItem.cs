@@ -6,6 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public sealed class HoldableItem : MonoBehaviour, IInteraction
 {
+    private const string LogPrefix = "[HoldableItem]";
+
     [SerializeField]
     private string itemId;
 
@@ -45,25 +47,28 @@ public sealed class HoldableItem : MonoBehaviour, IInteraction
         spawnRotation = transform.rotation;
         spawnScale = transform.localScale;
 
-        Debug.Log($"[HoldableItem] '{name}' initialisé à la position {spawnLocation}.");
+        Debug.Log($"{LogPrefix} '{name}' prêt à {spawnLocation}.");
     }
 
     public void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null)
     {
-        if (action._behavior != Behavior.Action || playerInteraction == null)
+        if (playerInteraction == null)
         {
-            Debug.Log($"[HoldableItem] Interaction ignorée pour '{name}' : action {action._behavior}, playerInteraction null={(playerInteraction == null)}.");
+            Debug.LogWarning($"{LogPrefix} Interaction ignorée sur '{name}' (player manquant).");
+            return;
+        }
+
+        if (action._behavior != Behavior.Action)
+        {
             return;
         }
 
         switch (action._emotion)
         {
             case Emotion.Curious:
-                Debug.Log($"[HoldableItem] '{name}' interaction curieuse détectée, tentative de ramassage.");
                 playerInteraction.PickUp();
                 break;
             case Emotion.Friendly when item != null:
-                Debug.Log($"[HoldableItem] '{name}' interaction amicale avec objet '{item.name}', tentative de drop.");
                 playerInteraction.DropItem();
                 break;
         }
@@ -73,14 +78,13 @@ public sealed class HoldableItem : MonoBehaviour, IInteraction
     {
         if (IsHeld || !canTake)
         {
-            Debug.LogWarning($"[HoldableItem] Tentative de ramassage invalide pour '{name}' (IsHeld={IsHeld}, canTake={canTake}).");
+            Debug.LogWarning($"{LogPrefix} Ramassage invalide pour '{name}' (IsHeld={IsHeld}, CanTake={canTake}).");
             return;
         }
 
         if (respawnCoroutine != null)
         {
             StopCoroutine(respawnCoroutine);
-            Debug.Log($"[HoldableItem] '{name}' ramassé avant fin de respawn, coroutine arrêtée.");
         }
 
         IsHeld = true;
@@ -98,20 +102,18 @@ public sealed class HoldableItem : MonoBehaviour, IInteraction
 
         transform.SetParent(handSocket, false);
         transform.localPosition = handSocket.localPosition;
-        Debug.Log($"[HoldableItem] '{name}' ramassé par '{handSocket.name}'.");
+        Debug.Log($"{LogPrefix} '{name}' ramassé par '{handSocket.name}'.");
     }
 
     public void Drop(Vector3 inheritVelocity)
     {
         if (!IsHeld)
         {
-            Debug.LogWarning($"[HoldableItem] Tentative de drop alors que '{name}' n'est pas tenu.");
+            Debug.LogWarning($"{LogPrefix} Tentative de drop alors que '{name}' n'est pas tenu.");
             return;
         }
 
         respawnCoroutine = StartCoroutine(Respawn());
-
-        Debug.Log($"[HoldableItem] '{name}' lâché avec vitesse héritée {inheritVelocity}.");
 
         transform.SetParent(originalParent, true);
         foreach (var collider in colliders)
@@ -124,12 +126,13 @@ public sealed class HoldableItem : MonoBehaviour, IInteraction
         rigidbodyComponent.linearVelocity = inheritVelocity;
 
         IsHeld = false;
+        Debug.Log($"{LogPrefix} '{name}' lâché.");
     }
 
     private IEnumerator Respawn(float durationOverride = -1f)
     {
         currentDelay = durationOverride < 0f ? respawnDelay : durationOverride;
-        Debug.Log($"[HoldableItem] Respawn de '{name}' démarré. Délai: {currentDelay}s.");
+        Debug.Log($"{LogPrefix} Respawn de '{name}' démarré ({currentDelay:F1}s).");
         yield return new WaitForSeconds(currentDelay);
 
         canTake = false;
@@ -157,6 +160,6 @@ public sealed class HoldableItem : MonoBehaviour, IInteraction
         transform.localScale = spawnScale;
 
         canTake = true;
-        Debug.Log($"[HoldableItem] '{name}' réinitialisé à sa position d'origine et à nouveau disponible.");
+        Debug.Log($"{LogPrefix} '{name}' réinitialisé et disponible.");
     }
 }

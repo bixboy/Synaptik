@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
+    private const string LogPrefix = "[PlayerInteraction]";
+
     [Header("Pickup/Drop Settings")]
     [SerializeField]
     private Transform handSocket;
@@ -120,7 +122,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         comboBubble = GetComponent<PlayerComboBubble>() ?? gameObject.AddComponent<PlayerComboBubble>();
         RebuildComboLookup();
-        Debug.Log($"[PlayerInteraction] '{name}' initialisé avec {comboLookup.Count} combos configurés.");
+        Debug.Log($"{LogPrefix} '{name}' prêt ({comboLookup.Count} combos).");
     }
 
     private void Start()
@@ -128,11 +130,11 @@ public class PlayerInteraction : MonoBehaviour
         if (InputsDetection.Instance)
         {
             InputsDetection.Instance.OnEmotionAction += HandleEmotionAction;
-            Debug.Log("[PlayerInteraction] Abonné aux combos de InputsDetection.");
+            Debug.Log($"{LogPrefix} Abonné aux combos d'InputsDetection.");
         }
         else
         {
-            Debug.LogWarning("[PlayerInteraction] Aucun InputsDetection trouvé lors de l'initialisation.");
+            Debug.LogWarning($"{LogPrefix} Aucun InputsDetection trouvé lors de l'initialisation.");
         }
     }
 
@@ -141,7 +143,7 @@ public class PlayerInteraction : MonoBehaviour
         if (InputsDetection.Instance)
         {
             InputsDetection.Instance.OnEmotionAction -= HandleEmotionAction;
-            Debug.Log("[PlayerInteraction] Désabonné des combos de InputsDetection.");
+            Debug.Log($"{LogPrefix} Désabonné des combos d'InputsDetection.");
         }
     }
 
@@ -155,7 +157,7 @@ public class PlayerInteraction : MonoBehaviour
         comboLookup.Clear();
         if (comboSymbolDefinitions == null)
         {
-            Debug.LogWarning("[PlayerInteraction] Aucun symbole de combo configuré.");
+            Debug.LogWarning($"{LogPrefix} Aucun symbole de combo configuré.");
             return;
         }
 
@@ -165,20 +167,14 @@ public class PlayerInteraction : MonoBehaviour
                 continue;
 
             var key = new ComboKey(definition.Emotion, definition.Behavior);
-            if (comboLookup.ContainsKey(key))
-            {
-                Debug.LogWarning($"[PlayerInteraction] Remplacement du combo {definition.Behavior}/{definition.Emotion} par une nouvelle définition.");
-            }
             comboLookup[key] = definition;
         }
 
-        Debug.Log($"[PlayerInteraction] Table de combos reconstruite ({comboLookup.Count} entrées).");
+        Debug.Log($"{LogPrefix} Table de combos reconstruite ({comboLookup.Count} entrées).");
     }
 
     private void HandleEmotionAction(Emotion emotion, Behavior behavior)
     {
-        Debug.Log($"[PlayerInteraction] Combo reçu: Emotion={emotion}, Behavior={behavior}.");
-
         ShowComboFeedback(emotion, behavior);
 
         var origin = aimZone ? aimZone : transform;
@@ -186,17 +182,12 @@ public class PlayerInteraction : MonoBehaviour
 
         if (interactable != null)
         {
-            Debug.Log($"[PlayerInteraction] Interactible '{interactable}' détecté, envoi de l'interaction.");
+            Debug.Log($"{LogPrefix} Combo {emotion}/{behavior} → interactable '{interactable}'.");
             interactable.Interact(new ActionValues(emotion, behavior), heldItem, this);
         }
         else if (emotion == Emotion.Friendly && behavior == Behavior.Action && heldItem)
         {
-            Debug.Log("[PlayerInteraction] Aucun interactible détecté, drop de l'objet tenu.");
             DropItem();
-        }
-        else
-        {
-            Debug.Log("[PlayerInteraction] Combo sans cible ni drop nécessaire.");
         }
     }
 
@@ -206,7 +197,6 @@ public class PlayerInteraction : MonoBehaviour
         var count = Physics.OverlapSphereNonAlloc(origin, pickupRadius, overlap, pickupMask, QueryTriggerInteraction.Ignore);
         if (count <= 0)
         {
-            Debug.Log("[PlayerInteraction] Aucun objet ramassable dans la zone.");
             return;
         }
 
@@ -237,7 +227,6 @@ public class PlayerInteraction : MonoBehaviour
 
         if (bestCandidate == null)
         {
-            Debug.Log("[PlayerInteraction] Aucun candidat valide trouvé malgré des collisions.");
             return;
         }
 
@@ -246,27 +235,26 @@ public class PlayerInteraction : MonoBehaviour
             var velocity = dropForwardSpeed > 0f ? transform.forward * dropForwardSpeed : Vector3.zero;
             heldItem.Drop(velocity);
             heldItem = null;
-            Debug.Log("[PlayerInteraction] L'ancien objet tenu a été lâché pour ramasser le nouveau.");
         }
 
         bestCandidate.Pick(handSocket != null ? handSocket : transform);
         heldItem = bestCandidate;
         heldItemId = heldItem.ItemId;
-        Debug.Log($"[PlayerInteraction] Objet '{heldItem.name}' ramassé (ID: {heldItemId}).");
+        Debug.Log($"{LogPrefix} Objet '{heldItem.name}' ramassé (ID: {heldItemId}).");
     }
 
     public void DropItem(bool destroyItem = false)
     {
         if (heldItem == null)
         {
-            Debug.Log("[PlayerInteraction] Tentative de drop sans objet tenu.");
+            Debug.Log($"{LogPrefix} Aucun objet à déposer.");
             return;
         }
 
         if (destroyItem)
         {
             Destroy(heldItem.gameObject);
-            Debug.Log($"[PlayerInteraction] Objet '{heldItemId}' détruit après interaction.");
+            Debug.Log($"{LogPrefix} Objet '{heldItemId}' détruit.");
             heldItem = null;
             heldItemId = null;
             return;
@@ -279,19 +267,17 @@ public class PlayerInteraction : MonoBehaviour
         if (alien != null && alien.IsWithinReceiveRadius(origin.position))
         {
             gaveItem = alien.TryReceiveItem(heldItemId);
-            Debug.Log($"[PlayerInteraction] Tentative de donner l'objet '{heldItemId}' à l'alien '{alien.name}' → succès={gaveItem}.");
+            Debug.Log($"{LogPrefix} Don de '{heldItemId}' à '{alien.name}' → succès={gaveItem}.");
         }
 
         if (gaveItem)
         {
             Destroy(heldItem.gameObject);
-            Debug.Log($"[PlayerInteraction] Objet '{heldItemId}' donné à un alien et détruit.");
         }
         else
         {
             var velocity = dropForwardSpeed > 0f ? transform.forward * dropForwardSpeed : Vector3.zero;
             heldItem.Drop(velocity);
-            Debug.Log($"[PlayerInteraction] Objet '{heldItemId}' lâché au sol.");
         }
 
         heldItem = null;
@@ -327,7 +313,7 @@ public class PlayerInteraction : MonoBehaviour
             RebuildComboLookup();
             if (comboLookup.Count == 0)
             {
-                Debug.LogWarning("[PlayerInteraction] Aucun combo disponible pour l'affichage de feedback.");
+                Debug.LogWarning($"{LogPrefix} Aucun combo disponible pour l'affichage de feedback.");
             }
         }
 
@@ -336,7 +322,6 @@ public class PlayerInteraction : MonoBehaviour
         {
             var duration = definition.Duration > 0f ? definition.Duration : defaultComboBubbleDuration;
             comboBubble.Show(definition.Symbols, duration);
-            Debug.Log($"[PlayerInteraction] Affichage feedback combo personnalisé '{definition.Symbols}' ({duration}s).");
             return;
         }
 
@@ -344,11 +329,10 @@ public class PlayerInteraction : MonoBehaviour
             DefaultEmotionSymbols.TryGetValue(emotion, out var emotionSymbol))
         {
             comboBubble.Show(behaviorSymbol + emotionSymbol, defaultComboBubbleDuration);
-            Debug.Log($"[PlayerInteraction] Affichage feedback combo par défaut '{behaviorSymbol}{emotionSymbol}'.");
         }
         else
         {
-            Debug.LogWarning($"[PlayerInteraction] Impossible de trouver un feedback pour le combo {behavior}/{emotion}.");
+            Debug.LogWarning($"{LogPrefix} Impossible de trouver un feedback pour le combo {behavior}/{emotion}.");
         }
     }
 }
