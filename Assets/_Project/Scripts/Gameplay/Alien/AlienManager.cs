@@ -51,10 +51,9 @@ public sealed class AlienManager : MonoBehaviour
         for (var i = 0; i < aliens.Count; i++)
         {
             var alien = aliens[i];
-            if (alien == null || alien.Definition == null)
-            {
+            
+            if (!alien || !alien.Definition)
                 continue;
-            }
 
             var uniqueId = (i + 1).ToString();
             alien.Definition.SetUniqueId(uniqueId);

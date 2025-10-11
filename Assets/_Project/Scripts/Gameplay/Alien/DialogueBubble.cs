@@ -26,10 +26,8 @@ public sealed class DialogueBubble : MonoBehaviour
 
     private void Update()
     {
-        if (bubbleGameObject == null || !bubbleGameObject.activeSelf)
-        {
+        if (!bubbleGameObject || !bubbleGameObject.activeSelf)
             return;
-        }
 
         if (remainingTime <= 0f)
         {
