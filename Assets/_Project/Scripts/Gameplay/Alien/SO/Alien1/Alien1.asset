@@ -12,23 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58f9ab1e10ce5b64b965e1fd1a0a9980, type: 3}
   m_Name: Alien1
   m_EditorClassIdentifier: 
-  _alienId: 2
-  _startEmotion: 2
-  _animator: {fileID: 9100000, guid: 63ee86efd213bf34285c95f33e79dc6c, type: 2}
-  _reactions: {fileID: 11400000, guid: 73d53233d08b9ba49be514744243debc, type: 2}
-  _dialogue: {fileID: 11400000, guid: c610a60b133dc6d42b56d74c2e752b4e, type: 2}
-  _quests:
-  - _questId: Fleur
-    _title: "R\xE9confortez l'alien triste "
-    _description: "il est pr\xE8s de la fontaine"
-    _autoRegisterMission: 1
-    _autoCompleteMissionOnQuestEnd: 0
-    _steps:
-    - _stepId: 0
-      _stepType: 0
-      _completesQuest: 0
-      _nextStepId: 1
-    - _stepId: 1
-      _stepType: 1
-      _completesQuest: 1
-      _nextStepId: 2
+  alienId: 1
+  startEmotion: 3
+  animator: {fileID: 0}
+  reactions: {fileID: 11400000, guid: 73d53233d08b9ba49be514744243debc, type: 2}
+  dialogue: {fileID: 11400000, guid: c610a60b133dc6d42b56d74c2e752b4e, type: 2}
+  quests: []

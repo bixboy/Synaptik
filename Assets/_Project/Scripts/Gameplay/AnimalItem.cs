@@ -1,27 +1,25 @@
-﻿using Synaptik.Game;
 using UnityEngine;
 
-
-public class AnimalItem : MonoBehaviour, IInteraction
+public sealed class AnimalItem : MonoBehaviour, IInteraction
 {
-    [SerializeField] private GameObject _ItemToSpawnOnDeath;
-    
+    [SerializeField]
+    private GameObject itemToSpawnOnDeath;
+
     public void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null)
     {
-        Behavior behavior = action._behavior;
-        Emotion emotion = action._emotion;
-        if (behavior == Behavior.Action)
+        if (action._behavior == Behavior.Action && action._emotion == Emotion.Anger)
         {
-            if (emotion == Emotion.Anger)
-            {
-                Die();
-            }
+            Die();
         }
     }
 
-    public void Die()
+    private void Die()
     {
-        Instantiate(_ItemToSpawnOnDeath, transform.position, Quaternion.identity);
+        if (itemToSpawnOnDeath)
+        {
+            Instantiate(itemToSpawnOnDeath, transform.position, Quaternion.identity);
+        }
+
         Destroy(gameObject);
     }
 }
