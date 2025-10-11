@@ -4,32 +4,36 @@ using UnityEngine.Events;
 public sealed class MenuStart : MonoBehaviour
 {
     [Header("Assign the UI")]
-    [SerializeField]
-    private RectTransform imageToShake;
-
-    [SerializeField]
-    private GameObject helpPanel;
-
-    [SerializeField]
-    private GameObject quitPanel;
+    [SerializeField] private RectTransform imageToShake;
+    [SerializeField] private GameObject helpPanel;
+    [SerializeField] private GameObject quitPanel;
 
     [Header("Shake Settings")]
-    [SerializeField]
-    private float maxShakeIntensity = 30f;
-
-    [SerializeField]
-    private float chargeTime = 3f;
-
-    [SerializeField]
-    private AnimationCurve intensityCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+    [SerializeField] private float maxShakeIntensity = 30f;
+    [SerializeField] private float chargeTime = 3f;
+    [SerializeField] private AnimationCurve intensityCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
     [Header("Events")]
     public UnityEvent onFullyCharged;
+
+    [Header("Barometer Settings")]
+    [Tooltip("Aiguille du baromètre à faire pivoter.")]
+    [SerializeField] private RectTransform needleTransform;
+
+    [Tooltip("Rotation de l’aiguille quand charge = 0")]
+    [SerializeField] private float needleMinRotation = 90f;
+
+    [Tooltip("Rotation de l’aiguille quand charge = 100%")]
+    [SerializeField] private float needleMaxRotation = -90f;
+
+    [Tooltip("Vitesse de retour de l’aiguille à 0 quand la charge descend.")]
+    [SerializeField] private float needleReturnSpeed = 3f;
 
     private float chargeProgress;
     private bool isCharging;
     private bool fullyCharged;
     private Vector3 originalPos;
+
     private bool panelHelpEnabled;
     private bool panelQuitEnabled;
     private InputsDetection inputsDetection;
@@ -38,35 +42,19 @@ public sealed class MenuStart : MonoBehaviour
     private void Awake()
     {
         if (imageToShake != null)
-        {
             originalPos = imageToShake.anchoredPosition;
-        }
 
         InitializePanels();
     }
 
-    private void OnEnable()
-    {
-        TrySubscribeToInputs();
-    }
-
-    private void OnDisable()
-    {
-        UnsubscribeFromInputs();
-    }
+    private void OnEnable() => TrySubscribeToInputs();
+    private void OnDisable() => UnsubscribeFromInputs();
 
     private void InitializePanels()
     {
-        if (helpPanel != null)
-        {
-            helpPanel.SetActive(false);
-        }
-
-        if (quitPanel != null)
-        {
-            quitPanel.SetActive(false);
-        }
-
+        if (helpPanel) helpPanel.SetActive(false);
+        if (quitPanel) quitPanel.SetActive(false);
+        
         panelHelpEnabled = false;
         panelQuitEnabled = false;
     }
@@ -74,15 +62,11 @@ public sealed class MenuStart : MonoBehaviour
     private bool TrySubscribeToInputs()
     {
         var instance = InputsDetection.Instance;
-        if (instance == null)
-        {
+        if (!instance) 
             return false;
-        }
 
         if (inputsDetection == instance && subscribedToInputs)
-        {
             return true;
-        }
 
         UnsubscribeFromInputs();
 
@@ -97,10 +81,8 @@ public sealed class MenuStart : MonoBehaviour
 
     private void UnsubscribeFromInputs()
     {
-        if (!subscribedToInputs || inputsDetection == null)
-        {
+        if (!subscribedToInputs || !inputsDetection)
             return;
-        }
 
         inputsDetection.OnEmotion -= HandleEmotion;
         inputsDetection.OnAction -= HandleAction;
@@ -115,6 +97,7 @@ public sealed class MenuStart : MonoBehaviour
             case Emotion.Anger:
                 ToggleQuitPanel(!keyUp);
                 break;
+            
             case Emotion.Curious when !keyUp:
                 ToggleHelpPanel();
                 break;
@@ -123,15 +106,8 @@ public sealed class MenuStart : MonoBehaviour
 
     private void HandleAction(Behavior action, bool isKeyUp)
     {
-        if (isKeyUp)
-        {
+        if (isKeyUp || !panelQuitEnabled) 
             return;
-        }
-
-        if (!panelQuitEnabled)
-        {
-            return;
-        }
 
         switch (action)
         {
@@ -146,14 +122,8 @@ public sealed class MenuStart : MonoBehaviour
 
     private void HandleTwoAction(bool towPressed)
     {
-        if (towPressed)
-        {
-            StartCharging();
-        }
-        else
-        {
-            StopCharging();
-        }
+        if (towPressed) StartCharging();
+        else StopCharging();
     }
 
     private void StartCharging()
@@ -162,24 +132,18 @@ public sealed class MenuStart : MonoBehaviour
         fullyCharged = false;
     }
 
-    private void StopCharging()
-    {
-        isCharging = false;
-    }
+    private void StopCharging() => isCharging = false;
 
     private void Update()
     {
         if (!subscribedToInputs && !TrySubscribeToInputs())
-        {
             return;
-        }
 
         var comboActive = inputsDetection.MoveVector == Vector2.zero;
         if (!comboActive && isCharging)
-        {
             StopCharging();
-        }
 
+        // ---- CHARGE ----
         if (isCharging && !fullyCharged)
         {
             chargeProgress += Time.deltaTime / chargeTime;
@@ -197,53 +161,71 @@ public sealed class MenuStart : MonoBehaviour
 
         chargeProgress = Mathf.Clamp01(chargeProgress);
 
-        if (imageToShake != null)
+        // ---- SHAKE ----
+        if (imageToShake)
         {
             var intensity = intensityCurve.Evaluate(chargeProgress) * maxShakeIntensity;
             var offset = Random.insideUnitCircle * intensity;
             imageToShake.anchoredPosition = originalPos + new Vector3(offset.x, offset.y, 0f);
         }
 
-        if (chargeProgress <= 0.001f && imageToShake != null)
-        {
+        if (chargeProgress <= 0.001f && imageToShake)
             imageToShake.anchoredPosition = originalPos;
+
+        // ---- BAROMETER NEEDLE ----
+        if (needleTransform)
+        {
+            float targetRotation = Mathf.Lerp(needleMinRotation, needleMaxRotation, chargeProgress);
+
+            float currentRotation = Mathf.LerpAngle(
+                needleTransform.localEulerAngles.z,
+                targetRotation,
+                Time.deltaTime * needleReturnSpeed
+            );
+
+            // --- VIBRATION / JITTER réaliste ---
+            float vibrationStart = 0.1f;
+            float vibrationProgress = Mathf.InverseLerp(vibrationStart, 1f, chargeProgress * 1.5f);
+            float vibrationIntensity = Mathf.SmoothStep(0f, 1f, vibrationProgress);
+
+            float slowNoise = (Mathf.PerlinNoise(Time.time * 2f, 0f) - 0.5f) * 2f;
+            float fastSine = Mathf.Sin(Time.time * 300f) * 0.25f;
+            float modulated = fastSine * (0.3f + Mathf.Abs(slowNoise) * 0.7f);
+
+            float jitterAmplitude = 1.5f;
+            float jitter = modulated * jitterAmplitude * Mathf.Pow(vibrationIntensity, 1.5f);
+            needleTransform.localEulerAngles = new Vector3(0f, 0f, currentRotation + jitter);
         }
     }
 
     private void ToggleQuitPanel(bool enable)
     {
         panelQuitEnabled = enable;
-        if (quitPanel != null)
-        {
+        if (quitPanel) 
             quitPanel.SetActive(enable);
-        }
     }
 
     private void ToggleHelpPanel()
     {
-        if (helpPanel == null)
-        {
+        if (!helpPanel) 
             return;
-        }
-
+        
         panelHelpEnabled = !panelHelpEnabled;
         helpPanel.SetActive(panelHelpEnabled);
     }
 
     private void HandleQuitChoice(bool accept)
     {
-        if (!panelQuitEnabled)
-        {
-            return;
-        }
+        if (!panelQuitEnabled) return;
 
         if (accept)
         {
             Application.Quit();
-            return;
         }
-
-        ToggleQuitPanel(false);
+        else
+        {
+            ToggleQuitPanel(false);
+        }
     }
 
     public void TestStart()
