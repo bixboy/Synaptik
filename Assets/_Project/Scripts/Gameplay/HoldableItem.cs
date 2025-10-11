@@ -79,7 +79,7 @@ public sealed class HoldableItem : MonoBehaviour, IInteraction
         IsHeld = true;
         originalParent = transform.parent;
 
-        rigidbodyComponent.velocity = Vector3.zero;
+        rigidbodyComponent.linearVelocity = Vector3.zero;
         rigidbodyComponent.angularVelocity = Vector3.zero;
         rigidbodyComponent.isKinematic = true;
         rigidbodyComponent.useGravity = false;
@@ -110,7 +110,7 @@ public sealed class HoldableItem : MonoBehaviour, IInteraction
 
         rigidbodyComponent.isKinematic = false;
         rigidbodyComponent.useGravity = true;
-        rigidbodyComponent.velocity = inheritVelocity;
+        rigidbodyComponent.linearVelocity = inheritVelocity;
 
         IsHeld = false;
     }
@@ -138,7 +138,7 @@ public sealed class HoldableItem : MonoBehaviour, IInteraction
             Instantiate(despawnVfxPrefab, transform.position, Quaternion.identity);
         }
 
-        rigidbodyComponent.velocity = Vector3.zero;
+        rigidbodyComponent.linearVelocity = Vector3.zero;
         rigidbodyComponent.angularVelocity = Vector3.zero;
 
         transform.SetPositionAndRotation(spawnLocation, spawnRotation);

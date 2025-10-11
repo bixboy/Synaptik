@@ -15,8 +15,8 @@ public sealed class NoteBook : MonoBehaviour
     [SerializeField]
     private ScrollRect scrollRect;
 
-    private readonly List<Gameplay.Mission> missions = new();
-    private Gameplay.GameManager gameManager;
+    private readonly List<Mission> missions = new();
+    private GameManager gameManager;
 
     private IEnumerator Start()
     {
@@ -34,7 +34,7 @@ public sealed class NoteBook : MonoBehaviour
 
     private bool TryCacheGameManager()
     {
-        gameManager = Gameplay.GameManager.Instance;
+        gameManager = GameManager.Instance;
         return gameManager != null && gameManager.IsInitialized;
     }
 
@@ -46,7 +46,7 @@ public sealed class NoteBook : MonoBehaviour
         }
     }
 
-    private void HandleTaskEnd(Gameplay.Mission mission)
+    private void HandleTaskEnd(Mission mission)
     {
         SyncMissions();
         RefreshNotebookUI();

@@ -2,11 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Système de détection combinée : émotion + action.
-/// Quand une touche « émotion » et une touche « action » sont pressées simultanément,
-/// un callback global est déclenché.
-/// </summary>
 public sealed class InputsDetection : MonoBehaviour
 {
     public static InputsDetection Instance { get; private set; }

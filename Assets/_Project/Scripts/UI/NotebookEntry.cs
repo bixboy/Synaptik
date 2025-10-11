@@ -14,7 +14,7 @@ public sealed class NotebookEntry : MonoBehaviour
     [SerializeField]
     private Toggle notebookToggle;
 
-    public void Initialize(Gameplay.Mission mission)
+    public void Initialize(Mission mission)
     {
         if (titleText != null)
         {

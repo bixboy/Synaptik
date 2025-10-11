@@ -72,7 +72,7 @@ public sealed class LoadingText : MonoBehaviour
             return;
         }
 
-        loadingText.text = $"[{Core.TextFeedBack.ProgressiveDisplayLerp("000000000000000000000000", lerp, '-')}]";
+        loadingText.text = $"[{TextFeedBack.ProgressiveDisplayLerp("000000000000000000000000", lerp, '-')}]";
     }
 
     private void Update()
@@ -82,7 +82,7 @@ public sealed class LoadingText : MonoBehaviour
             return;
         }
 
-        var progressive = Core.TextFeedBack.ProgressiveDisplayTimeSpacing(currentLine, characterSpacing, currentTime);
+        var progressive = TextFeedBack.ProgressiveDisplayTimeSpacing(currentLine, characterSpacing, currentTime);
         mainText.text = fullText + progressive;
 
         currentTime += Time.deltaTime;

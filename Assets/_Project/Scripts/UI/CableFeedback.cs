@@ -25,55 +25,51 @@ public sealed class CableFeedback : MonoBehaviour
     private Color defaultEmotionColor = Color.white;
 
     [SerializeField]
-    private Color curiousColor;
+    private Color curiousColor = new Color(127, 213, 93, 255);
 
     [SerializeField]
-    private Color angryColor;
+    private Color angryColor = new Color(240, 83, 83, 255);
 
     [SerializeField]
-    private Color fearfulColor;
+    private Color fearfulColor = new Color(15, 192, 222, 255);
 
     [SerializeField]
-    private Color friendlyColor;
+    private Color friendlyColor = new Color(255, 221, 97, 255);
 
     private void Start()
     {
-        if (Core.InputsDetection.Instance == null)
+        if (InputsDetection.Instance == null)
         {
             return;
         }
 
-        Core.InputsDetection.Instance.OnEmotion += HandleEmotion;
-        Core.InputsDetection.Instance.OnAction += HandleAction;
+        InputsDetection.Instance.OnEmotion += HandleEmotion;
+        InputsDetection.Instance.OnAction += HandleAction;
     }
 
     private void OnDestroy()
     {
-        if (Core.InputsDetection.Instance == null)
+        if (InputsDetection.Instance == null)
         {
             return;
         }
 
-        Core.InputsDetection.Instance.OnEmotion -= HandleEmotion;
-        Core.InputsDetection.Instance.OnAction -= HandleAction;
+        InputsDetection.Instance.OnEmotion -= HandleEmotion;
+        InputsDetection.Instance.OnAction -= HandleAction;
     }
 
     private void HandleEmotion(Emotion emotion, bool keyReleased)
     {
-        if (outputRight == null)
-        {
+        if (!outputRight)
             return;
-        }
 
         outputRight.color = keyReleased ? defaultEmotionColor : GetEmotionColor(emotion);
     }
 
     private void HandleAction(Behavior behavior, bool keyReleased)
     {
-        if (outputLeft == null)
-        {
+        if (!outputLeft)
             return;
-        }
 
         outputLeft.color = keyReleased ? defaultActionColor : GetActionColor(behavior);
     }

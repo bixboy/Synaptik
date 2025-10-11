@@ -50,7 +50,7 @@ public sealed class PlayerMovement : MonoBehaviour
         var input = InputsDetection.Instance != null ? InputsDetection.Instance.MoveVector : Vector2.zero;
         var direction = GetMovementDirection(input);
 
-        var currentVelocity = rigidbodyComponent.velocity;
+        var currentVelocity = rigidbodyComponent.linearVelocity;
         var horizontalVelocity = new Vector3(currentVelocity.x, 0f, currentVelocity.z);
         var targetHorizontalVelocity = direction * maxSpeed;
 

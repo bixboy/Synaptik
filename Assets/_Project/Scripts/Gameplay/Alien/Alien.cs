@@ -25,12 +25,10 @@ public class Alien : MonoBehaviour, IInteraction
     {
         _anim = GetComponent<Animator>();
 
-        if (_dialogueBubble == null)
-        {
+        if (!_dialogueBubble)
             _dialogueBubble = GetComponentInChildren<DialogueBubble>(true);
-        }
-
-        if (_dialogueBubble != null && !_dialogueBubble.gameObject.scene.IsValid())
+        
+        if (_dialogueBubble && !_dialogueBubble.gameObject.scene.IsValid())
         {
             var prefabBubble = _dialogueBubble;
             _dialogueBubble = Instantiate(prefabBubble, transform);
@@ -39,26 +37,22 @@ public class Alien : MonoBehaviour, IInteraction
             _dialogueBubble.transform.localScale = prefabBubble.transform.localScale;
         }
 
-        if (_def != null && _def.Animator != null)
+        if (_def && _def.Animator)
         {
             _anim.runtimeAnimatorController = _def.Animator;
         }
 
-        Emotion = _def != null ? _def.StartEmotion : Emotion.Curious;
+        Emotion = _def ? _def.StartEmotion : Emotion.Curious;
         ApplyAnimFromEmotion();
     }
 
     private void Start()
     {
-        if (AlienManager.Instance != null)
-        {
+        if (AlienManager.Instance)
             AlienManager.Instance.RegisterAlien(this);
-        }
 
-        if (_def == null)
-        {
+        if (!_def)
             return;
-        }
 
         foreach (AlienQuest quest in _def.Quests)
         {
@@ -78,15 +72,13 @@ public class Alien : MonoBehaviour, IInteraction
 
     private void OnDestroy()
     {
-        if (AlienManager.Instance != null)
-        {
+        if (AlienManager.Instance)
             AlienManager.Instance.UnregisterAlien(this);
-        }
     }
 
     private void ApplyAnimFromEmotion()
     {
-        if (_anim != null)
+        if (_anim)
         {
             _anim.SetInteger(EmotionHash, (int)Emotion);
         }
@@ -96,16 +88,20 @@ public class Alien : MonoBehaviour, IInteraction
     {
         Behavior behavior = action._behavior;
         Emotion emotion = action._emotion;
+        
         if (behavior == Behavior.Action)
         {
             switch (emotion)
             {
                 case Emotion.Anger: // Hit
                     break;
+                
                 case Emotion.Curious: // Ramasser
                     break;
+                
                 case Emotion.Fearful: // Courir
                     break;
+                
                 case Emotion.Friendly: // Donne
                 {
                     if (item && TryReceiveItem(item.ItemId))
@@ -132,23 +128,25 @@ public class Alien : MonoBehaviour, IInteraction
             {
                 case Emotion.Anger: // Insulter
                     break;
+                
                 case Emotion.Curious: // Curieux
                     break;
+                
                 case Emotion.Fearful: // Crie
                     break;
+                
                 case Emotion.Friendly: // Complimenter 
                     break;
             }
         }
+        
         OnPlayerCombo(action._emotion, action._behavior);
     }
 
     public void OnPlayerCombo(Emotion playerEmotion, Behavior channel)
     {
-        if (_def == null || _def.Reactions == null)
-        {
+        if (!_def || !_def.Reactions)
             return;
-        }
 
         Debug.Log($"[Alien] {name} received combo {channel}/{playerEmotion}");
 
@@ -158,6 +156,7 @@ public class Alien : MonoBehaviour, IInteraction
             if (_cachedInteractionRules.TryGetValue(interactionKey, out var cachedRule))
             {
                 Debug.Log($"[Alien] No interaction rule available for {name} with combo {channel}/{playerEmotion}. Using cached fallback.");
+                
                 HandleInteractionRule(cachedRule, channel, playerEmotion, false);
                 return;
             }
@@ -165,8 +164,10 @@ public class Alien : MonoBehaviour, IInteraction
             if (_def.Reactions.TryFindRule(channel, playerEmotion, null, out var fallbackRule))
             {
                 Debug.Log($"[Alien] No interaction rule available for {name} with combo {channel}/{playerEmotion}. Using definition fallback.");
+                
                 _cachedInteractionRules[interactionKey] = fallbackRule;
                 HandleInteractionRule(fallbackRule, channel, playerEmotion, false);
+                
                 return;
             }
 
@@ -180,10 +181,8 @@ public class Alien : MonoBehaviour, IInteraction
 
     public bool TryReceiveItem(string itemId)
     {
-        if (_def == null || _def.Reactions == null)
-        {
+        if (!_def || !_def.Reactions)
             return false;
-        }
 
         if (!_def.Reactions.TryFindItemRule(itemId, out var rule))
         {
@@ -216,9 +215,7 @@ public class Alien : MonoBehaviour, IInteraction
     internal void SetEmotion(Emotion newEmotion)
     {
         if (Emotion == newEmotion)
-        {
             return;
-        }
 
         Emotion = newEmotion;
         ApplyAnimFromEmotion();
@@ -226,10 +223,8 @@ public class Alien : MonoBehaviour, IInteraction
 
     internal void ShowDialogue(string emojiLine, float duration)
     {
-        if (_dialogueBubble == null || string.IsNullOrWhiteSpace(emojiLine) || duration <= 0f)
-        {
+        if (!_dialogueBubble || string.IsNullOrWhiteSpace(emojiLine) || duration <= 0f)
             return;
-        }
 
         _dialogueBubble.ShowFor(emojiLine, duration);
     }
@@ -267,9 +262,7 @@ public class Alien : MonoBehaviour, IInteraction
     private bool IsInteractionRuleAvailable(InterractionRule rule)
     {
         if (string.IsNullOrWhiteSpace(rule.QuestId))
-        {
             return true;
-        }
 
         return IsQuestStepActive(rule.QuestId, rule.QuestStepId, QuestStepType.Talk);
     }
@@ -294,7 +287,7 @@ public class Alien : MonoBehaviour, IInteraction
 
     private bool TryShowDialogue(Emotion emotion, Behavior behavior, string source)
     {
-        if (_dialogueBubble == null || _def?.Dialogue == null)
+        if (!_dialogueBubble || !_def?.Dialogue)
         {
             Debug.LogWarning($"[Alien] Cannot show dialogue for {name}. Missing dialogue bubble or database.");
             return false;
@@ -303,20 +296,20 @@ public class Alien : MonoBehaviour, IInteraction
         if (_def.Dialogue.TryGet(emotion, behavior, out var entry))
         {
             Debug.Log($"[Alien] Showing dialogue '{entry.EmojiLine}' from {source} for {name} using key {behavior}/{emotion}.");
+            
             ShowDialogue(entry.EmojiLine, entry.Duration);
             return true;
         }
 
         Debug.LogWarning($"[Alien] No dialogue entry found for {name} using key {behavior}/{emotion} from {source}.");
+        
         return false;
     }
 
     private void TryShowItemDialogue(string itemId)
     {
-        if (_dialogueBubble == null || _def?.Dialogue == null)
-        {
+        if (!_dialogueBubble || !_def?.Dialogue)
             return;
-        }
 
         if (_def.Dialogue.TryGet(itemId, out var entry))
         {
@@ -326,7 +319,7 @@ public class Alien : MonoBehaviour, IInteraction
 
     private void ApplySuspicionDelta(int delta)
     {
-        if (delta == 0 || MistrustManager.Instance == null)
+        if (delta == 0 || !MistrustManager.Instance)
         {
             return;
         }
@@ -353,6 +346,7 @@ public class Alien : MonoBehaviour, IInteraction
         {
             var handled = runtime.TryHandleStep(questStepId, triggerType);
             Debug.Log($"[Alien] {name} quest '{questId}' step '{questStepId ?? "<current>"}' handled={handled} for trigger {triggerType}.");
+            
             return handled;
         }
 
@@ -372,6 +366,7 @@ public class Alien : MonoBehaviour, IInteraction
         {
             var active = runtime.IsStepActive(questStepId, triggerType);
             Debug.Log($"[Alien] {name} quest '{questId}' step '{questStepId ?? "<current>"}' active={active} for trigger {triggerType}.");
+            
             return active;
         }
 

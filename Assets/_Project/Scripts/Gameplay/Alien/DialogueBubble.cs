@@ -40,19 +40,13 @@ public sealed class DialogueBubble : MonoBehaviour
         remainingTime -= Time.deltaTime;
 
         if (!lookAtCamera)
-        {
             return;
-        }
 
-        if (targetCamera == null)
-        {
+        if (!targetCamera)
             targetCamera = Camera.main;
-        }
 
-        if (targetCamera == null)
-        {
+        if (!targetCamera)
             return;
-        }
 
         var forward = targetCamera.transform.rotation * Vector3.forward;
         var up = targetCamera.transform.rotation * Vector3.up;
@@ -62,30 +56,23 @@ public sealed class DialogueBubble : MonoBehaviour
     public void ShowFor(string emojiLine, float duration)
     {
         if (string.IsNullOrEmpty(emojiLine) || duration <= 0f)
-        {
             return;
-        }
 
-        if (label != null)
-        {
+        if (label)
             label.text = emojiLine;
-        }
 
-        if (bubbleGameObject != null)
-        {
+        if (bubbleGameObject)
             bubbleGameObject.SetActive(true);
-        }
 
         remainingTime = duration;
     }
 
     private void Hide()
     {
-        if (bubbleGameObject != null)
+        if (bubbleGameObject)
         {
             bubbleGameObject.SetActive(false);
         }
-
         remainingTime = 0f;
     }
 }

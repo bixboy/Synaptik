@@ -59,23 +59,23 @@ public sealed class UIObjectShaker : MonoBehaviour
 
     private void Start()
     {
-        if (Gameplay.Alien.MistrustManager.Instance != null)
+        if (MistrustManager.Instance != null)
         {
-            Gameplay.Alien.MistrustManager.Instance.OnMistrust += HandleMistrust;
+            MistrustManager.Instance.OnMistrust += HandleMistrust;
         }
     }
 
     private void OnDestroy()
     {
-        if (Gameplay.Alien.MistrustManager.Instance != null)
+        if (MistrustManager.Instance != null)
         {
-            Gameplay.Alien.MistrustManager.Instance.OnMistrust -= HandleMistrust;
+            MistrustManager.Instance.OnMistrust -= HandleMistrust;
         }
     }
 
     private void Update()
     {
-        if (!isShaking || targetRect == null)
+        if (!isShaking || !targetRect)
             return;
 
         shakeTimer -= Time.deltaTime;
@@ -99,7 +99,7 @@ public sealed class UIObjectShaker : MonoBehaviour
 
     public void Shake(float duration)
     {
-        if (targetRect == null)
+        if (!targetRect)
         {
             Debug.LogWarning("[UIObjectShaker] Aucun RectTransform assigné !");
             return;
@@ -114,23 +114,19 @@ public sealed class UIObjectShaker : MonoBehaviour
         isShaking = false;
         shakeTimer = 0f;
 
-        if (targetRect != null)
-        {
+        if (targetRect)
             targetRect.anchoredPosition = originalPosition;
-        }
     }
 
     public void RecalibrateOrigin()
     {
-        if (targetRect != null)
-        {
+        if (targetRect)
             originalPosition = targetRect.anchoredPosition;
-        }
     }
 
     private void SpawnFloatingNumber(float value)
     {
-        if (floatingNumberPrefab == null || floatingNumberSpawn == null)
+        if (!floatingNumberPrefab || !floatingNumberSpawn)
         {
             Debug.LogWarning("[UIObjectShaker] Pas de prefab ou de point de spawn assigné !");
             return;
@@ -140,7 +136,7 @@ public sealed class UIObjectShaker : MonoBehaviour
         var rect = instance.GetComponentInChildren<RectTransform>();
         var text = instance.GetComponentInChildren<TextMeshProUGUI>();
 
-        if (rect == null || text == null)
+        if (!rect || !text)
         {
             Debug.LogWarning("[UIObjectShaker] Le prefab du nombre flottant doit contenir un TextMeshProUGUI !");
             Destroy(instance);

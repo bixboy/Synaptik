@@ -122,17 +122,17 @@ public class PlayerInteraction : MonoBehaviour
         RebuildComboLookup();
     }
 
-    private void OnEnable()
+    private void Start()
     {
-        if (InputsDetection.Instance != null)
+        if (InputsDetection.Instance)
         {
             InputsDetection.Instance.OnEmotionAction += HandleEmotionAction;
         }
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        if (InputsDetection.Instance != null)
+        if (InputsDetection.Instance)
         {
             InputsDetection.Instance.OnEmotionAction -= HandleEmotionAction;
         }
@@ -147,16 +147,12 @@ public class PlayerInteraction : MonoBehaviour
     {
         comboLookup.Clear();
         if (comboSymbolDefinitions == null)
-        {
             return;
-        }
 
         foreach (var definition in comboSymbolDefinitions)
         {
             if (definition.Behavior == Behavior.None || definition.Emotion == Emotion.None)
-            {
                 continue;
-            }
 
             var key = new ComboKey(definition.Emotion, definition.Behavior);
             comboLookup[key] = definition;
@@ -165,16 +161,18 @@ public class PlayerInteraction : MonoBehaviour
 
     private void HandleEmotionAction(Emotion emotion, Behavior behavior)
     {
+        Debug.Log($"[HandleEmotionAction] Emotion: {emotion}, Behavior: {behavior}");
+        
         ShowComboFeedback(emotion, behavior);
 
-        var origin = aimZone != null ? aimZone : transform;
+        var origin = aimZone ? aimZone : transform;
         var interactable = TargetingUtil.FindInteractionInFront(origin, interactRadius, interactHalfFov, interactMask);
 
         if (interactable != null)
         {
             interactable.Interact(new ActionValues(emotion, behavior), heldItem, this);
         }
-        else if (emotion == Emotion.Friendly && behavior == Behavior.Action && heldItem != null)
+        else if (emotion == Emotion.Friendly && behavior == Behavior.Action && heldItem)
         {
             DropItem();
         }
@@ -182,7 +180,7 @@ public class PlayerInteraction : MonoBehaviour
 
     public void PickUp()
     {
-        var origin = handSocket != null ? handSocket.position : transform.position;
+        var origin = handSocket ? handSocket.position : transform.position;
         var count = Physics.OverlapSphereNonAlloc(origin, pickupRadius, overlap, pickupMask, QueryTriggerInteraction.Ignore);
         if (count <= 0)
         {

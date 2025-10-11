@@ -13,67 +13,67 @@ MonoBehaviour:
   m_Name: ReactionMatrix
   m_EditorClassIdentifier: 
   _interactionRules:
-  - _channel: 1
-    _playerEmotion: 1
-    _questId: 
-    _questStepId: 
-    _suspicionDelta: 0
-    _setNewEmotion: 0
-    _newEmotion: 1
-  - _channel: 1
-    _playerEmotion: 2
-    _questId: Fleur
-    _questStepId: 
-    _suspicionDelta: 0
-    _setNewEmotion: 0
-    _newEmotion: 2
-  - _channel: 1
-    _playerEmotion: 3
-    _questId: Fleur
-    _questStepId: 0
-    _suspicionDelta: 0
-    _setNewEmotion: 0
-    _newEmotion: 3
-  - _channel: 1
-    _playerEmotion: 4
-    _questId: 
-    _questStepId: 
-    _suspicionDelta: 0
-    _setNewEmotion: 0
-    _newEmotion: 4
-  - _channel: 2
-    _playerEmotion: 4
-    _questId: 
-    _questStepId: 
-    _suspicionDelta: 0
-    _setNewEmotion: 0
-    _newEmotion: 4
-  - _channel: 2
-    _playerEmotion: 3
-    _questId: 
-    _questStepId: 
-    _suspicionDelta: 0
-    _setNewEmotion: 0
-    _newEmotion: 3
-  - _channel: 2
-    _playerEmotion: 2
-    _questId: 
-    _questStepId: 
-    _suspicionDelta: -10
-    _setNewEmotion: 0
-    _newEmotion: 2
-  - _channel: 2
-    _playerEmotion: 1
-    _questId: 
-    _questStepId: 
-    _suspicionDelta: 15
-    _setNewEmotion: 0
-    _newEmotion: 1
+  - channel: 1
+    playerEmotion: 1
+    questId: 
+    questStepId: 
+    suspicionDelta: -10
+    setNewEmotion: 1
+    newEmotion: 1
+  - channel: 1
+    playerEmotion: 2
+    questId: 
+    questStepId: 
+    suspicionDelta: 10
+    setNewEmotion: 1
+    newEmotion: 2
+  - channel: 1
+    playerEmotion: 3
+    questId: 
+    questStepId: 
+    suspicionDelta: 0
+    setNewEmotion: 0
+    newEmotion: 0
+  - channel: 1
+    playerEmotion: 4
+    questId: 
+    questStepId: 
+    suspicionDelta: 0
+    setNewEmotion: 0
+    newEmotion: 0
+  - channel: 2
+    playerEmotion: 1
+    questId: 
+    questStepId: 
+    suspicionDelta: -10
+    setNewEmotion: 1
+    newEmotion: 1
+  - channel: 2
+    playerEmotion: 2
+    questId: 
+    questStepId: 
+    suspicionDelta: 10
+    setNewEmotion: 1
+    newEmotion: 2
+  - channel: 2
+    playerEmotion: 3
+    questId: 
+    questStepId: 
+    suspicionDelta: 0
+    setNewEmotion: 0
+    newEmotion: 0
+  - channel: 2
+    playerEmotion: 4
+    questId: 
+    questStepId: 
+    suspicionDelta: 0
+    setNewEmotion: 0
+    newEmotion: 0
   _itemRules:
-  - _questId: Fleur
-    _questStepId: 1
-    _expectedItemId: Fleur
-    _suspicionDelta: -10
-    _expectedItemQuantity: 1
-    _setIfGoodItem: 1
-    _newEmotionIfGoodItem: 2
+  - questId: 
+    questStepId: 
+    expectedItemId: 
+    suspicionDelta: 0
+    expectedItemQuantity: 0
+    setIfGoodItem: 0
+    newEmotionIfGoodItem: 0

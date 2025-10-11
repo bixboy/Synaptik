@@ -15,7 +15,7 @@ public sealed class AnimalItem : MonoBehaviour, IInteraction
 
     private void Die()
     {
-        if (itemToSpawnOnDeath != null)
+        if (itemToSpawnOnDeath)
         {
             Instantiate(itemToSpawnOnDeath, transform.position, Quaternion.identity);
         }
