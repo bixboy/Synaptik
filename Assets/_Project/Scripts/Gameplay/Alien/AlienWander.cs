@@ -159,7 +159,7 @@ public sealed class AlienWander : MonoBehaviour
             yield break;
 
         float stopDistance = fearfulPlayerDistance;
-        float freezeDistance = detectionRadius;
+        float freezeDistance = GetCurrentDetectionRadius();
         float minFleeTime = 0.4f;
         float timer = 0f;
 
