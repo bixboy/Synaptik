@@ -4,6 +4,7 @@ using UnityEngine;
 
 public sealed class InputsDetection : MonoBehaviour
 {
+    private const string LogPrefix = "[InputsDetection]";
     public static InputsDetection Instance { get; private set; }
 
     [Header("Configuration des touches ↔ émotions")]
@@ -60,12 +61,14 @@ public sealed class InputsDetection : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
+            Debug.LogWarning($"{LogPrefix} Duplicate instance detected, destroying the newest one.");
             Destroy(gameObject);
             return;
         }
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        Debug.Log($"{LogPrefix} Instance ready.");
     }
 
     private void Start()
@@ -77,6 +80,7 @@ public sealed class InputsDetection : MonoBehaviour
         {
             if (_emotionMap.ContainsKey(binding.key))
             {
+                Debug.LogWarning($"{LogPrefix} Duplicate emotion binding for {binding.key} (existing: {_emotionMap[binding.key]}, ignored: {binding.emotion}).");
                 continue;
             }
 
@@ -87,6 +91,7 @@ public sealed class InputsDetection : MonoBehaviour
         {
             if (_actionMap.ContainsKey(binding.key))
             {
+                Debug.LogWarning($"{LogPrefix} Duplicate action binding for {binding.key} (existing: {_actionMap[binding.key]}, ignored: {binding.action}).");
                 continue;
             }
 
@@ -99,7 +104,7 @@ public sealed class InputsDetection : MonoBehaviour
             _moveDirs[i] = movementBindings[i].direction;
         }
 
-        Debug.Log($"[InputsDetection] {_emotionMap.Count} émotions / {_actionMap.Count} actions configurées.");
+        Debug.Log($"{LogPrefix} {_emotionMap.Count} emotions / {_actionMap.Count} actions configured.");
     }
 
     private void Update()
@@ -161,6 +166,7 @@ public sealed class InputsDetection : MonoBehaviour
                 if (_actionInputPressed >= 2)
                 {
                     OnTowActionPressed?.Invoke(true);
+                    Debug.Log($"{LogPrefix} Two actions pressed simultaneously.");
                 }
             }
 
@@ -199,6 +205,7 @@ public sealed class InputsDetection : MonoBehaviour
 
     private void Trigger(Emotion emotion, Behavior action)
     {
+        Debug.Log($"{LogPrefix} Combo triggered → Emotion: {emotion}, Action: {action}.");
         OnEmotionAction?.Invoke(emotion, action);
     }
 

@@ -6,6 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public sealed class HoldableItem : MonoBehaviour, IInteraction
 {
+    private const string LogPrefix = "[HoldableItem]";
+
     [SerializeField]
     private string itemId;
 
@@ -44,11 +46,19 @@ public sealed class HoldableItem : MonoBehaviour, IInteraction
         spawnLocation = transform.position;
         spawnRotation = transform.rotation;
         spawnScale = transform.localScale;
+
+        Debug.Log($"{LogPrefix} '{name}' prêt à {spawnLocation}.");
     }
 
     public void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null)
     {
-        if (action._behavior != Behavior.Action || playerInteraction == null)
+        if (playerInteraction == null)
+        {
+            Debug.LogWarning($"{LogPrefix} Interaction ignorée sur '{name}' (player manquant).");
+            return;
+        }
+
+        if (action._behavior != Behavior.Action)
         {
             return;
         }
@@ -68,6 +78,7 @@ public sealed class HoldableItem : MonoBehaviour, IInteraction
     {
         if (IsHeld || !canTake)
         {
+            Debug.LogWarning($"{LogPrefix} Ramassage invalide pour '{name}' (IsHeld={IsHeld}, CanTake={canTake}).");
             return;
         }
 
@@ -91,12 +102,14 @@ public sealed class HoldableItem : MonoBehaviour, IInteraction
 
         transform.SetParent(handSocket, false);
         transform.localPosition = handSocket.localPosition;
+        Debug.Log($"{LogPrefix} '{name}' ramassé par '{handSocket.name}'.");
     }
 
     public void Drop(Vector3 inheritVelocity)
     {
         if (!IsHeld)
         {
+            Debug.LogWarning($"{LogPrefix} Tentative de drop alors que '{name}' n'est pas tenu.");
             return;
         }
 
@@ -113,11 +126,13 @@ public sealed class HoldableItem : MonoBehaviour, IInteraction
         rigidbodyComponent.linearVelocity = inheritVelocity;
 
         IsHeld = false;
+        Debug.Log($"{LogPrefix} '{name}' lâché.");
     }
 
     private IEnumerator Respawn(float durationOverride = -1f)
     {
         currentDelay = durationOverride < 0f ? respawnDelay : durationOverride;
+        Debug.Log($"{LogPrefix} Respawn de '{name}' démarré ({currentDelay:F1}s).");
         yield return new WaitForSeconds(currentDelay);
 
         canTake = false;
@@ -145,5 +160,6 @@ public sealed class HoldableItem : MonoBehaviour, IInteraction
         transform.localScale = spawnScale;
 
         canTake = true;
+        Debug.Log($"{LogPrefix} '{name}' réinitialisé et disponible.");
     }
 }

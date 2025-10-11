@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
+    private const string LogPrefix = "[PlayerInteraction]";
+
     [Header("Pickup/Drop Settings")]
     [SerializeField]
     private Transform handSocket;
@@ -120,6 +122,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         comboBubble = GetComponent<PlayerComboBubble>() ?? gameObject.AddComponent<PlayerComboBubble>();
         RebuildComboLookup();
+        Debug.Log($"{LogPrefix} '{name}' prêt ({comboLookup.Count} combos).");
     }
 
     private void Start()
@@ -127,6 +130,11 @@ public class PlayerInteraction : MonoBehaviour
         if (InputsDetection.Instance)
         {
             InputsDetection.Instance.OnEmotionAction += HandleEmotionAction;
+            Debug.Log($"{LogPrefix} Abonné aux combos d'InputsDetection.");
+        }
+        else
+        {
+            Debug.LogWarning($"{LogPrefix} Aucun InputsDetection trouvé lors de l'initialisation.");
         }
     }
 
@@ -135,6 +143,7 @@ public class PlayerInteraction : MonoBehaviour
         if (InputsDetection.Instance)
         {
             InputsDetection.Instance.OnEmotionAction -= HandleEmotionAction;
+            Debug.Log($"{LogPrefix} Désabonné des combos d'InputsDetection.");
         }
     }
 
@@ -147,7 +156,10 @@ public class PlayerInteraction : MonoBehaviour
     {
         comboLookup.Clear();
         if (comboSymbolDefinitions == null)
+        {
+            Debug.LogWarning($"{LogPrefix} Aucun symbole de combo configuré.");
             return;
+        }
 
         foreach (var definition in comboSymbolDefinitions)
         {
@@ -157,12 +169,12 @@ public class PlayerInteraction : MonoBehaviour
             var key = new ComboKey(definition.Emotion, definition.Behavior);
             comboLookup[key] = definition;
         }
+
+        Debug.Log($"{LogPrefix} Table de combos reconstruite ({comboLookup.Count} entrées).");
     }
 
     private void HandleEmotionAction(Emotion emotion, Behavior behavior)
     {
-        Debug.Log($"[HandleEmotionAction] Emotion: {emotion}, Behavior: {behavior}");
-        
         ShowComboFeedback(emotion, behavior);
 
         var origin = aimZone ? aimZone : transform;
@@ -170,6 +182,7 @@ public class PlayerInteraction : MonoBehaviour
 
         if (interactable != null)
         {
+            Debug.Log($"{LogPrefix} Combo {emotion}/{behavior} → interactable '{interactable}'.");
             interactable.Interact(new ActionValues(emotion, behavior), heldItem, this);
         }
         else if (emotion == Emotion.Friendly && behavior == Behavior.Action && heldItem)
@@ -227,18 +240,21 @@ public class PlayerInteraction : MonoBehaviour
         bestCandidate.Pick(handSocket != null ? handSocket : transform);
         heldItem = bestCandidate;
         heldItemId = heldItem.ItemId;
+        Debug.Log($"{LogPrefix} Objet '{heldItem.name}' ramassé (ID: {heldItemId}).");
     }
 
     public void DropItem(bool destroyItem = false)
     {
         if (heldItem == null)
         {
+            Debug.Log($"{LogPrefix} Aucun objet à déposer.");
             return;
         }
 
         if (destroyItem)
         {
             Destroy(heldItem.gameObject);
+            Debug.Log($"{LogPrefix} Objet '{heldItemId}' détruit.");
             heldItem = null;
             heldItemId = null;
             return;
@@ -251,6 +267,7 @@ public class PlayerInteraction : MonoBehaviour
         if (alien != null && alien.IsWithinReceiveRadius(origin.position))
         {
             gaveItem = alien.TryReceiveItem(heldItemId);
+            Debug.Log($"{LogPrefix} Don de '{heldItemId}' à '{alien.name}' → succès={gaveItem}.");
         }
 
         if (gaveItem)
@@ -294,6 +311,10 @@ public class PlayerInteraction : MonoBehaviour
         if (comboLookup.Count == 0)
         {
             RebuildComboLookup();
+            if (comboLookup.Count == 0)
+            {
+                Debug.LogWarning($"{LogPrefix} Aucun combo disponible pour l'affichage de feedback.");
+            }
         }
 
         var key = new ComboKey(emotion, behavior);
@@ -308,6 +329,10 @@ public class PlayerInteraction : MonoBehaviour
             DefaultEmotionSymbols.TryGetValue(emotion, out var emotionSymbol))
         {
             comboBubble.Show(behaviorSymbol + emotionSymbol, defaultComboBubbleDuration);
+        }
+        else
+        {
+            Debug.LogWarning($"{LogPrefix} Impossible de trouver un feedback pour le combo {behavior}/{emotion}.");
         }
     }
 }
