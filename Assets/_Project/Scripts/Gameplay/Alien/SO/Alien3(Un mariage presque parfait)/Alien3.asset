@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58f9ab1e10ce5b64b965e1fd1a0a9980, type: 3}
   m_Name: Alien3
   m_EditorClassIdentifier: 
-  alienId: 3
+  alienId: 1
   startEmotion: 3
   animator: {fileID: 0}
-  reactions: {fileID: 11400000, guid: 1d06e5d260bad71419696ac8b863f75d, type: 2}
-  dialogue: {fileID: 11400000, guid: 90629ad42a14118408c4e77c8f0e87e3, type: 2}
+  reactions: {fileID: 11400000, guid: 863bdce90ff9e334681db744bf17d5f5, type: 2}
+  dialogue: {fileID: 11400000, guid: f9548ba81103d824fb6c1cd305cf98b8, type: 2}
   quests:
   - questId: vomi
     title: faites vomir un alien
@@ -28,9 +28,9 @@ MonoBehaviour:
       stepType: 0
       completesQuest: 0
       nextStepId: 1
-  - questId: vomi
-    title: faites vomir un alien
-    description: 'trouver ce qui peut les rendre ainsi '
+  - questId: mariage
+    title: Mariez vous avec un alien
+    description: "l'Alien pr\xE8s de la fontaine semble chercher un pr\xE9tendant"
     autoRegisterMission: 1
     autoCompleteMissionOnQuestEnd: 1
     steps:
@@ -39,6 +39,6 @@ MonoBehaviour:
       completesQuest: 0
       nextStepId: 1
     - stepId: 1
-      stepType: 0
+      stepType: 1
       completesQuest: 1
       nextStepId: 2

@@ -17,12 +17,12 @@ MonoBehaviour:
     playerEmotion: 1
     questId: 
     questStepId: 
-    suspicionDelta: -3
+    suspicionDelta: -5
     setNewEmotion: 1
     newEmotion: 1
   - channel: 1
     playerEmotion: 2
-    questId: vomi
+    questId: mariage
     questStepId: 0
     suspicionDelta: 0
     setNewEmotion: 1
@@ -69,11 +69,11 @@ MonoBehaviour:
     suspicionDelta: 0
     setNewEmotion: 0
     newEmotion: 0
-  - channel: 1
-    playerEmotion: 2
-    questId: vomi
+  _itemRules:
+  - questId: mariage
     questStepId: 1
-    suspicionDelta: 0
-    setNewEmotion: 1
-    newEmotion: 2
-  _itemRules: []
+    expectedItemId: cadavre
+    suspicionDelta: -15
+    expectedItemQuantity: 1
+    setIfGoodItem: 1
+    newEmotionIfGoodItem: 2
