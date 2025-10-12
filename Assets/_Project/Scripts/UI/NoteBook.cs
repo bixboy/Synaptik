@@ -56,20 +56,19 @@ public sealed class NoteBook : MonoBehaviour
     {
         missions.Clear();
 
-        if (gameManager == null)
-        {
+        if (!gameManager)
             return;
-        }
 
-        missions.AddRange(gameManager.GetMissions());
+        var gmMissions = gameManager.GetMissions();
+        Debug.Log($"[Notebook] Found {gmMissions.Count} missions in GameManager.");
+        
+        missions.AddRange(gmMissions);
     }
 
     private void RefreshNotebookUI()
     {
-        if (missionListContainer == null || missionEntryPrefab == null)
-        {
+        if (!missionListContainer || !missionEntryPrefab)
             return;
-        }
 
         for (var i = missionListContainer.childCount - 1; i >= 0; i--)
         {
@@ -81,16 +80,14 @@ public sealed class NoteBook : MonoBehaviour
             var entry = Instantiate(missionEntryPrefab, missionListContainer);
             var notebookEntry = entry.GetComponentInChildren<NotebookEntry>();
 
-            if (notebookEntry == null)
-            {
+            if (!notebookEntry)
                 continue;
-            }
 
             notebookEntry.Initialize(mission);
             notebookEntry.SetToggle(mission.IsFinished);
         }
 
-        if (scrollRect != null)
+        if (scrollRect)
         {
             scrollRect.verticalNormalizedPosition = 1f;
         }
