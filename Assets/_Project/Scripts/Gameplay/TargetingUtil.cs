@@ -107,7 +107,7 @@ public static class TargetingUtil
         for (var i = 0; i < count; i++)
         {
             var collider = OverlapBuffer[i];
-            if (collider == null || !collider.gameObject.activeInHierarchy)
+            if (!collider || !collider.gameObject.activeInHierarchy)
             {
                 continue;
             }

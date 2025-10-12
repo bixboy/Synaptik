@@ -8,9 +8,14 @@ public class Alien : MonoBehaviour, IInteraction
 {
     [SerializeField] private AlienDefinition _def;
     public AlienDefinition Definition => _def;
+    
     [SerializeField] private float _receiveRadius = 1.3f;
+    
     [FormerlySerializedAs("_dialogueBubblePrefab")]
     [SerializeField] private DialogueBubble _dialogueBubble;
+    
+    [Header("Interaction Delay")]
+    [SerializeField, Min(0f)] private float _interactionDelay = 0f;
 
     public Emotion Emotion { get; private set; }
 
@@ -79,29 +84,45 @@ public class Alien : MonoBehaviour, IInteraction
     private void ApplyAnimFromEmotion()
     {
         if (_anim)
-        {
             _anim.SetInteger(EmotionHash, (int)Emotion);
-        }
     }
     
     public void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null)
     {
+        if (_interactionDelay <= 0f)
+        {
+            ProcessInteraction(action, item, playerInteraction);
+        }
+        else
+        {
+            StartCoroutine(ProcessInteractionDelayed(action, item, playerInteraction));
+        }
+    }
+
+    private System.Collections.IEnumerator ProcessInteractionDelayed(ActionValues action, HoldableItem item, PlayerInteraction playerInteraction)
+    {
+        yield return new WaitForSeconds(_interactionDelay);
+        ProcessInteraction(action, item, playerInteraction);
+    }
+
+    private void ProcessInteraction(ActionValues action, HoldableItem item, PlayerInteraction playerInteraction)
+    {
         Behavior behavior = action._behavior;
         Emotion emotion = action._emotion;
-        
+
         if (behavior == Behavior.Action)
         {
             switch (emotion)
             {
                 case Emotion.Anger: // Hit
                     break;
-                
+
                 case Emotion.Curious: // Ramasser
                     break;
-                
+
                 case Emotion.Fearful: // Courir
                     break;
-                
+
                 case Emotion.Friendly: // Donne
                 {
                     if (item && TryReceiveItem(item.ItemId))
@@ -110,7 +131,7 @@ public class Alien : MonoBehaviour, IInteraction
                         Debug.Log($"Give item {item.ItemId} to alien {Definition.name}");
                         return;
                     }
-                    
+
                     if (item)
                     {
                         playerInteraction?.DropItem();
@@ -119,7 +140,6 @@ public class Alien : MonoBehaviour, IInteraction
                     }
                     break;
                 }
-                    
             }
         }
         else if (behavior == Behavior.Talking)
@@ -128,18 +148,18 @@ public class Alien : MonoBehaviour, IInteraction
             {
                 case Emotion.Anger: // Insulter
                     break;
-                
+
                 case Emotion.Curious: // Curieux
                     break;
-                
+
                 case Emotion.Fearful: // Crie
                     break;
-                
-                case Emotion.Friendly: // Complimenter 
+
+                case Emotion.Friendly: // Complimenter
                     break;
             }
         }
-        
+
         OnPlayerCombo(action._emotion, action._behavior);
     }
 

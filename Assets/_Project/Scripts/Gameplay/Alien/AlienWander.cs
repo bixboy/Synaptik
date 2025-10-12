@@ -153,7 +153,7 @@ public sealed class AlienWander : MonoBehaviour
         MoveInDirection(direction, moveSpeed);
     }
 
-   private IEnumerator FleeRoutine()
+    private IEnumerator FleeRoutine()
     {
         if (!player)
             yield break;
@@ -162,44 +162,61 @@ public sealed class AlienWander : MonoBehaviour
         float freezeDistance = GetCurrentDetectionRadius();
         float minFleeTime = 0.4f;
         float timer = 0f;
+        float stuckTimer = 0f;
 
-        /* if (alien?.Animator)
-            alien.Animator.SetBool("IsAfraidIdle", false); */
+        Vector3 lastPos = transform.position;
+        Vector3 fleeDir = (transform.position - player.position).normalized;
 
         while (ShouldFlee())
         {
             float dist = Vector3.Distance(transform.position, player.position);
 
-            // --- 1️⃣ joueur trop proche : l'alien est tétanisé ---
+            // 1️⃣ Trop proche : tétanisé
             if (dist <= freezeDistance)
             {
                 LookAtPlayer();
-
-               /* if (alien?.Animator)
+                
+                /* if (alien?.Animator)
                     alien.Animator.SetBool("IsAfraidIdle", false); */
-
-                Vector3 retreatDir = -transform.forward * (0.2f * Time.deltaTime);
-                controller.Move(retreatDir);
-
+                
+                controller.Move(-transform.forward * 0.05f * Time.deltaTime);
+                
                 yield return null;
                 continue;
             }
 
-            // --- 2️⃣ joueur à distance moyenne : l'alien fuit ---
+            // 2️⃣ Fuite active
             if (dist < stopDistance || timer < minFleeTime)
             {
                 timer += Time.deltaTime;
-
+                
                 /* if (alien?.Animator)
                     alien.Animator.SetBool("IsAfraidIdle", false); */
 
-                Vector3 fleeDir = (transform.position - player.position).normalized;
-                Vector2 rand = Random.insideUnitCircle * 0.3f;
-                fleeDir += new Vector3(rand.x, 0f, rand.y);
-                fleeDir.Normalize();
+                Vector3 desiredDir = (transform.position - player.position).normalized;
+                desiredDir.y = 0f;
 
-                if (!IsGroundAhead(fleeDir))
-                    fleeDir = FindAlternativeDirection(fleeDir);
+                Vector2 rand = Random.insideUnitCircle * 0.2f;
+                desiredDir += new Vector3(rand.x, 0f, rand.y);
+                desiredDir.Normalize();
+
+                fleeDir = ComputeAvoidanceDirection(desiredDir);
+
+                if (Vector3.Distance(transform.position, lastPos) < 0.05f)
+                {
+                    stuckTimer += Time.deltaTime;
+                    if (stuckTimer > 1f)
+                    {
+                        fleeDir = FindEscapeDirection();
+                        stuckTimer = 0f;
+                    }
+                }
+                else
+                {
+                    stuckTimer = 0f;
+                }
+
+                lastPos = transform.position;
 
                 MoveInDirection(fleeDir, moveSpeed * fearfulSpeedMultiplier);
             }
@@ -207,14 +224,14 @@ public sealed class AlienWander : MonoBehaviour
             else
             {
                 LookAtPlayer();
-
+                
                 /* if (alien?.Animator)
                     alien.Animator.SetBool("IsAfraidIdle", true); */
             }
 
             yield return null;
         }
-
+        
         /* if (alien?.Animator)
             alien.Animator.SetBool("IsAfraidIdle", false); */
     }
@@ -222,24 +239,62 @@ public sealed class AlienWander : MonoBehaviour
    
     // ===== Fearful Helper ===== //
     
-    private bool IsGroundAhead(Vector3 dir)
+    private Vector3 ComputeAvoidanceDirection(Vector3 desiredDir)
     {
-        Vector3 origin = transform.position + dir * 0.8f + Vector3.up * 0.2f;
-        return Physics.Raycast(origin, Vector3.down, out _, 2f);
-    }
-    
-    private Vector3 FindAlternativeDirection(Vector3 baseDir)
-    {
-        for (int i = 0; i < 8; i++)
+        Vector3 origin = transform.position + Vector3.up * 0.5f;
+        Vector3 finalDir = desiredDir;
+
+        bool hitCenter = Physics.Raycast(origin, desiredDir, out RaycastHit hitC, 1f);
+        bool hitLeft = Physics.Raycast(origin, Quaternion.Euler(0, -30f, 0) * desiredDir, out RaycastHit hitL, 1f);
+        bool hitRight = Physics.Raycast(origin, Quaternion.Euler(0, 30f, 0) * desiredDir, out RaycastHit hitR, 1f);
+
+        if (hitCenter)
         {
-            float angle = Random.Range(-60f, 60f);
-            Vector3 newDir = Quaternion.Euler(0f, angle, 0f) * baseDir;
-            
-            if (IsGroundAhead(newDir))
-                return newDir.normalized;
+            Vector3 slide = Vector3.ProjectOnPlane(desiredDir, hitC.normal).normalized;
+            finalDir = slide;
+        }
+        else if (hitLeft && !hitRight)
+        {
+            finalDir = Quaternion.Euler(0, 35f, 0) * desiredDir;
+        }
+        else if (hitRight && !hitLeft)
+        {
+            finalDir = Quaternion.Euler(0, -35f, 0) * desiredDir;
         }
 
-        return -baseDir.normalized;
+        if (!IsGroundAhead(finalDir))
+        {
+            finalDir = Quaternion.Euler(0, 90f, 0) * desiredDir;
+        }
+
+        return finalDir.normalized;
+    }
+
+    private Vector3 FindEscapeDirection()
+    {
+        for (int i = 0; i < 12; i++)
+        {
+            Vector3 randomDir = Random.insideUnitSphere;
+            randomDir.y = 0f;
+            randomDir.Normalize();
+
+            if (!IsObstacleAhead(randomDir) && IsGroundAhead(randomDir))
+                return randomDir;
+        }
+
+        return -transform.forward;
+    }
+
+    private bool IsObstacleAhead(Vector3 dir)
+    {
+        Vector3 origin = transform.position + Vector3.up * 0.5f;
+        return Physics.Raycast(origin, dir, 0.8f);
+    }
+
+    private bool IsGroundAhead(Vector3 dir)
+    {
+        Vector3 origin = transform.position + dir * 0.7f + Vector3.up * 0.1f;
+        return Physics.Raycast(origin, Vector3.down, 2f);
     }
 
     private void MoveInDirection(Vector3 direction, float speed)

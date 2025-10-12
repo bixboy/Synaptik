@@ -16,12 +16,12 @@ public sealed class NotebookEntry : MonoBehaviour
 
     public void Initialize(Mission mission)
     {
-        if (titleText != null)
+        if (titleText)
         {
             titleText.text = mission.Title;
         }
 
-        if (descriptionText != null)
+        if (descriptionText)
         {
             descriptionText.text = mission.Description;
         }
@@ -31,10 +31,8 @@ public sealed class NotebookEntry : MonoBehaviour
 
     public void SetToggle(bool isOn)
     {
-        if (notebookToggle == null)
-        {
+        if (!notebookToggle)
             return;
-        }
 
         notebookToggle.isOn = isOn;
     }
