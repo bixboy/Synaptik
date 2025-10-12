@@ -48,4 +48,4 @@ MonoBehaviour:
   itemEntries:
   - itemId: labubu
     emojiLine: "\U0001F929"
-    duration: 0
+    duration: 8

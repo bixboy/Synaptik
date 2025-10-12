@@ -47,5 +47,5 @@ MonoBehaviour:
     duration: 3
   itemEntries:
   - itemId: labubu
-    emojiLine: 
-    duration: 0
+    emojiLine: "\U0001F914\u2753"
+    duration: 3
