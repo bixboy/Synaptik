@@ -169,6 +169,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1013040939126425889}
+  - component: {fileID: 5807047462550607854}
   m_Layer: 5
   m_Name: NoteBookEntry
   m_TagString: Untagged
@@ -198,6 +199,21 @@ RectTransform:
   m_AnchoredPosition: {x: 61.5419, y: -25}
   m_SizeDelta: {x: 100, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5807047462550607854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2463283380377874097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa708952f7ccac84cb794d4b804a2517, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  titleText: {fileID: 8337864419064341957}
+  descriptionText: {fileID: 1673945326336881977}
+  notebookToggle: {fileID: 3162851227101007179}
 --- !u!1 &2653183625118804833
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,9 +499,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa708952f7ccac84cb794d4b804a2517, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _titleText: {fileID: 8337864419064341957}
-  _descriptionText: {fileID: 1673945326336881977}
-  _notebookToggle: {fileID: 3162851227101007179}
+  titleText: {fileID: 0}
+  descriptionText: {fileID: 0}
+  notebookToggle: {fileID: 0}
 --- !u!1 &6895329326703865474
 GameObject:
   m_ObjectHideFlags: 0
