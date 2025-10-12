@@ -77,3 +77,24 @@ MonoBehaviour:
     expectedItemQuantity: 1
     setIfGoodItem: 1
     newEmotionIfGoodItem: 2
+  - questId: 
+    questStepId: 0
+    expectedItemId: red
+    suspicionDelta: -5
+    expectedItemQuantity: 1
+    setIfGoodItem: 0
+    newEmotionIfGoodItem: 2
+  - questId: 
+    questStepId: 0
+    expectedItemId: green
+    suspicionDelta: -5
+    expectedItemQuantity: 1
+    setIfGoodItem: 0
+    newEmotionIfGoodItem: 2
+  - questId: 
+    questStepId: 0
+    expectedItemId: blue
+    suspicionDelta: -5
+    expectedItemQuantity: 1
+    setIfGoodItem: 0
+    newEmotionIfGoodItem: 2

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58f9ab1e10ce5b64b965e1fd1a0a9980, type: 3}
   m_Name: Alien3
   m_EditorClassIdentifier: 
-  alienId: 1
-  startEmotion: 3
+  alienId: 4
+  startEmotion: 1
   animator: {fileID: 0}
   reactions: {fileID: 11400000, guid: 863bdce90ff9e334681db744bf17d5f5, type: 2}
   dialogue: {fileID: 11400000, guid: f9548ba81103d824fb6c1cd305cf98b8, type: 2}
