@@ -15,15 +15,15 @@ MonoBehaviour:
   _interactionRules:
   - channel: 1
     playerEmotion: 1
-    questId: 
-    questStepId: 
-    suspicionDelta: -5
+    questId: bagarre
+    questStepId: 0
+    suspicionDelta: -30
     setNewEmotion: 1
     newEmotion: 1
   - channel: 1
     playerEmotion: 2
-    questId: mariage
-    questStepId: 0
+    questId: 
+    questStepId: 
     suspicionDelta: 0
     setNewEmotion: 1
     newEmotion: 2
@@ -70,10 +70,10 @@ MonoBehaviour:
     setNewEmotion: 0
     newEmotion: 0
   _itemRules:
-  - questId: mariage
-    questStepId: 1
+  - questId: 
+    questStepId: 
     expectedItemId: cadavre
-    suspicionDelta: -15
+    suspicionDelta: -10
     expectedItemQuantity: 1
     setIfGoodItem: 1
-    newEmotionIfGoodItem: 2
+    newEmotionIfGoodItem: 1

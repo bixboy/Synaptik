@@ -76,4 +76,39 @@ MonoBehaviour:
     suspicionDelta: 0
     setNewEmotion: 1
     newEmotion: 2
-  _itemRules: []
+  _itemRules:
+  - questId: 
+    questStepId: 
+    expectedItemId: cadavre
+    suspicionDelta: -15
+    expectedItemQuantity: 1
+    setIfGoodItem: 1
+    newEmotionIfGoodItem: 1
+  - questId: 
+    questStepId: 
+    expectedItemId: labubu
+    suspicionDelta: -5
+    expectedItemQuantity: 1
+    setIfGoodItem: 1
+    newEmotionIfGoodItem: 3
+  - questId: 
+    questStepId: 
+    expectedItemId: blue
+    suspicionDelta: -5
+    expectedItemQuantity: 1
+    setIfGoodItem: 1
+    newEmotionIfGoodItem: 3
+  - questId: 
+    questStepId: 
+    expectedItemId: red
+    suspicionDelta: -5
+    expectedItemQuantity: 1
+    setIfGoodItem: 1
+    newEmotionIfGoodItem: 3
+  - questId: 
+    questStepId: 
+    expectedItemId: green
+    suspicionDelta: -5
+    expectedItemQuantity: 1
+    setIfGoodItem: 1
+    newEmotionIfGoodItem: 3

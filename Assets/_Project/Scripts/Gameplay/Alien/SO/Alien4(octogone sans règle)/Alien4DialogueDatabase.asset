@@ -47,5 +47,5 @@ MonoBehaviour:
     duration: 3
   itemEntries:
   - itemId: cadavre
-    emojiLine: "\U0001F970\U0001F633\U0001F92D"
-    duration: 8
+    emojiLine: "\U0001F48D\U0001F6AB\U0001F620"
+    duration: 4

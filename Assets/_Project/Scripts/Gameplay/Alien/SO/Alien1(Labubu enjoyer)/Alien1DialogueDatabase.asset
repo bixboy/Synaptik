@@ -58,3 +58,6 @@ MonoBehaviour:
   - itemId: green
     emojiLine: "\U0001F914"
     duration: 3
+  - itemId: cadavre
+    emojiLine: "\U0001F48D\U0001F6AB\U0001F612"
+    duration: 4

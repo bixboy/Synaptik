@@ -30,7 +30,7 @@ MonoBehaviour:
       nextStepId: 1
   - questId: mariage
     title: Mariez vous avec un alien
-    description: "l'Alien pr\xE8s de la fontaine semble chercher un pr\xE9tendant"
+    description: "Celui pr\xE8s de la fontaine cherche un pr\xE9tendant"
     autoRegisterMission: 1
     autoCompleteMissionOnQuestEnd: 1
     steps:

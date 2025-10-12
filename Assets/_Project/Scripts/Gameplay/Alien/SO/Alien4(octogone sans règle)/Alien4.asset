@@ -18,27 +18,13 @@ MonoBehaviour:
   reactions: {fileID: 11400000, guid: 6fccfd4321c17254c9b895fcb1519ffb, type: 2}
   dialogue: {fileID: 11400000, guid: c55aafb374549094db40d76c233f10cd, type: 2}
   quests:
-  - questId: vomi
-    title: faites vomir un alien
-    description: 'trouver ce qui peut les rendre ainsi '
+  - questId: bagarre
+    title: "D\xE9clanchez une bagarre"
+    description: Ne vous faites pas remarquer
     autoRegisterMission: 1
     autoCompleteMissionOnQuestEnd: 1
     steps:
     - stepId: 0
       stepType: 0
-      completesQuest: 0
-      nextStepId: 1
-  - questId: mariage
-    title: Mariez vous avec un alien
-    description: "l'Alien pr\xE8s de la fontaine semble chercher un pr\xE9tendant"
-    autoRegisterMission: 1
-    autoCompleteMissionOnQuestEnd: 1
-    steps:
-    - stepId: 0
-      stepType: 0
-      completesQuest: 0
-      nextStepId: 1
-    - stepId: 1
-      stepType: 1
       completesQuest: 1
-      nextStepId: 2
+      nextStepId: 1

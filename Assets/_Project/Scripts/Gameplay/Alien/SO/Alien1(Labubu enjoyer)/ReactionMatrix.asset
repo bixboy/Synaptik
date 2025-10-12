@@ -73,28 +73,35 @@ MonoBehaviour:
   - questId: labubu
     questStepId: 0
     expectedItemId: labubu
-    suspicionDelta: -15
+    suspicionDelta: 15
     expectedItemQuantity: 1
     setIfGoodItem: 1
     newEmotionIfGoodItem: 2
   - questId: 
-    questStepId: 0
+    questStepId: 
     expectedItemId: red
     suspicionDelta: -5
     expectedItemQuantity: 1
     setIfGoodItem: 0
-    newEmotionIfGoodItem: 2
+    newEmotionIfGoodItem: 4
   - questId: 
-    questStepId: 0
+    questStepId: 
     expectedItemId: green
     suspicionDelta: -5
     expectedItemQuantity: 1
     setIfGoodItem: 0
-    newEmotionIfGoodItem: 2
+    newEmotionIfGoodItem: 4
   - questId: 
-    questStepId: 0
+    questStepId: 
     expectedItemId: blue
     suspicionDelta: -5
+    expectedItemQuantity: 1
+    setIfGoodItem: 0
+    newEmotionIfGoodItem: 4
+  - questId: 
+    questStepId: 0
+    expectedItemId: cadavre
+    suspicionDelta: -15
     expectedItemQuantity: 1
     setIfGoodItem: 0
     newEmotionIfGoodItem: 2

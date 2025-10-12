@@ -49,3 +49,15 @@ MonoBehaviour:
   - itemId: cadavre
     emojiLine: "\U0001F970\U0001F633\U0001F92D"
     duration: 8
+  - itemId: labubu
+    emojiLine: "\U0001F612\u2753"
+    duration: 4
+  - itemId: blue
+    emojiLine: "\U0001F612\u2753"
+    duration: 4
+  - itemId: red
+    emojiLine: "\U0001F612\u2753"
+    duration: 4
+  - itemId: green
+    emojiLine: "\U0001F612\u2753"
+    duration: 4
