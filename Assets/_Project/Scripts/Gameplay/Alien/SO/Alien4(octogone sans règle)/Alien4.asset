@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58f9ab1e10ce5b64b965e1fd1a0a9980, type: 3}
+  m_Name: Alien4
+  m_EditorClassIdentifier: 
+  alienId: 1
+  startEmotion: 1
+  animator: {fileID: 0}
+  reactions: {fileID: 11400000, guid: 6fccfd4321c17254c9b895fcb1519ffb, type: 2}
+  dialogue: {fileID: 11400000, guid: c55aafb374549094db40d76c233f10cd, type: 2}
+  quests:
+  - questId: bagarre
+    title: "D\xE9clanchez une bagarre"
+    description: Ne vous faites pas remarquer
+    autoRegisterMission: 1
+    autoCompleteMissionOnQuestEnd: 1
+    steps:
+    - stepId: 0
+      stepType: 0
+      completesQuest: 1
+      nextStepId: 1
