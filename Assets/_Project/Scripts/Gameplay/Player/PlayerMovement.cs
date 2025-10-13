@@ -27,6 +27,9 @@ public sealed class PlayerMovement : MonoBehaviour
     [SerializeField, Min(0f)]
     private float fearfulActionBoostDecayDuration = 1f;
 
+    [SerializeField, Min(0f)]
+    private float fearfulActionBoostCooldown = 3f;
+
     [Header("Camera-relative ?")]
     [SerializeField]
     private bool cameraRelative = true;
@@ -40,6 +43,7 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private float currentSpeedBonus;
     private float speedBoostTimer;
+    private float speedBoostCooldownTimer;
     private InputsDetection cachedInputsDetection;
     private bool isSubscribedToInputs;
 
@@ -87,6 +91,7 @@ public sealed class PlayerMovement : MonoBehaviour
         var direction = GetMovementDirection(input);
 
         UpdateSpeedBoost(Time.fixedDeltaTime);
+        UpdateSpeedBoostCooldown(Time.fixedDeltaTime);
 
         var currentMaxSpeed = maxSpeed + currentSpeedBonus;
 
@@ -137,8 +142,12 @@ public sealed class PlayerMovement : MonoBehaviour
         if (emotion != Emotion.Fearful || behavior != Behavior.Action)
             return;
 
+        if (speedBoostCooldownTimer > 0f)
+            return;
+
         currentSpeedBonus = fearfulActionSpeedBonus;
         speedBoostTimer = fearfulActionBoostDuration;
+        speedBoostCooldownTimer = fearfulActionBoostCooldown;
     }
 
     private void UpdateSpeedBoost(float deltaTime)
@@ -164,6 +173,14 @@ public sealed class PlayerMovement : MonoBehaviour
 
         float decayRate = fearfulActionSpeedBonus / fearfulActionBoostDecayDuration;
         currentSpeedBonus = Mathf.Max(0f, currentSpeedBonus - decayRate * deltaTime);
+    }
+
+    private void UpdateSpeedBoostCooldown(float deltaTime)
+    {
+        if (speedBoostCooldownTimer <= 0f)
+            return;
+
+        speedBoostCooldownTimer = Mathf.Max(0f, speedBoostCooldownTimer - deltaTime);
     }
 
     private Vector3 GetMovementDirection(Vector2 input)
