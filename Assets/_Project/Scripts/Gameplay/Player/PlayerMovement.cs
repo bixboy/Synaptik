@@ -73,9 +73,17 @@ public sealed class PlayerMovement : MonoBehaviour
 
         Vector3 camForward = targetCamera.transform.forward;
         camForward.y = 0f;
-        camForward.Normalize();
+        if (camForward.sqrMagnitude < 0.0001f)
+            camForward = Vector3.forward;
+        else
+            camForward.Normalize();
 
-        Vector3 camRight = Vector3.Cross(Vector3.up, camForward).normalized;
+        Vector3 camRight = targetCamera.transform.right;
+        camRight.y = 0f;
+        if (camRight.sqrMagnitude < 0.0001f)
+            camRight = Vector3.right;
+        else
+            camRight.Normalize();
 
         Vector3 moveDir = (camForward * input.y + camRight * input.x);
         return moveDir.sqrMagnitude > 1f ? moveDir.normalized : moveDir;
