@@ -47,7 +47,7 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        var input = InputsDetection.Instance != null ? InputsDetection.Instance.MoveVector : Vector2.zero;
+        var input = InputsDetection.Instance ? InputsDetection.Instance.MoveVector : Vector2.zero;
         var direction = GetMovementDirection(input);
 
         var currentVelocity = rigidbodyComponent.linearVelocity;
@@ -70,23 +70,23 @@ public sealed class PlayerMovement : MonoBehaviour
     {
         if (!cameraRelative || !targetCamera)
             return new Vector3(input.x, 0f, input.y);
-
-        Vector3 camForward = targetCamera.transform.forward;
-        camForward.y = 0f;
-        camForward.Normalize();
-
-        Vector3 camRight = Vector3.Cross(Vector3.up, camForward).normalized;
-
-        Vector3 moveDir = (camForward * input.y + camRight * input.x);
-        return moveDir.sqrMagnitude > 1f ? moveDir.normalized : moveDir;
+ 
+        Quaternion yawRotation = Quaternion.Euler(0f, targetCamera.transform.eulerAngles.y, 0f);
+ 
+        Vector3 camForward = yawRotation * Vector3.forward;
+        Vector3 camRight   = yawRotation * Vector3.right;
+ 
+        Vector3 moveDir = camForward * input.y + camRight * input.x;
+        return (moveDir.sqrMagnitude > 1f) ? moveDir.normalized : moveDir;
     }
+
 
     private void UpdateRotation(Vector3 inputDir, Vector3 velocity)
     {
         Vector3 dir = inputDir.sqrMagnitude > 0.001f ? inputDir : velocity.normalized;
-        if (dir.sqrMagnitude < 0.001f)
+        if (dir.sqrMagnitude < 0.001f) 
             return;
-
+ 
         Quaternion targetRot = Quaternion.LookRotation(dir, Vector3.up);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRot, rotationSpeed * Time.fixedDeltaTime * 100f);
     }
