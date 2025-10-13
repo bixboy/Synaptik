@@ -19,10 +19,14 @@ public class DialogueDatabase : ScriptableObject
         [SerializeField]
         private float duration;
 
+        [SerializeField]
+        private string questStepId;
+
         public Emotion Emotion => emotion;
         public Behavior Behavior => behavior;
         public string EmojiLine => emojiLine;
         public float Duration => duration <= 0f ? 2f : duration;
+        public string QuestStepId => questStepId;
     }
 
     [Serializable]
@@ -52,6 +56,11 @@ public class DialogueDatabase : ScriptableObject
     {
         for (var i = 0; i < entries.Length; i++)
         {
+            if (!string.IsNullOrWhiteSpace(entries[i].QuestStepId))
+            {
+                continue;
+            }
+
             if (entries[i].Emotion == emotion && entries[i].Behavior == behavior)
             {
                 entry = entries[i];
@@ -70,6 +79,32 @@ public class DialogueDatabase : ScriptableObject
             if (itemEntries[i].ItemId == itemId)
             {
                 entry = itemEntries[i];
+                return true;
+            }
+        }
+
+        entry = default;
+        return false;
+    }
+
+    public bool TryGetForQuestStep(string questStepId, out Entry entry)
+    {
+        if (string.IsNullOrWhiteSpace(questStepId))
+        {
+            entry = default;
+            return false;
+        }
+
+        for (var i = 0; i < entries.Length; i++)
+        {
+            if (string.IsNullOrWhiteSpace(entries[i].QuestStepId))
+            {
+                continue;
+            }
+
+            if (entries[i].QuestStepId == questStepId)
+            {
+                entry = entries[i];
                 return true;
             }
         }
