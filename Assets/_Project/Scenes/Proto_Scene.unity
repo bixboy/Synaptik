@@ -6452,6 +6452,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _def: {fileID: 11400000, guid: 004e42592e531fc449c35fe342ece794, type: 2}
   _receiveRadius: 2.5
+  _emotionRenderers:
+  - {fileID: 1279067973}
+  _emotionColors:
+  - emotion: 1
+    color: {r: 0.78867924, g: 0, b: 0, a: 1}
+  - emotion: 2
+    color: {r: 0.8037735, g: 0.777064, b: 0, a: 1}
+  - emotion: 3
+    color: {r: 0.05116012, g: 0.78867924, b: 0, a: 1}
+  - emotion: 4
+    color: {r: 0, g: 0.68311614, b: 0.7882353, a: 1}
   _dialogueBubble: {fileID: 1279067968}
   _interactionDelay: 0
 --- !u!95 &1279067970
@@ -7379,6 +7390,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _def: {fileID: 11400000, guid: f39359a08646cef449ea31f4c6167320, type: 2}
   _receiveRadius: 2.5
+  _emotionRenderers:
+  - {fileID: 1460663267}
+  _emotionColors:
+  - emotion: 1
+    color: {r: 0.78867924, g: 0, b: 0, a: 1}
+  - emotion: 2
+    color: {r: 0.8037735, g: 0.777064, b: 0, a: 1}
+  - emotion: 3
+    color: {r: 0.05116012, g: 0.78867924, b: 0, a: 1}
+  - emotion: 4
+    color: {r: 0, g: 0.68311614, b: 0.7882353, a: 1}
   _dialogueBubble: {fileID: 1460663270}
   _interactionDelay: 0
 --- !u!95 &1460663264
@@ -8952,6 +8974,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _def: {fileID: 11400000, guid: fc0964769e300bc46a63892a6655d1cf, type: 2}
   _receiveRadius: 2.5
+  _emotionRenderers:
+  - {fileID: 1745018963}
+  _emotionColors:
+  - emotion: 1
+    color: {r: 0.78867924, g: 0, b: 0, a: 1}
+  - emotion: 2
+    color: {r: 0.8037735, g: 0.777064, b: 0, a: 1}
+  - emotion: 3
+    color: {r: 0.05116012, g: 0.78867924, b: 0, a: 1}
+  - emotion: 4
+    color: {r: 0, g: 0.68311614, b: 0.7882353, a: 1}
   _dialogueBubble: {fileID: 1745018958}
   _interactionDelay: 0
 --- !u!95 &1745018960
@@ -9855,6 +9888,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _def: {fileID: 11400000, guid: c92260048b3e60644b74198c35a7bcff, type: 2}
   _receiveRadius: 2.5
+  _emotionRenderers:
+  - {fileID: 1930495109}
+  _emotionColors:
+  - emotion: 1
+    color: {r: 0.78867924, g: 0, b: 0, a: 1}
+  - emotion: 2
+    color: {r: 0.8037735, g: 0.777064, b: 0, a: 1}
+  - emotion: 3
+    color: {r: 0.05116012, g: 0.78867924, b: 0, a: 1}
+  - emotion: 4
+    color: {r: 0, g: 0.68311614, b: 0.7882353, a: 1}
   _dialogueBubble: {fileID: 1930495104}
   _interactionDelay: 0
 --- !u!95 &1930495106
