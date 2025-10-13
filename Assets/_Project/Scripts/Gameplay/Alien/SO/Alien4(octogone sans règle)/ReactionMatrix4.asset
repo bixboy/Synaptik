@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2663d4c0b200fdc4d9f43b6546dbdde5, type: 3}
+  m_Name: ReactionMatrix4
+  m_EditorClassIdentifier: 
+  _interactionRules:
+  - channel: 1
+    playerEmotion: 1
+    questId: bagarre
+    questStepId: 0
+    suspicionDelta: -30
+    setNewEmotion: 1
+    newEmotion: 1
+  - channel: 1
+    playerEmotion: 2
+    questId: 
+    questStepId: 
+    suspicionDelta: 0
+    setNewEmotion: 1
+    newEmotion: 2
+  - channel: 1
+    playerEmotion: 3
+    questId: 
+    questStepId: 
+    suspicionDelta: 0
+    setNewEmotion: 0
+    newEmotion: 0
+  - channel: 1
+    playerEmotion: 4
+    questId: 
+    questStepId: 
+    suspicionDelta: 0
+    setNewEmotion: 0
+    newEmotion: 3
+  - channel: 2
+    playerEmotion: 1
+    questId: 
+    questStepId: 
+    suspicionDelta: -5
+    setNewEmotion: 1
+    newEmotion: 4
+  - channel: 2
+    playerEmotion: 2
+    questId: 
+    questStepId: 
+    suspicionDelta: 0
+    setNewEmotion: 0
+    newEmotion: 0
+  - channel: 2
+    playerEmotion: 3
+    questId: 
+    questStepId: 
+    suspicionDelta: 0
+    setNewEmotion: 0
+    newEmotion: 0
+  - channel: 2
+    playerEmotion: 4
+    questId: 
+    questStepId: 
+    suspicionDelta: 0
+    setNewEmotion: 0
+    newEmotion: 0
+  _itemRules:
+  - questId: 
+    questStepId: 
+    expectedItemId: cadavre
+    suspicionDelta: -10
+    expectedItemQuantity: 1
+    setIfGoodItem: 1
+    newEmotionIfGoodItem: 1
