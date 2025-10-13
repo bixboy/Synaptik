@@ -884,8 +884,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c46c1fcaf4143e941a3f94b7927d82ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mistrust: 0
-  _maxMistrust: 100
+  missions: []
 --- !u!4 &1412701993
 Transform:
   m_ObjectHideFlags: 0
