@@ -20,16 +20,6 @@ MonoBehaviour:
   quests:
   - questId: vomi
     title: faites vomir un alien
-    description: "il semblerait \xE7a ne marche pas comme chez nous"
-    autoRegisterMission: 1
-    autoCompleteMissionOnQuestEnd: 1
-    steps:
-    - stepId: 0
-      stepType: 0
-      completesQuest: 0
-      nextStepId: 1
-  - questId: vomi
-    title: faites vomir un alien
     description: 'trouver ce qui peut les rendre ainsi '
     autoRegisterMission: 1
     autoCompleteMissionOnQuestEnd: 1

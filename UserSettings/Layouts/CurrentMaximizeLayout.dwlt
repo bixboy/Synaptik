@@ -24,7 +24,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 12455
+  controlID: 25617
   draggingID: 0
 --- !u!114 &2
 MonoBehaviour:
@@ -95,7 +95,7 @@ MonoBehaviour:
     m_HSlider: 0
     m_VSlider: 0
     m_IgnoreScrollWheelUntilClicked: 0
-    m_EnableMouseInput: 1
+    m_EnableMouseInput: 0
     m_EnableSliderZoomHorizontal: 0
     m_EnableSliderZoomVertical: 0
     m_UniformScale: 1
@@ -151,7 +151,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 12456
+  controlID: 25618
   draggingID: 0
 --- !u!114 &4
 MonoBehaviour:
@@ -177,7 +177,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 12457
+  controlID: 25619
   draggingID: 0
 --- !u!114 &5
 MonoBehaviour:
@@ -244,23 +244,23 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 
-      m_LastClickedID: 0
-      m_ExpandedIDs: 8610feff863ffeff4e45fefffc95feffb67b0100c07c01005a7d0100727d010002be0100b6e60100
+      m_SelectedIDs: a01c0200
+      m_LastClickedID: 138400
+      m_ExpandedIDs: eadbfdff8610feff863ffeff4e45fefffc95feffb67b0100c07c01005a7d0100727d010002be0100b6e60100a21b02006e1c0200461d0200fa1e0200
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: Camcentraletest
+        m_OriginalName: Camcentraletest
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 0
+        m_UserData: 138400
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
         m_TrimLeadingAndTrailingWhitespace: 0
         m_ClientGUIView: {fileID: 5}
@@ -827,10 +827,10 @@ MonoBehaviour:
       displayed: 1
       id: Overlays/OverlayMenu
       index: 1
-      contents: '{"m_Layout":1,"m_Collapsed":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":-315.199951171875,"y":-213.60000610351563},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":3,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
+      contents: '{"m_Layout":1,"m_Collapsed":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":-315.199951171875,"y":-213.5999755859375},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":3,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
       floating: 0
       collapsed: 0
-      snapOffset: {x: -315.19995, y: -213.6}
+      snapOffset: {x: -315.19995, y: -213.59998}
       snapOffsetDelta: {x: 0, y: 0}
       snapCorner: 3
       layout: 1
@@ -891,9 +891,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: -0.32026008, y: -2.114581, z: -20.521175}
+    m_Target: {x: -0.80999994, y: 5.3899994, z: -11.880001}
     speed: 2
-    m_Value: {x: -0.32026008, y: -2.114581, z: -20.521175}
+    m_Value: {x: -0.80999994, y: 5.3899994, z: -11.880001}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -939,13 +939,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.16103563, y: -0.758617, z: 0.2027067, w: 0.59891826}
+    m_Target: {x: 0.2851491, y: -0.70794153, z: 0.3843661, w: 0.52060175}
     speed: 2
-    m_Value: {x: 0.16093707, y: -0.7581527, z: 0.20258264, w: 0.5985517}
+    m_Value: {x: 0.28497037, y: -0.70749784, z: 0.38412517, w: 0.5202755}
   m_Size:
-    m_Target: 1.2388734
+    m_Target: 12.124356
     speed: 2
-    m_Value: 1.2388734
+    m_Value: 12.124356
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1043,7 +1043,7 @@ MonoBehaviour:
     m_ContainerData: []
     m_OverlaysVisible: 1
   m_SearchFilter:
-    m_NameFilter: 
+    m_NameFilter: moji
     m_ClassNames: []
     m_AssetLabels: []
     m_AssetBundleNames: []
@@ -1051,28 +1051,28 @@ MonoBehaviour:
     m_SceneHandles: 
     m_ShowAllHits: 0
     m_SkipHidden: 0
-    m_SearchArea: 1
+    m_SearchArea: 0
     m_Folders:
-    - Assets/_Project/Scenes
+    - Assets/_Project/Scripts/Gameplay/Alien/SO/Alien2(Vomito)
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
-    m_OriginalText: 
+    m_OriginalText: moji
     m_ImportLogFlags: 0
     m_FilterByTypeIntersection: 0
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/_Project/Scenes
+  - Assets/_Project/Scripts/Gameplay/Alien/SO/Alien2(Vomito)
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\PGW110\Documents\GitHub\Synaptik
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: e64a0100
-    m_LastClickedID: 84710
-    m_ExpandedIDs: 00000000a43b01007853010000ca9a3b
+    scrollPos: {x: 0, y: 44}
+    m_SelectedIDs: 66470100
+    m_LastClickedID: 83814
+    m_ExpandedIDs: 00000000a43b0100243e01009e4301002c48010078530100366b010000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1127,9 +1127,9 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 
-    m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 1
+    m_SelectedInstanceIDs: a01c0200
+    m_LastClickedInstanceID: 138400
+    m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: c6230000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
