@@ -68,28 +68,26 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private Vector3 GetMovementDirection(Vector2 input)
     {
-        if (!cameraRelative || targetCamera == null)
+        if (!cameraRelative || !targetCamera)
             return new Vector3(input.x, 0f, input.y);
 
-        var forward = targetCamera.transform.forward;
-        forward.y = 0f;
-        forward.Normalize();
+        Vector3 camForward = targetCamera.transform.forward;
+        camForward.y = 0f;
+        camForward.Normalize();
 
-        var right = targetCamera.transform.right;
-        right.y = 0f;
-        right.Normalize();
+        Vector3 camRight = Vector3.Cross(Vector3.up, camForward).normalized;
 
-        return right * input.x + forward * input.y;
+        Vector3 moveDir = (camForward * input.y + camRight * input.x);
+        return moveDir.sqrMagnitude > 1f ? moveDir.normalized : moveDir;
     }
 
     private void UpdateRotation(Vector3 inputDir, Vector3 velocity)
     {
-        Vector3 dir = inputDir.sqrMagnitude > 0.0001f ? inputDir : velocity.normalized;
-
+        Vector3 dir = inputDir.sqrMagnitude > 0.001f ? inputDir : velocity.normalized;
         if (dir.sqrMagnitude < 0.001f)
             return;
 
         Quaternion targetRot = Quaternion.LookRotation(dir, Vector3.up);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.fixedDeltaTime * rotationSpeed);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRot, rotationSpeed * Time.fixedDeltaTime * 100f);
     }
 }
