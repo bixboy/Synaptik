@@ -18,16 +18,6 @@ MonoBehaviour:
   reactions: {fileID: 11400000, guid: 863bdce90ff9e334681db744bf17d5f5, type: 2}
   dialogue: {fileID: 11400000, guid: f9548ba81103d824fb6c1cd305cf98b8, type: 2}
   quests:
-  - questId: vomi
-    title: faites vomir un alien
-    description: 'trouver ce qui peut les rendre ainsi '
-    autoRegisterMission: 1
-    autoCompleteMissionOnQuestEnd: 1
-    steps:
-    - stepId: 0
-      stepType: 0
-      completesQuest: 0
-      nextStepId: 1
   - questId: mariage
     title: Mariez vous avec un alien
     description: "Celui pr\xE8s de la fontaine cherche un pr\xE9tendant"

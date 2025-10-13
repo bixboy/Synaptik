@@ -76,6 +76,13 @@ MonoBehaviour:
     suspicionDelta: 0
     setNewEmotion: 1
     newEmotion: 2
+  - channel: 1
+    playerEmotion: 2
+    questId: vomi
+    questStepId: 2
+    suspicionDelta: 0
+    setNewEmotion: 1
+    newEmotion: 2
   _itemRules:
   - questId: 
     questStepId: 

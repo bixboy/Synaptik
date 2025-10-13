@@ -30,5 +30,9 @@ MonoBehaviour:
       nextStepId: 1
     - stepId: 1
       stepType: 0
-      completesQuest: 1
+      completesQuest: 0
       nextStepId: 2
+    - stepId: 2
+      stepType: 0
+      completesQuest: 1
+      nextStepId: 3
