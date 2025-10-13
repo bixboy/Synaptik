@@ -351,6 +351,11 @@ public class Alien : MonoBehaviour, IInteraction
     {
         var handled = allowQuestProgress && ProcessQuestStep(rule.QuestId, rule.QuestStepId, QuestStepType.Talk);
 
+        if (handled)
+        {
+            TryShowQuestStepDialogue(rule.QuestStepId, "interaction");
+        }
+
         if (rule.SetNewEmotion)
         {
             SetEmotion(rule.NewEmotion);
@@ -388,6 +393,11 @@ public class Alien : MonoBehaviour, IInteraction
     private void HandleItemRule(ItemRule rule, string itemId)
     {
         var handled = ProcessQuestStep(rule.QuestId, rule.QuestStepId, QuestStepType.GiveItem);
+
+        if (handled)
+        {
+            TryShowQuestStepDialogue(rule.QuestStepId, "item");
+        }
 
         if (rule.SetIfGoodItem)
         {
@@ -431,6 +441,20 @@ public class Alien : MonoBehaviour, IInteraction
 
         if (_def.Dialogue.TryGet(itemId, out var entry))
         {
+            ShowDialogue(entry.EmojiLine, entry.Duration);
+        }
+    }
+
+    private void TryShowQuestStepDialogue(string questStepId, string source)
+    {
+        if (string.IsNullOrWhiteSpace(questStepId) || !_dialogueBubble || !_def?.Dialogue)
+        {
+            return;
+        }
+
+        if (_def.Dialogue.TryGetForQuestStep(questStepId, out var entry))
+        {
+            Debug.Log($"[Alien] Showing quest step dialogue '{entry.EmojiLine}' for {name} at step '{questStepId}' from {source}.");
             ShowDialogue(entry.EmojiLine, entry.Duration);
         }
     }
