@@ -8,12 +8,18 @@ public class Alien : MonoBehaviour, IInteraction
 {
     [SerializeField] private AlienDefinition _def;
     public AlienDefinition Definition => _def;
-    
+
     [SerializeField] private float _receiveRadius = 1.3f;
-    
+
+    [Header("Visuals")]
+    [SerializeField] private Renderer[] _emotionRenderers = Array.Empty<Renderer>();
+
+    [SerializeField]
+    private List<EmotionColorSetting> _emotionColors = new();
+
     [FormerlySerializedAs("_dialogueBubblePrefab")]
     [SerializeField] private DialogueBubble _dialogueBubble;
-    
+
     [Header("Interaction Delay")]
     [SerializeField, Min(0f)] private float _interactionDelay = 0f;
 
@@ -21,10 +27,21 @@ public class Alien : MonoBehaviour, IInteraction
 
     private Animator _anim;
     private static readonly int EmotionHash = Animator.StringToHash("Emotion");
+    private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
+    private static readonly int ColorId = Shader.PropertyToID("_Color");
 
     private readonly Dictionary<string, AlienQuestRuntime> _questRuntimes = new Dictionary<string, AlienQuestRuntime>();
     private readonly Dictionary<string, int> _receivedItemQuantities = new Dictionary<string, int>();
     private readonly Dictionary<InteractionLookupKey, InterractionRule> _cachedInteractionRules = new Dictionary<InteractionLookupKey, InterractionRule>();
+    private readonly Dictionary<Emotion, Color> _emotionColorLookup = new();
+    private MaterialPropertyBlock _emotionPropertyBlock;
+
+    [Serializable]
+    private struct EmotionColorSetting
+    {
+        public Emotion emotion;
+        public Color color;
+    }
 
     private void Awake()
     {
@@ -47,8 +64,10 @@ public class Alien : MonoBehaviour, IInteraction
             _anim.runtimeAnimatorController = _def.Animator;
         }
 
+        CacheEmotionColors();
+
         Emotion = _def ? _def.StartEmotion : Emotion.Curious;
-        ApplyAnimFromEmotion();
+        ApplyEmotionVisuals();
     }
 
     private void Start()
@@ -86,7 +105,66 @@ public class Alien : MonoBehaviour, IInteraction
         if (_anim)
             _anim.SetInteger(EmotionHash, (int)Emotion);
     }
-    
+
+    private void ApplyEmotionVisuals()
+    {
+        ApplyAnimFromEmotion();
+        ApplyEmotionColor();
+    }
+
+    private void CacheEmotionColors()
+    {
+        _emotionColorLookup.Clear();
+
+        foreach (var setting in _emotionColors)
+        {
+            _emotionColorLookup[setting.emotion] = setting.color;
+        }
+    }
+
+    private void ApplyEmotionColor()
+    {
+        if (_emotionRenderers == null || _emotionRenderers.Length == 0)
+        {
+            return;
+        }
+
+        if (_emotionPropertyBlock == null)
+        {
+            _emotionPropertyBlock = new MaterialPropertyBlock();
+        }
+
+        if (_emotionColorLookup.TryGetValue(Emotion, out var color))
+        {
+            foreach (var emotionRenderer in _emotionRenderers)
+            {
+                if (!emotionRenderer)
+                {
+                    continue;
+                }
+
+                emotionRenderer.GetPropertyBlock(_emotionPropertyBlock);
+                _emotionPropertyBlock.SetColor(BaseColorId, color);
+                _emotionPropertyBlock.SetColor(ColorId, color);
+                emotionRenderer.SetPropertyBlock(_emotionPropertyBlock);
+            }
+        }
+        else
+        {
+            foreach (var emotionRenderer in _emotionRenderers)
+            {
+                if (!emotionRenderer)
+                {
+                    continue;
+                }
+
+                emotionRenderer.GetPropertyBlock(_emotionPropertyBlock);
+                _emotionPropertyBlock.Clear();
+                emotionRenderer.SetPropertyBlock(_emotionPropertyBlock);
+            }
+        }
+    }
+
     public void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null)
     {
         if (_interactionDelay <= 0f)
@@ -238,7 +316,7 @@ public class Alien : MonoBehaviour, IInteraction
             return;
 
         Emotion = newEmotion;
-        ApplyAnimFromEmotion();
+        ApplyEmotionVisuals();
     }
 
     internal void ShowDialogue(string emojiLine, float duration)
