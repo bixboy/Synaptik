@@ -24,6 +24,9 @@ public sealed class PlayerMovement : MonoBehaviour
     [SerializeField, Min(0f)]
     private float fearfulActionBoostDuration = 2f;
 
+    [SerializeField, Min(0f)]
+    private float fearfulActionBoostDecayDuration = 1f;
+
     [Header("Camera-relative ?")]
     [SerializeField]
     private bool cameraRelative = true;
@@ -140,16 +143,27 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private void UpdateSpeedBoost(float deltaTime)
     {
-        if (speedBoostTimer <= 0f)
-            return;
-
-        speedBoostTimer -= deltaTime;
-
         if (speedBoostTimer > 0f)
+        {
+            speedBoostTimer -= deltaTime;
+
+            if (speedBoostTimer > 0f)
+                return;
+
+            speedBoostTimer = 0f;
+        }
+
+        if (currentSpeedBonus <= 0f)
             return;
 
-        speedBoostTimer = 0f;
-        currentSpeedBonus = 0f;
+        if (fearfulActionBoostDecayDuration <= 0f)
+        {
+            currentSpeedBonus = 0f;
+            return;
+        }
+
+        float decayRate = fearfulActionSpeedBonus / fearfulActionBoostDecayDuration;
+        currentSpeedBonus = Mathf.Max(0f, currentSpeedBonus - decayRate * deltaTime);
     }
 
     private Vector3 GetMovementDirection(Vector2 input)
