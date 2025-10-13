@@ -17,6 +17,19 @@ public sealed class PlayerMovement : MonoBehaviour
     [SerializeField, Min(0f)]
     private float deceleration = 25f;
 
+    [Header("Fear Action Boost")]
+    [SerializeField, Min(0f)]
+    private float fearfulActionSpeedBonus = 3f;
+
+    [SerializeField, Min(0f)]
+    private float fearfulActionBoostDuration = 2f;
+
+    [SerializeField, Min(0f)]
+    private float fearfulActionBoostDecayDuration = 1f;
+
+    [SerializeField, Min(0f)]
+    private float fearfulActionBoostCooldown = 3f;
+
     [Header("Camera-relative ?")]
     [SerializeField]
     private bool cameraRelative = true;
@@ -27,6 +40,12 @@ public sealed class PlayerMovement : MonoBehaviour
     [Header("Rotation")]
     [SerializeField, Min(0f)]
     private float rotationSpeed = 10f;
+
+    private float currentSpeedBonus;
+    private float speedBoostTimer;
+    private float speedBoostCooldownTimer;
+    private InputsDetection cachedInputsDetection;
+    private bool isSubscribedToInputs;
 
     private void Reset()
     {
@@ -45,14 +64,40 @@ public sealed class PlayerMovement : MonoBehaviour
         rigidbodyComponent.interpolation = RigidbodyInterpolation.Interpolate;
     }
 
+    private void OnEnable()
+    {
+        TrySubscribeToInputs();
+    }
+
+    private void Start()
+    {
+        TrySubscribeToInputs();
+    }
+
+    private void Update()
+    {
+        if (!isSubscribedToInputs)
+            TrySubscribeToInputs();
+    }
+
+    private void OnDisable()
+    {
+        TryUnsubscribeFromInputs();
+    }
+
     private void FixedUpdate()
     {
         var input = InputsDetection.Instance ? InputsDetection.Instance.MoveVector : Vector2.zero;
         var direction = GetMovementDirection(input);
 
+        UpdateSpeedBoost(Time.fixedDeltaTime);
+        UpdateSpeedBoostCooldown(Time.fixedDeltaTime);
+
+        var currentMaxSpeed = maxSpeed + currentSpeedBonus;
+
         var currentVelocity = rigidbodyComponent.linearVelocity;
         var horizontalVelocity = new Vector3(currentVelocity.x, 0f, currentVelocity.z);
-        var targetHorizontalVelocity = direction * maxSpeed;
+        var targetHorizontalVelocity = direction * currentMaxSpeed;
 
         var currentAcceleration = direction.sqrMagnitude > 0.0001f ? acceleration : deceleration;
         var maxDeltaV = currentAcceleration * Time.fixedDeltaTime;
@@ -64,6 +109,78 @@ public sealed class PlayerMovement : MonoBehaviour
         rigidbodyComponent.AddForce(deltaV, ForceMode.VelocityChange);
 
         UpdateRotation(direction, horizontalVelocity);
+    }
+
+    private void TrySubscribeToInputs()
+    {
+        if (isSubscribedToInputs)
+            return;
+
+        var instance = InputsDetection.Instance;
+        if (!instance)
+            return;
+
+        instance.OnEmotionAction += HandleEmotionAction;
+        cachedInputsDetection = instance;
+        isSubscribedToInputs = true;
+    }
+
+    private void TryUnsubscribeFromInputs()
+    {
+        if (!isSubscribedToInputs)
+            return;
+
+        if (cachedInputsDetection)
+            cachedInputsDetection.OnEmotionAction -= HandleEmotionAction;
+
+        cachedInputsDetection = null;
+        isSubscribedToInputs = false;
+    }
+
+    private void HandleEmotionAction(Emotion emotion, Behavior behavior)
+    {
+        if (emotion != Emotion.Fearful || behavior != Behavior.Action)
+            return;
+
+        if (speedBoostCooldownTimer > 0f)
+            return;
+
+        currentSpeedBonus = fearfulActionSpeedBonus;
+        speedBoostTimer = fearfulActionBoostDuration;
+        speedBoostCooldownTimer = fearfulActionBoostCooldown;
+    }
+
+    private void UpdateSpeedBoost(float deltaTime)
+    {
+        if (speedBoostTimer > 0f)
+        {
+            speedBoostTimer -= deltaTime;
+
+            if (speedBoostTimer > 0f)
+                return;
+
+            speedBoostTimer = 0f;
+        }
+
+        if (currentSpeedBonus <= 0f)
+            return;
+
+        if (fearfulActionBoostDecayDuration <= 0f)
+        {
+            currentSpeedBonus = 0f;
+            return;
+        }
+
+        float decayRate = fearfulActionSpeedBonus / fearfulActionBoostDecayDuration;
+        currentSpeedBonus = Mathf.Max(0f, currentSpeedBonus - decayRate * deltaTime);
+    }
+
+    private void UpdateSpeedBoostCooldown(float deltaTime)
+    {
+        if (speedBoostCooldownTimer <= 0f)
+            return;
+
+        speedBoostCooldownTimer = Mathf.Max(0f, speedBoostCooldownTimer - deltaTime);
     }
 
     private Vector3 GetMovementDirection(Vector2 input)
