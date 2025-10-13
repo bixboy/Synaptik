@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -14,8 +15,9 @@ public class Alien : MonoBehaviour, IInteraction
     [Header("Visuals")]
     [SerializeField] private Renderer[] _emotionRenderers = Array.Empty<Renderer>();
 
-    [SerializeField]
-    private List<EmotionColorSetting> _emotionColors = new();
+    [SerializeField] private List<EmotionColorSetting> _emotionColors = new();
+    
+    [SerializeField, Min(0f)] private float _colorFadeDuration = 0.5f;
 
     [FormerlySerializedAs("_dialogueBubblePrefab")]
     [SerializeField] private DialogueBubble _dialogueBubble;
@@ -30,11 +32,13 @@ public class Alien : MonoBehaviour, IInteraction
     private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
     private static readonly int ColorId = Shader.PropertyToID("_Color");
 
-    private readonly Dictionary<string, AlienQuestRuntime> _questRuntimes = new Dictionary<string, AlienQuestRuntime>();
-    private readonly Dictionary<string, int> _receivedItemQuantities = new Dictionary<string, int>();
-    private readonly Dictionary<InteractionLookupKey, InterractionRule> _cachedInteractionRules = new Dictionary<InteractionLookupKey, InterractionRule>();
+    private readonly Dictionary<string, AlienQuestRuntime> _questRuntimes = new();
+    private readonly Dictionary<string, int> _receivedItemQuantities = new();
+    private readonly Dictionary<InteractionLookupKey, InterractionRule> _cachedInteractionRules = new();
     private readonly Dictionary<Emotion, Color> _emotionColorLookup = new();
     private MaterialPropertyBlock _emotionPropertyBlock;
+
+    private Coroutine _colorFadeCoroutine;
 
     [Serializable]
     private struct EmotionColorSetting
@@ -106,62 +110,78 @@ public class Alien : MonoBehaviour, IInteraction
             _anim.SetInteger(EmotionHash, (int)Emotion);
     }
 
-    private void ApplyEmotionVisuals()
+    private void ApplyEmotionVisuals(bool immediate = false)
     {
         ApplyAnimFromEmotion();
-        ApplyEmotionColor();
+        ApplyEmotionColor(immediate);
     }
-
+    
     private void CacheEmotionColors()
     {
         _emotionColorLookup.Clear();
 
         foreach (var setting in _emotionColors)
-        {
             _emotionColorLookup[setting.emotion] = setting.color;
-        }
     }
 
-    private void ApplyEmotionColor()
+    private void ApplyEmotionColor(bool immediate = false)
     {
         if (_emotionRenderers == null || _emotionRenderers.Length == 0)
-        {
             return;
-        }
 
         if (_emotionPropertyBlock == null)
-        {
             _emotionPropertyBlock = new MaterialPropertyBlock();
-        }
 
-        if (_emotionColorLookup.TryGetValue(Emotion, out var color))
+        if (!_emotionColorLookup.TryGetValue(Emotion, out var targetColor))
+            return;
+
+        // Stop ancien fondu en cours
+        if (_colorFadeCoroutine != null)
+            StopCoroutine(_colorFadeCoroutine);
+
+        if (immediate)
         {
-            foreach (var emotionRenderer in _emotionRenderers)
-            {
-                if (!emotionRenderer)
-                {
-                    continue;
-                }
-
-                emotionRenderer.GetPropertyBlock(_emotionPropertyBlock);
-                _emotionPropertyBlock.SetColor(BaseColorId, color);
-                _emotionPropertyBlock.SetColor(ColorId, color);
-                emotionRenderer.SetPropertyBlock(_emotionPropertyBlock);
-            }
+            SetRendererColor(targetColor);
         }
         else
         {
-            foreach (var emotionRenderer in _emotionRenderers)
-            {
-                if (!emotionRenderer)
-                {
-                    continue;
-                }
+            _colorFadeCoroutine = StartCoroutine(FadeEmotionColor(targetColor));
+        }
+    }
+    
+    private IEnumerator FadeEmotionColor(Color targetColor)
+    {
+        if (_emotionRenderers.Length == 0)
+            yield break;
 
-                emotionRenderer.GetPropertyBlock(_emotionPropertyBlock);
-                _emotionPropertyBlock.Clear();
-                emotionRenderer.SetPropertyBlock(_emotionPropertyBlock);
-            }
+        // Récupérer la couleur actuelle du premier renderer
+        _emotionRenderers[0].GetPropertyBlock(_emotionPropertyBlock);
+        Color startColor = _emotionPropertyBlock.GetColor(BaseColorId);
+        float t = 0f;
+
+        while (t < 1f)
+        {
+            t += Time.deltaTime / _colorFadeDuration;
+            Color lerped = Color.Lerp(startColor, targetColor, Mathf.SmoothStep(0f, 1f, t));
+            SetRendererColor(lerped);
+            yield return null;
+        }
+
+        SetRendererColor(targetColor);
+        _colorFadeCoroutine = null;
+    }
+
+    private void SetRendererColor(Color color)
+    {
+        foreach (var emotionRenderer in _emotionRenderers)
+        {
+            if (!emotionRenderer)
+                continue;
+
+            emotionRenderer.GetPropertyBlock(_emotionPropertyBlock);
+            _emotionPropertyBlock.SetColor(BaseColorId, color);
+            _emotionPropertyBlock.SetColor(ColorId, color);
+            emotionRenderer.SetPropertyBlock(_emotionPropertyBlock);
         }
     }
 
