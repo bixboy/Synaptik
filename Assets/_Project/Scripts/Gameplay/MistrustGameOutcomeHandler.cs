@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,6 +15,12 @@ public sealed class MistrustGameOutcomeHandler : MonoBehaviour
 
     [SerializeField]
     private bool pauseTimeOnOutcome = true;
+
+    [SerializeField]
+    private EndGameUI endGameUI;
+    
+    [SerializeField]
+    private GameObject noteBook;
 
     private bool hasTriggeredOutcome;
     private bool isSubscribed;
@@ -40,38 +47,31 @@ public sealed class MistrustGameOutcomeHandler : MonoBehaviour
     public void ResetOutcomeState()
     {
         hasTriggeredOutcome = false;
-
         RestoreTimeScaleIfNeeded();
     }
 
     private void TrySubscribe()
     {
         if (isSubscribed)
-        {
             return;
-        }
 
-        if (MistrustManager.Instance == null)
-        {
+        if (!MistrustManager.Instance)
             return;
-        }
 
-        MistrustManager.Instance.OnMistrustMinReached += HandleWin;
-        MistrustManager.Instance.OnMistrustMaxReached += HandleGameOver;
+        MistrustManager.Instance.OnMistrustMinReached += HandleGameOver;
+        GameManager.Instance.OnAllTaskEnd += HandleWin;
         isSubscribed = true;
     }
 
     private void Unsubscribe()
     {
         if (!isSubscribed)
-        {
             return;
-        }
 
         if (MistrustManager.Instance != null)
         {
-            MistrustManager.Instance.OnMistrustMinReached -= HandleWin;
-            MistrustManager.Instance.OnMistrustMaxReached -= HandleGameOver;
+            MistrustManager.Instance.OnMistrustMinReached -= HandleGameOver;
+            GameManager.Instance.OnAllTaskEnd -= HandleWin;
         }
 
         isSubscribed = false;
@@ -85,20 +85,18 @@ public sealed class MistrustGameOutcomeHandler : MonoBehaviour
 
     private void HandleWin()
     {
-        TriggerOutcome(onWin);
+        TriggerOutcome(true);
     }
 
     private void HandleGameOver()
     {
-        TriggerOutcome(onGameOver);
+        TriggerOutcome(false);
     }
 
-    private void TriggerOutcome(UnityEvent outcomeEvent)
+    private void TriggerOutcome(bool win)
     {
         if (triggerOnlyOnce && hasTriggeredOutcome)
-        {
             return;
-        }
 
         hasTriggeredOutcome = true;
 
@@ -108,19 +106,43 @@ public sealed class MistrustGameOutcomeHandler : MonoBehaviour
             Time.timeScale = 0f;
         }
 
-        outcomeEvent?.Invoke();
+        if (win)
+        {
+            Win();   
+        }
+        else
+        {
+            GameOver();   
+        }
+
     }
 
     private void RestoreTimeScaleIfNeeded()
     {
         if (!pauseTimeOnOutcome)
-        {
             return;
-        }
 
         if (Mathf.Approximately(Time.timeScale, 0f))
         {
             Time.timeScale = cachedTimeScale;
         }
+    }
+
+    public void Win()
+    {
+        noteBook.gameObject.SetActive(false);
+        endGameUI.gameObject.SetActive(true);
+        
+        endGameUI.ShowWinSequence();
+        
+    }
+
+    public void GameOver()
+    {
+        noteBook.gameObject.SetActive(false);
+        endGameUI.gameObject.SetActive(true);
+        
+        endGameUI.ShowLoseSequence();
+        
     }
 }

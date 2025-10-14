@@ -6,14 +6,9 @@ public sealed class MistrustManager : MonoBehaviour
 {
     public static MistrustManager Instance { get; private set; }
 
-    [SerializeField]
-    private Slider mistrustSlider;
-
-    [SerializeField]
-    private Vector2 mistrustRange = new(0f, 100f);
-
-    [SerializeField]
-    private int initialMistrust = 50;
+    [SerializeField] private Slider mistrustSlider;
+    [SerializeField] private Vector2 mistrustRange = new(0f, 100f);
+    [SerializeField] private int initialMistrust = 50;
 
     private int mistrustValue;
     private bool minThresholdTriggered;
@@ -22,8 +17,10 @@ public sealed class MistrustManager : MonoBehaviour
     public delegate void MistrustDelegate(float valueDelta);
     public event MistrustDelegate OnMistrust;
 
-    public event Action OnMistrustMinReached;
-    public event Action OnMistrustMaxReached;
+    // 🚨 OnMistrustMaxReached = GAME OVER
+    // 🟢 OnMistrustMinReached = WIN
+    public event Action OnMistrustMinReached; 
+    public event Action OnMistrustMaxReached; 
 
     public int CurrentMistrust => mistrustValue;
     public int MinMistrust => Mathf.RoundToInt(mistrustRange.x);
@@ -46,19 +43,11 @@ public sealed class MistrustManager : MonoBehaviour
         }
 
         Instance = this;
-
         EvaluateThresholds();
     }
 
-    public void AddMistrust(int amount)
-    {
-        UpdateMistrust(amount);
-    }
-
-    public void RemoveMistrust(int amount)
-    {
-        UpdateMistrust(-amount);
-    }
+    public void AddMistrust(int amount) => UpdateMistrust(amount);
+    public void RemoveMistrust(int amount) => UpdateMistrust(-amount);
 
     public void ResetMistrust()
     {
@@ -71,15 +60,11 @@ public sealed class MistrustManager : MonoBehaviour
         var appliedDelta = clamped - mistrustValue;
         mistrustValue = clamped;
 
-        if (mistrustSlider != null)
-        {
+        if (mistrustSlider)
             mistrustSlider.value = mistrustValue;
-        }
 
         if (appliedDelta != 0)
-        {
             OnMistrust?.Invoke(appliedDelta);
-        }
 
         EvaluateThresholds();
     }
@@ -91,12 +76,13 @@ public sealed class MistrustManager : MonoBehaviour
 
     private void EvaluateThresholds()
     {
+        // ✅ WIN : mistrust minimal
         if (mistrustValue <= MinMistrust)
         {
             if (!minThresholdTriggered)
             {
                 minThresholdTriggered = true;
-                OnMistrustMinReached?.Invoke();
+                OnMistrustMinReached?.Invoke(); // WIN
             }
         }
         else
@@ -104,12 +90,13 @@ public sealed class MistrustManager : MonoBehaviour
             minThresholdTriggered = false;
         }
 
+        // ❌ GAME OVER : mistrust maximal
         if (mistrustValue >= MaxMistrust)
         {
             if (!maxThresholdTriggered)
             {
                 maxThresholdTriggered = true;
-                OnMistrustMaxReached?.Invoke();
+                OnMistrustMaxReached?.Invoke(); // GAME OVER
             }
         }
         else

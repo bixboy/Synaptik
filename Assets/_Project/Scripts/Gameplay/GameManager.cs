@@ -30,6 +30,9 @@ public sealed class GameManager : MonoBehaviour
 
     public delegate void TaskEndHandler(Mission mission);
     public event TaskEndHandler OnTaskEnd;
+    
+    public delegate void AllTaskEndHandler();
+    public event AllTaskEndHandler OnAllTaskEnd;
 
     private void Awake()
     {
@@ -88,6 +91,19 @@ public sealed class GameManager : MonoBehaviour
 
             Debug.Log($"{LogPrefix} Mission '{missionId}' complétée.");
             OnTaskEnd?.Invoke(mission);
+
+            int missionComplete = 0;
+            for (int j = 0; j < missions.Count; j++)
+            {
+                if (missions[j].IsFinished)
+                {
+                    missionComplete ++;
+                }
+            }
+            
+            if (missionComplete == missions.Count)
+                OnAllTaskEnd?.Invoke();
+            
             return;
         }
 
