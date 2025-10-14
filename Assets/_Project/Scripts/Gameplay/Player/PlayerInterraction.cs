@@ -38,6 +38,7 @@ public class PlayerInteraction : MonoBehaviour
     [Header("Combo Feedback")]
     [SerializeField]
     private float defaultComboBubbleDuration = 1.75f;
+    
 
     [SerializeField]
     private ComboSymbolDefinition[] comboSymbolDefinitions =
@@ -117,7 +118,16 @@ public class PlayerInteraction : MonoBehaviour
         { Behavior.Talking, "💬" },
         { Behavior.Action, "✋" }
     };
+    
+    
+    [Header("Player Animation")]
+    [SerializeField] private PlayerAnimation _playerAnimation;
 
+    private void Reset()
+    {
+        _playerAnimation = GetComponent<PlayerAnimation>();
+        if (!_playerAnimation) Debug.LogWarning("PlayerInteraction: pas de PlayerAnimation assigné !", this);
+    }
     private void Awake()
     {
         comboBubble = GetComponent<PlayerComboBubble>() ?? gameObject.AddComponent<PlayerComboBubble>();
@@ -240,6 +250,7 @@ public class PlayerInteraction : MonoBehaviour
         bestCandidate.Pick(handSocket != null ? handSocket : transform);
         heldItem = bestCandidate;
         heldItemId = heldItem.ItemId;
+        _playerAnimation?.OnPickedUpItem();
         Debug.Log($"{LogPrefix} Objet '{heldItem.name}' ramassé (ID: {heldItemId}).");
     }
 
@@ -282,6 +293,7 @@ public class PlayerInteraction : MonoBehaviour
 
         heldItem = null;
         heldItemId = null;
+        _playerAnimation?.OnDroppedItem();
     }
 
     public void OnDrawGizmos()
