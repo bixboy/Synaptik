@@ -6406,6 +6406,7 @@ MonoBehaviour:
     color: {r: 0.05116012, g: 0.78867924, b: 0, a: 1}
   - emotion: 4
     color: {r: 0, g: 0.68311614, b: 0.7882353, a: 1}
+  _colorFadeDuration: 0.5
   _dialogueBubble: {fileID: 1279067968}
   _interactionDelay: 0
 --- !u!95 &1279067970
@@ -7344,6 +7345,7 @@ MonoBehaviour:
     color: {r: 0.05116012, g: 0.78867924, b: 0, a: 1}
   - emotion: 4
     color: {r: 0, g: 0.68311614, b: 0.7882353, a: 1}
+  _colorFadeDuration: 0.5
   _dialogueBubble: {fileID: 1460663270}
   _interactionDelay: 0
 --- !u!95 &1460663264
@@ -8421,6 +8423,10 @@ MonoBehaviour:
   maxSpeed: 5
   acceleration: 20
   deceleration: 25
+  fearfulActionSpeedBonus: 3
+  fearfulActionBoostDuration: 2
+  fearfulActionBoostDecayDuration: 3
+  fearfulActionBoostCooldown: 3
   cameraRelative: 1
   targetCamera: {fileID: 613164053}
   rotationSpeed: 10
@@ -8928,6 +8934,7 @@ MonoBehaviour:
     color: {r: 0.05116012, g: 0.78867924, b: 0, a: 1}
   - emotion: 4
     color: {r: 0, g: 0.68311614, b: 0.7882353, a: 1}
+  _colorFadeDuration: 0.5
   _dialogueBubble: {fileID: 1745018958}
   _interactionDelay: 0
 --- !u!95 &1745018960
@@ -9842,6 +9849,7 @@ MonoBehaviour:
     color: {r: 0.05116012, g: 0.78867924, b: 0, a: 1}
   - emotion: 4
     color: {r: 0, g: 0.68311614, b: 0.7882353, a: 1}
+  _colorFadeDuration: 0.5
   _dialogueBubble: {fileID: 1930495104}
   _interactionDelay: 0
 --- !u!95 &1930495106
