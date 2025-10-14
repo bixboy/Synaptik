@@ -57,6 +57,23 @@ public class PlayerInteraction : MonoBehaviour
 
     private static readonly Collider[] overlap = new Collider[64];
 
+    [Header("Interaction Highlight")]
+    [SerializeField]
+    private Color highlightColor = new(0.6f, 1f, 1f, 1f);
+
+    [SerializeField, Min(0f)]
+    private float highlightEmissionBoost = 2f;
+
+    [Header("Camera Focus")]
+    [SerializeField]
+    private CameraFollow focusCamera;
+
+    [SerializeField, Min(0f)]
+    private float focusZoomAmount = 2f;
+
+    private IInteraction currentFocusedInteraction;
+    private Alien currentFocusedAlien;
+
     [Serializable]
     private struct ComboSymbolDefinition
     {
@@ -123,6 +140,9 @@ public class PlayerInteraction : MonoBehaviour
         comboBubble = GetComponent<PlayerComboBubble>() ?? gameObject.AddComponent<PlayerComboBubble>();
         RebuildComboLookup();
         Debug.Log($"{LogPrefix} '{name}' prêt ({comboLookup.Count} combos).");
+
+        if (!focusCamera && Camera.main)
+            focusCamera = Camera.main.GetComponent<CameraFollow>();
     }
 
     private void Start()
@@ -138,6 +158,11 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        UpdateInteractionFocus();
+    }
+
     private void OnDestroy()
     {
         if (InputsDetection.Instance)
@@ -145,6 +170,13 @@ public class PlayerInteraction : MonoBehaviour
             InputsDetection.Instance.OnEmotionAction -= HandleEmotionAction;
             Debug.Log($"{LogPrefix} Désabonné des combos d'InputsDetection.");
         }
+
+        ClearInteractionFocus();
+    }
+
+    private void OnDisable()
+    {
+        ClearInteractionFocus();
     }
 
     private void OnValidate()
@@ -175,10 +207,11 @@ public class PlayerInteraction : MonoBehaviour
 
     private void HandleEmotionAction(Emotion emotion, Behavior behavior)
     {
+        UpdateInteractionFocus();
         ShowComboFeedback(emotion, behavior);
 
         var origin = aimZone ? aimZone : transform;
-        var interactable = TargetingUtil.FindInteractionInFront(origin, interactRadius, interactHalfFov, interactMask);
+        var interactable = currentFocusedInteraction ?? TargetingUtil.FindInteractionInFront(origin, interactRadius, interactHalfFov, interactMask);
 
         if (interactable != null)
         {
@@ -189,6 +222,75 @@ public class PlayerInteraction : MonoBehaviour
         {
             DropItem();
         }
+    }
+
+    private void UpdateInteractionFocus()
+    {
+        var origin = aimZone ? aimZone : transform;
+        var nextInteraction = TargetingUtil.FindInteractionInFront(origin, interactRadius, interactHalfFov, interactMask);
+        var nextAlien = nextInteraction as Alien;
+
+        if (nextInteraction == currentFocusedInteraction)
+        {
+            if (currentFocusedAlien != nextAlien)
+                ApplyCameraFocus(nextAlien);
+
+            return;
+        }
+
+        SetInteractionHighlight(currentFocusedInteraction, false);
+
+        currentFocusedInteraction = nextInteraction;
+
+        SetInteractionHighlight(currentFocusedInteraction, true);
+        ApplyCameraFocus(nextAlien);
+    }
+
+    private void SetInteractionHighlight(IInteraction interaction, bool highlighted)
+    {
+        if (interaction is not Component component)
+            return;
+
+        var highlighter = component.GetComponent<InteractableHighlighter>()
+                         ?? component.GetComponentInChildren<InteractableHighlighter>();
+
+        if (!highlighter)
+        {
+            if (!highlighted)
+                return;
+
+            highlighter = component.gameObject.AddComponent<InteractableHighlighter>();
+        }
+
+        highlighter.SetHighlighted(highlighted, highlightColor, highlightEmissionBoost);
+    }
+
+    private void ApplyCameraFocus(Alien newAlien)
+    {
+        if (currentFocusedAlien == newAlien)
+            return;
+
+        if (focusCamera)
+        {
+            if (currentFocusedAlien)
+                focusCamera.ZoomOut(focusZoomAmount);
+
+            if (newAlien)
+                focusCamera.ZoomIn(focusZoomAmount);
+        }
+
+        currentFocusedAlien = newAlien;
+    }
+
+    private void ClearInteractionFocus()
+    {
+        if (currentFocusedInteraction != null)
+        {
+            SetInteractionHighlight(currentFocusedInteraction, false);
+            currentFocusedInteraction = null;
+        }
+
+        ApplyCameraFocus(null);
     }
 
     public void PickUp()
