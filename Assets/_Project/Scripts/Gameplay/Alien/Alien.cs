@@ -344,7 +344,7 @@ public class Alien : MonoBehaviour, IInteraction
         if (!_dialogueBubble || string.IsNullOrWhiteSpace(emojiLine) || duration <= 0f)
             return;
 
-        _dialogueBubble.ShowFor(emojiLine, duration);
+        _dialogueBubble.ShowFor(Emotion, emojiLine, duration);
     }
 
     private void HandleInteractionRule(InterractionRule rule, Behavior channel, Emotion playerEmotion, bool allowQuestProgress = true)
