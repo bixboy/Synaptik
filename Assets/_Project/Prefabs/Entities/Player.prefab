@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 4174637969976801663}
   - component: {fileID: 8317182544908626716}
   - component: {fileID: 1346494414045638242}
+  - component: {fileID: 7968921228244856452}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -271,3 +272,28 @@ MonoBehaviour:
   backgroundColor: {r: 1, g: 1, b: 1, a: 0.4}
   textColor: {r: 0, g: 0, b: 0, a: 1}
   fontAsset: {fileID: 11400000, guid: 3944eaaf70beffa4097d8c293604125e, type: 2}
+--- !u!114 &7968921228244856452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6717372861038130110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92ede64c5bd349f391e90bf1870c2ef7, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  emotionRenderers:
+  - {fileID: 8033691732964566090}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  emotionColors:
+  - emotion: 1
+    color: {r: 0.9411765, g: 0.3254902, b: 0.3254902, a: 1}
+  - emotion: 2
+    color: {r: 1, g: 0.8666667, b: 0.3803922, a: 1}
+  - emotion: 3
+    color: {r: 0.49803922, g: 0.8352941, b: 0.3647059, a: 1}
+  - emotion: 4
+    color: {r: 0.05882353, g: 0.7529412, b: 0.87058824, a: 1}
+  colorFadeDuration: 0.3
