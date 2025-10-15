@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -8,12 +9,19 @@ public class Alien : MonoBehaviour, IInteraction
 {
     [SerializeField] private AlienDefinition _def;
     public AlienDefinition Definition => _def;
-    
+
     [SerializeField] private float _receiveRadius = 1.3f;
+
+    [Header("Visuals")]
+    [SerializeField] private Renderer[] _emotionRenderers = Array.Empty<Renderer>();
+
+    [SerializeField] private List<EmotionColorSetting> _emotionColors = new();
     
+    [SerializeField, Min(0f)] private float _colorFadeDuration = 0.5f;
+
     [FormerlySerializedAs("_dialogueBubblePrefab")]
     [SerializeField] private DialogueBubble _dialogueBubble;
-    
+
     [Header("Interaction Delay")]
     [SerializeField, Min(0f)] private float _interactionDelay = 0f;
 
@@ -21,10 +29,23 @@ public class Alien : MonoBehaviour, IInteraction
 
     private Animator _anim;
     private static readonly int EmotionHash = Animator.StringToHash("Emotion");
+    private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
+    private static readonly int ColorId = Shader.PropertyToID("_Color");
 
-    private readonly Dictionary<string, AlienQuestRuntime> _questRuntimes = new Dictionary<string, AlienQuestRuntime>();
-    private readonly Dictionary<string, int> _receivedItemQuantities = new Dictionary<string, int>();
-    private readonly Dictionary<InteractionLookupKey, InterractionRule> _cachedInteractionRules = new Dictionary<InteractionLookupKey, InterractionRule>();
+    private readonly Dictionary<string, AlienQuestRuntime> _questRuntimes = new();
+    private readonly Dictionary<string, int> _receivedItemQuantities = new();
+    private readonly Dictionary<InteractionLookupKey, InterractionRule> _cachedInteractionRules = new();
+    private readonly Dictionary<Emotion, Color> _emotionColorLookup = new();
+    private MaterialPropertyBlock _emotionPropertyBlock;
+
+    private Coroutine _colorFadeCoroutine;
+
+    [Serializable]
+    private struct EmotionColorSetting
+    {
+        public Emotion emotion;
+        public Color color;
+    }
 
     private void Awake()
     {
@@ -47,8 +68,10 @@ public class Alien : MonoBehaviour, IInteraction
             _anim.runtimeAnimatorController = _def.Animator;
         }
 
+        CacheEmotionColors();
+
         Emotion = _def ? _def.StartEmotion : Emotion.Curious;
-        ApplyAnimFromEmotion();
+        ApplyEmotionVisuals();
     }
 
     private void Start()
@@ -86,7 +109,82 @@ public class Alien : MonoBehaviour, IInteraction
         if (_anim)
             _anim.SetInteger(EmotionHash, (int)Emotion);
     }
+
+    private void ApplyEmotionVisuals(bool immediate = false)
+    {
+        ApplyAnimFromEmotion();
+        ApplyEmotionColor(immediate);
+    }
     
+    private void CacheEmotionColors()
+    {
+        _emotionColorLookup.Clear();
+
+        foreach (var setting in _emotionColors)
+            _emotionColorLookup[setting.emotion] = setting.color;
+    }
+
+    private void ApplyEmotionColor(bool immediate = false)
+    {
+        if (_emotionRenderers == null || _emotionRenderers.Length == 0)
+            return;
+
+        if (_emotionPropertyBlock == null)
+            _emotionPropertyBlock = new MaterialPropertyBlock();
+
+        if (!_emotionColorLookup.TryGetValue(Emotion, out var targetColor))
+            return;
+
+        // Stop ancien fondu en cours
+        if (_colorFadeCoroutine != null)
+            StopCoroutine(_colorFadeCoroutine);
+
+        if (immediate)
+        {
+            SetRendererColor(targetColor);
+        }
+        else
+        {
+            _colorFadeCoroutine = StartCoroutine(FadeEmotionColor(targetColor));
+        }
+    }
+    
+    private IEnumerator FadeEmotionColor(Color targetColor)
+    {
+        if (_emotionRenderers.Length == 0)
+            yield break;
+
+        // Récupérer la couleur actuelle du premier renderer
+        _emotionRenderers[0].GetPropertyBlock(_emotionPropertyBlock);
+        Color startColor = _emotionPropertyBlock.GetColor(BaseColorId);
+        float t = 0f;
+
+        while (t < 1f)
+        {
+            t += Time.deltaTime / _colorFadeDuration;
+            Color lerped = Color.Lerp(startColor, targetColor, Mathf.SmoothStep(0f, 1f, t));
+            SetRendererColor(lerped);
+            yield return null;
+        }
+
+        SetRendererColor(targetColor);
+        _colorFadeCoroutine = null;
+    }
+
+    private void SetRendererColor(Color color)
+    {
+        foreach (var emotionRenderer in _emotionRenderers)
+        {
+            if (!emotionRenderer)
+                continue;
+
+            emotionRenderer.GetPropertyBlock(_emotionPropertyBlock);
+            _emotionPropertyBlock.SetColor(BaseColorId, color);
+            _emotionPropertyBlock.SetColor(ColorId, color);
+            emotionRenderer.SetPropertyBlock(_emotionPropertyBlock);
+        }
+    }
+
     public void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null)
     {
         if (_interactionDelay <= 0f)
@@ -238,7 +336,7 @@ public class Alien : MonoBehaviour, IInteraction
             return;
 
         Emotion = newEmotion;
-        ApplyAnimFromEmotion();
+        ApplyEmotionVisuals();
     }
 
     internal void ShowDialogue(string emojiLine, float duration)
@@ -252,6 +350,11 @@ public class Alien : MonoBehaviour, IInteraction
     private void HandleInteractionRule(InterractionRule rule, Behavior channel, Emotion playerEmotion, bool allowQuestProgress = true)
     {
         var handled = allowQuestProgress && ProcessQuestStep(rule.QuestId, rule.QuestStepId, QuestStepType.Talk);
+
+        if (handled)
+        {
+            TryShowQuestStepDialogue(rule.QuestStepId, "interaction");
+        }
 
         if (rule.SetNewEmotion)
         {
@@ -290,6 +393,11 @@ public class Alien : MonoBehaviour, IInteraction
     private void HandleItemRule(ItemRule rule, string itemId)
     {
         var handled = ProcessQuestStep(rule.QuestId, rule.QuestStepId, QuestStepType.GiveItem);
+
+        if (handled)
+        {
+            TryShowQuestStepDialogue(rule.QuestStepId, "item");
+        }
 
         if (rule.SetIfGoodItem)
         {
@@ -333,6 +441,20 @@ public class Alien : MonoBehaviour, IInteraction
 
         if (_def.Dialogue.TryGet(itemId, out var entry))
         {
+            ShowDialogue(entry.EmojiLine, entry.Duration);
+        }
+    }
+
+    private void TryShowQuestStepDialogue(string questStepId, string source)
+    {
+        if (string.IsNullOrWhiteSpace(questStepId) || !_dialogueBubble || !_def?.Dialogue)
+        {
+            return;
+        }
+
+        if (_def.Dialogue.TryGetForQuestStep(questStepId, out var entry))
+        {
+            Debug.Log($"[Alien] Showing quest step dialogue '{entry.EmojiLine}' for {name} at step '{questStepId}' from {source}.");
             ShowDialogue(entry.EmojiLine, entry.Duration);
         }
     }
