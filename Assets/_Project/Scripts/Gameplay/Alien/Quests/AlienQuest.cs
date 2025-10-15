@@ -5,6 +5,9 @@ using UnityEngine;
 [Serializable]
 public struct AlienQuest : IEquatable<AlienQuest>
 {
+    
+    private AlienDefinition alien;
+    
     [SerializeField]
     private string questId;
 
@@ -23,6 +26,7 @@ public struct AlienQuest : IEquatable<AlienQuest>
     [SerializeField]
     private QuestStep[] steps;
 
+    public AlienDefinition Alien => alien;
     public string QuestId => questId;
     public string Title => title;
     public string Description => description;
@@ -54,6 +58,11 @@ public struct AlienQuest : IEquatable<AlienQuest>
     public override int GetHashCode()
     {
         return HashCode.Combine(questId, title, description, autoRegisterMission, autoCompleteMissionOnQuestEnd, steps);
+    }
+    
+    public void SetAlien(AlienDefinition alienDefinition)
+    {
+        alien = alienDefinition;
     }
 }
 
