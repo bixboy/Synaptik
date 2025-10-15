@@ -30,8 +30,16 @@ public sealed class CameraFollow : MonoBehaviour
     [SerializeField]
     private float maxZoom = 15f;
 
+    [SerializeField]
+    private PlayerInteraction playerInteraction;
+
+    [SerializeField, Min(0f)]
+    private float interactionZoomOffset = 2f;
+
     private float currentZoom;
     private float targetZoom;
+    private float defaultZoom;
+    private bool isInteractionZoomActive;
     private Quaternion baseRotation;
 
     private void Start()
@@ -43,9 +51,24 @@ public sealed class CameraFollow : MonoBehaviour
             return;
         }
 
-        currentZoom = offset.magnitude;
+        currentZoom = Mathf.Clamp(offset.magnitude, minZoom, maxZoom);
         targetZoom = currentZoom;
+        defaultZoom = currentZoom;
         baseRotation = transform.rotation;
+
+        if (playerInteraction == null && player != null)
+        {
+            playerInteraction = player.GetComponent<PlayerInteraction>();
+        }
+
+        if (playerInteraction != null)
+        {
+            playerInteraction.InteractionZoneChanged += HandleInteractionZoneChanged;
+        }
+        else
+        {
+            Debug.LogWarning("[CameraFollow] Aucun PlayerInteraction trouvé pour gérer le zoom d'interaction.");
+        }
     }
 
     private void LateUpdate()
@@ -78,6 +101,14 @@ public sealed class CameraFollow : MonoBehaviour
         targetZoom = Mathf.Min(maxZoom, targetZoom + amount);
     }
 
+    private void OnDestroy()
+    {
+        if (playerInteraction != null)
+        {
+            playerInteraction.InteractionZoneChanged -= HandleInteractionZoneChanged;
+        }
+    }
+
     private static Quaternion LimitRotation(Quaternion current, Quaternion reference, float maxYaw, float maxPitch)
     {
         var currentEuler = current.eulerAngles;
@@ -87,5 +118,19 @@ public sealed class CameraFollow : MonoBehaviour
         var pitchDelta = Mathf.Clamp(Mathf.DeltaAngle(baseEuler.x, currentEuler.x), -maxPitch, maxPitch);
 
         return Quaternion.Euler(baseEuler.x + pitchDelta, baseEuler.y + yawDelta, 0f);
+    }
+
+    private void HandleInteractionZoneChanged(bool isInside)
+    {
+        isInteractionZoomActive = isInside;
+
+        if (isInteractionZoomActive)
+        {
+            targetZoom = Mathf.Clamp(defaultZoom - interactionZoomOffset, minZoom, maxZoom);
+        }
+        else
+        {
+            targetZoom = Mathf.Clamp(defaultZoom, minZoom, maxZoom);
+        }
     }
 }

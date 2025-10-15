@@ -54,6 +54,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private readonly Dictionary<ComboKey, ComboSymbolDefinition> comboLookup = new();
     private PlayerComboBubble comboBubble;
+    private bool isInInteractionZone;
 
     private static readonly Collider[] overlap = new Collider[64];
 
@@ -118,6 +119,8 @@ public class PlayerInteraction : MonoBehaviour
         { Behavior.Action, "✋" }
     };
 
+    public event Action<bool> InteractionZoneChanged;
+
     private void Awake()
     {
         comboBubble = GetComponent<PlayerComboBubble>() ?? gameObject.AddComponent<PlayerComboBubble>();
@@ -152,6 +155,11 @@ public class PlayerInteraction : MonoBehaviour
         RebuildComboLookup();
     }
 
+    private void Update()
+    {
+        UpdateInteractionZoneState();
+    }
+
     private void RebuildComboLookup()
     {
         comboLookup.Clear();
@@ -177,10 +185,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         ShowComboFeedback(emotion, behavior);
 
-        var origin = aimZone ? aimZone : transform;
-        var interactable = TargetingUtil.FindInteractionInFront(origin, interactRadius, interactHalfFov, interactMask);
-
-        if (interactable != null)
+        if (TryFindInteractionTarget(out var interactable))
         {
             Debug.Log($"{LogPrefix} Combo {emotion}/{behavior} → interactable '{interactable}'.");
             interactable.Interact(new ActionValues(emotion, behavior), heldItem, this);
@@ -334,5 +339,24 @@ public class PlayerInteraction : MonoBehaviour
         {
             Debug.LogWarning($"{LogPrefix} Impossible de trouver un feedback pour le combo {behavior}/{emotion}.");
         }
+    }
+
+    private bool TryFindInteractionTarget(out IInteraction interaction)
+    {
+        var origin = aimZone ? aimZone : transform;
+        interaction = TargetingUtil.FindInteractionInFront(origin, interactRadius, interactHalfFov, interactMask);
+        return interaction != null;
+    }
+
+    private void UpdateInteractionZoneState()
+    {
+        var hasInteraction = TryFindInteractionTarget(out _);
+        if (hasInteraction == isInInteractionZone)
+        {
+            return;
+        }
+
+        isInInteractionZone = hasInteraction;
+        InteractionZoneChanged?.Invoke(isInInteractionZone);
     }
 }
