@@ -295,11 +295,11 @@ MonoBehaviour:
   CollisionTag: 
   EventReference:
     Guid:
-      Data1: -1645997188
-      Data2: 1331883013
-      Data3: -1388909181
-      Data4: 823353253
-    Path: event:/Fight, Impact, Punch, Body SND14128
+      Data1: -279268206
+      Data2: 1109050232
+      Data3: -1648810364
+      Data4: -1549061923
+    Path: event:/UI_FeedBack/Computer_Bip_SFX_OS
   Event: 
   EventPlayTrigger: 0
   EventStopTrigger: 2
@@ -338,8 +338,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e24efc014af364b418b5096edfb0ac2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _soundEmitter: {fileID: 1452226104}
-  _bankLoader: {fileID: 0}
+  audioIndex: 0
+  emitter: {fileID: 1452226104}
 --- !u!1 &1970339851
 GameObject:
   m_ObjectHideFlags: 0
