@@ -19,10 +19,9 @@ public class PlayerAnimation : MonoBehaviour
     [SerializeField] private string _paramIsGrabbing = "IsGrabbing";  
     [SerializeField] private string _paramIsAngry    = "IsAngry";      
     [SerializeField] private string _paramIsCurious  = "IsCurious"; 
-    [SerializeField] private string _paramIsHappy  = "IsHappy";
-    [SerializeField] private string _paramIsAfraid  = "IsAfraid";
+    [SerializeField] private string _paramIsHappy    = "IsHappy";
+    [SerializeField] private string _paramIsAfraid   = "IsAfraid";
     [SerializeField] private string _paramHitTrig    = "Hit";         
-    [SerializeField] private string _paramPukeTrig   = "Puke";        
 
     // Hashes (no string alloc per-frame)
     private int _hashSpeed;
@@ -32,8 +31,7 @@ public class PlayerAnimation : MonoBehaviour
     private int _hashIsHappy;
     private int _hashIsAfraid;
     private int _hashHitTrig;
-    private int _hashPukeTrig;
-   
+    
     
     private void Reset()
     {
@@ -50,7 +48,6 @@ public class PlayerAnimation : MonoBehaviour
         _hashIsHappy    = Animator.StringToHash(_paramIsHappy);
         _hashIsAfraid   = Animator.StringToHash(_paramIsAfraid);
         _hashHitTrig    = Animator.StringToHash(_paramHitTrig);
-        _hashPukeTrig   = Animator.StringToHash(_paramPukeTrig);
         
 
         // Qualité : éviter de bouger/rotations physiques selon ton setup
@@ -70,8 +67,7 @@ public class PlayerAnimation : MonoBehaviour
             v.y = 0f;
             speed = v.magnitude;
         }
-
-        // 2) Clamp et normalisation si ton controller s’attend à 0..1
+        
         speed = Mathf.Min(speed, _maxReportedSpeed);
         float normalized = _maxReportedSpeed > 0.0001f ? speed / _maxReportedSpeed : 0f;
         _animator.SetFloat(_hashSpeed, normalized, _speedDampTime, Time.deltaTime);
@@ -80,32 +76,53 @@ public class PlayerAnimation : MonoBehaviour
     
     public void SetEmotion(Emotion emotion)
     {
-        foreach (Emotion _emotion in Enum.GetValues(typeof(Emotion)))
+        Debug.Log("SetEmotion " + emotion);
+        foreach (Emotion e in Enum.GetValues(typeof(Emotion)))
         {
-            if (_emotion == emotion)  
-                _animator.SetBool(GetEmotionHash(_emotion), true);
-            else
-                _animator.SetBool(GetEmotionHash(_emotion), false);
+            int hash = GetEmotionHash(e);
+            Debug.Log("hash " + e + " = " + hash);
+            if (hash == -1)
+                continue;
+            _animator.SetBool(hash, e == emotion);
         }
     }
+    
+    public void UnsetEmotion(Emotion emotion)
+    {
+        int hash = GetEmotionHash(emotion);
+        if (hash == -1)
+            return;
+        _animator.SetBool(hash, false);
+    }
+    
+    public void ClearAllEmotions()
+    {
+        foreach (Emotion e in Enum.GetValues(typeof(Emotion)))
+        {
+            int hash = GetEmotionHash(e);
+            if (hash == -1)
+                continue;
+            _animator.SetBool(hash, false);
+        }
+    }
+    
     
     private int GetEmotionHash(Emotion emotion)
     {
         return emotion switch
         {
-            Emotion.Anger   => _hashIsAngry,
-            Emotion.Curious => _hashIsCurious,
-            Emotion.Friendly   => _hashIsHappy,
+            Emotion.None     => -1, // pas une erreur, mais pas d'anim
+            Emotion.Anger    => _hashIsAngry,
+            Emotion.Curious  => _hashIsCurious,
+            Emotion.Friendly => _hashIsHappy,
             Emotion.Fearful  => _hashIsAfraid,
-            _               => throw new ArgumentOutOfRangeException(nameof(emotion), emotion, null)
+            _                => throw new ArgumentOutOfRangeException(nameof(emotion), emotion, null)
         };
     }
     
     public void PlayPunch()
         => _animator.SetTrigger(_hashHitTrig);
     
-    public void PlayPuke()
-        => _animator.SetTrigger(_hashPukeTrig);
     
     public void SetGrabbing(bool grabbing)
         => _animator.SetBool(_hashIsGrabbing, grabbing);
