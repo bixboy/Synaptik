@@ -1641,7 +1641,7 @@ Transform:
   m_GameObject: {fileID: 336148074}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.99698067, z: -0, w: 0.07765007}
-  m_LocalPosition: {x: 57.579, y: -0.59, z: -13.553}
+  m_LocalPosition: {x: 56.09, y: -0.59, z: -18.75}
   m_LocalScale: {x: 1.0616864, y: 1.0616864, z: 1.0616864}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3372,9 +3372,9 @@ MonoBehaviour:
   maxPitchAngle: 180
   zoomSpeed: 5
   minZoom: 5
-  maxZoom: 15
+  maxZoom: 25
   playerInteraction: {fileID: 0}
-  interactionZoomOffset: 2
+  interactionZoomOffset: 7
 --- !u!114 &613164051
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5284,7 +5284,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 100
   m_WholeNumbers: 1
-  m_Value: 57
+  m_Value: 100
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -5302,7 +5302,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mistrustSlider: {fileID: 947534219}
   mistrustRange: {x: 0, y: 100}
-  initialMistrust: 50
+  initialMistrust: 100
 --- !u!114 &947534221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6622,15 +6622,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1714252161}
   alien: {fileID: 1141889432}
-  detectionRadius: 6
+  detectionRadius: 4.5
   canMove: 0
   moveRadius: 5
   moveSpeed: 2
   waitTimeMin: 0
   waitTimeMax: 3
-  fearfulSpeedMultiplier: 1.5
-  fearfulDetectionRadiusMultiplier: 0.8
-  fearfulPlayerDistance: 6
+  fearfulSpeedMultiplier: 1.4
+  fearfulDetectionRadiusMultiplier: 0.6
+  fearfulPlayerDistance: 8
   rotationSpeed: 5
 --- !u!114 &1141889431
 MonoBehaviour:
@@ -7411,15 +7411,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1714252161}
   alien: {fileID: 1279067969}
-  detectionRadius: 6
+  detectionRadius: 4.5
   canMove: 0
   moveRadius: 5
   moveSpeed: 2
   waitTimeMin: 0
   waitTimeMax: 3
-  fearfulSpeedMultiplier: 1.5
-  fearfulDetectionRadiusMultiplier: 0.8
-  fearfulPlayerDistance: 6
+  fearfulSpeedMultiplier: 1.4
+  fearfulDetectionRadiusMultiplier: 0.6
+  fearfulPlayerDistance: 8
   rotationSpeed: 5
 --- !u!114 &1279067968
 MonoBehaviour:
@@ -8783,7 +8783,7 @@ Transform:
   m_GameObject: {fileID: 1460663262}
   serializedVersion: 2
   m_LocalRotation: {x: 0.008703665, y: -0, z: -0, w: 0.9999622}
-  m_LocalPosition: {x: -11.39, y: 0.35, z: -2.14}
+  m_LocalPosition: {x: -7.75, y: 0.46, z: -8.24}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8849,15 +8849,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1714252161}
   alien: {fileID: 1460663263}
-  detectionRadius: 6
+  detectionRadius: 4.5
   canMove: 1
   moveRadius: 5
   moveSpeed: 2
   waitTimeMin: 1
   waitTimeMax: 3
-  fearfulSpeedMultiplier: 1.5
-  fearfulDetectionRadiusMultiplier: 0.8
-  fearfulPlayerDistance: 6
+  fearfulSpeedMultiplier: 1.4
+  fearfulDetectionRadiusMultiplier: 0.6
+  fearfulPlayerDistance: 8
   rotationSpeed: 5
 --- !u!1 &1462292610
 GameObject:
@@ -9277,7 +9277,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 596b5fcfa5746044ca0b25a4c5184b61, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.0543
+      value: -3.61
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 596b5fcfa5746044ca0b25a4c5184b61, type: 3}
       propertyPath: m_LocalPosition.z
@@ -10595,7 +10595,7 @@ Transform:
   m_GameObject: {fileID: 1745018954}
   serializedVersion: 2
   m_LocalRotation: {x: 0.008703665, y: -0, z: -0, w: 0.9999622}
-  m_LocalPosition: {x: 8.4, y: 0, z: -18.21}
+  m_LocalPosition: {x: 13.87, y: -0.04, z: -16.27}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -10641,15 +10641,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1714252161}
   alien: {fileID: 1745018959}
-  detectionRadius: 6
+  detectionRadius: 4.5
   canMove: 1
   moveRadius: 5
   moveSpeed: 2
   waitTimeMin: 0
   waitTimeMax: 3
-  fearfulSpeedMultiplier: 1.5
-  fearfulDetectionRadiusMultiplier: 0.8
-  fearfulPlayerDistance: 6
+  fearfulSpeedMultiplier: 1.4
+  fearfulDetectionRadiusMultiplier: 0.6
+  fearfulPlayerDistance: 8
   rotationSpeed: 5
 --- !u!114 &1745018958
 MonoBehaviour:
@@ -11776,15 +11776,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1714252161}
   alien: {fileID: 1930495105}
-  detectionRadius: 6
+  detectionRadius: 4.5
   canMove: 1
   moveRadius: 5
   moveSpeed: 2
   waitTimeMin: 0
   waitTimeMax: 3
-  fearfulSpeedMultiplier: 1.5
-  fearfulDetectionRadiusMultiplier: 0.8
-  fearfulPlayerDistance: 6
+  fearfulSpeedMultiplier: 1.4
+  fearfulDetectionRadiusMultiplier: 0.6
+  fearfulPlayerDistance: 8
   rotationSpeed: 5
 --- !u!114 &1930495104
 MonoBehaviour:
@@ -13042,8 +13042,28 @@ PrefabInstance:
     m_TransformParent: {fileID: 486928716}
     m_Modifications:
     - target: {fileID: 388145586411224736, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.3767929
+      objectReference: {fileID: 0}
+    - target: {fileID: 388145586411224736, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -1.4233856
+      value: -1.423378
+      objectReference: {fileID: 0}
+    - target: {fileID: 438051222530668918, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
+      propertyPath: m_Color.a
+      value: 0.80784315
+      objectReference: {fileID: 0}
+    - target: {fileID: 438051222530668918, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 438051222530668918, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 438051222530668918, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
+      propertyPath: m_Color.r
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 559266187840992199, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
       propertyPath: m_Name
@@ -13079,7 +13099,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1761744693043487691, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 265.9049
+      value: 214.5281
       objectReference: {fileID: 0}
     - target: {fileID: 1761744693043487691, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -13115,7 +13135,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1761744693043487691, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -132.95251
+      value: -107.26409
       objectReference: {fileID: 0}
     - target: {fileID: 1761744693043487691, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -13128,6 +13148,18 @@ PrefabInstance:
     - target: {fileID: 1761744693043487691, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8367622212824935436, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8367622212824935436, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8367622212824935436, guid: f52daa89f8c9a754b8c7472ffc2eddc3, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -19,8 +19,9 @@ MonoBehaviour:
   dialogue: {fileID: 11400000, guid: c55aafb374549094db40d76c233f10cd, type: 2}
   quests:
   - questId: bagarre
-    title: "D\xE9clanchez une bagarre"
-    description: Ne vous faites pas remarquer
+    title: "D\xE9clancher une bagarre"
+    description: "Les deux \xE9nerv\xE9s semblent irritables, ne vous faites pas
+      remarquer"
     autoRegisterMission: 1
     autoCompleteMissionOnQuestEnd: 1
     steps:
