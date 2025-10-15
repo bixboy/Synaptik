@@ -80,7 +80,7 @@ public sealed class DialogueBubble : MonoBehaviour
 
         var forward = targetCamera.transform.rotation * Vector3.forward;
         var up = targetCamera.transform.rotation * Vector3.up;
-        bubbleAnchor.transform.LookAt(bubbleAnchor.transform.position + forward, up);
+        bubbleAnchor?.transform.LookAt(bubbleAnchor.transform.position + forward, up);
     }
 
     public void ShowFor(Emotion emotion, string emojiLine, float duration)

@@ -91,7 +91,6 @@ public sealed class GameManager : MonoBehaviour
 
             Debug.Log($"{LogPrefix} Mission '{missionId}' complétée.");
             OnTaskEnd?.Invoke(mission, alienDefinition);
-            OnTaskEnd?.Invoke(mission);
 
             int missionComplete = 0;
             for (int j = 0; j < missions.Count; j++)

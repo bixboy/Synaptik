@@ -122,7 +122,6 @@ public class Alien : MonoBehaviour, IInteraction
 
     private void ApplyEmotionVisuals(bool immediate = false)
     {
-        ApplyAnimFromEmotion();
         ApplyEmotionColor(immediate);
     }
     
@@ -588,3 +587,4 @@ public class Alien : MonoBehaviour, IInteraction
 
 
 }
+
