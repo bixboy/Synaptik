@@ -211,13 +211,13 @@ public class PlayerInteraction : MonoBehaviour
         for (var i = 0; i < count; i++)
         {
             var collider = overlap[i];
-            if (collider == null || !collider.gameObject.activeInHierarchy)
+            if (!collider || !collider.gameObject.activeInHierarchy)
             {
                 continue;
             }
 
             var holdable = collider.GetComponentInParent<HoldableItem>();
-            if (holdable == null || !holdable.CanBePicked || holdable == heldItem)
+            if (!holdable || !holdable.CanBePicked || holdable == heldItem)
             {
                 continue;
             }
@@ -230,19 +230,17 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
 
-        if (bestCandidate == null)
-        {
+        if (!bestCandidate)
             return;
-        }
 
-        if (heldItem != null)
+        if (heldItem)
         {
             var velocity = dropForwardSpeed > 0f ? transform.forward * dropForwardSpeed : Vector3.zero;
             heldItem.Drop(velocity);
             heldItem = null;
         }
 
-        bestCandidate.Pick(handSocket != null ? handSocket : transform);
+        bestCandidate.Pick(handSocket ? handSocket : transform);
         heldItem = bestCandidate;
         heldItemId = heldItem.ItemId;
         Debug.Log($"{LogPrefix} Objet '{heldItem.name}' ramassé (ID: {heldItemId}).");
@@ -250,7 +248,7 @@ public class PlayerInteraction : MonoBehaviour
 
     public void DropItem(bool destroyItem = false)
     {
-        if (heldItem == null)
+        if (!heldItem)
         {
             Debug.Log($"{LogPrefix} Aucun objet à déposer.");
             return;
@@ -260,16 +258,18 @@ public class PlayerInteraction : MonoBehaviour
         {
             Destroy(heldItem.gameObject);
             Debug.Log($"{LogPrefix} Objet '{heldItemId}' détruit.");
+            
             heldItem = null;
             heldItemId = null;
+            
             return;
         }
 
-        var origin = aimZone != null ? aimZone : transform;
+        var origin = aimZone ? aimZone : transform;
         var alien = TargetingUtil.FindAlienInFront(origin, interactRadius, interactHalfFov, interactMask);
 
         var gaveItem = false;
-        if (alien != null && alien.IsWithinReceiveRadius(origin.position))
+        if (alien && alien.IsWithinReceiveRadius(origin.position))
         {
             gaveItem = alien.TryReceiveItem(heldItemId);
             Debug.Log($"{LogPrefix} Don de '{heldItemId}' à '{alien.name}' → succès={gaveItem}.");
@@ -308,7 +308,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void ShowComboFeedback(Emotion emotion, Behavior behavior)
     {
-        if (comboBubble == null || emotion == Emotion.None || behavior == Behavior.None)
+        if (!comboBubble || emotion == Emotion.None || behavior == Behavior.None)
         {
             return;
         }
@@ -326,14 +326,15 @@ public class PlayerInteraction : MonoBehaviour
         if (comboLookup.TryGetValue(key, out var definition) && !string.IsNullOrWhiteSpace(definition.Symbols))
         {
             var duration = definition.Duration > 0f ? definition.Duration : defaultComboBubbleDuration;
-            comboBubble.Show(definition.Symbols, duration);
+            comboBubble.Show(definition.Emotion, definition.Symbols, duration);
+
             return;
         }
 
         if (DefaultBehaviorSymbols.TryGetValue(behavior, out var behaviorSymbol) &&
             DefaultEmotionSymbols.TryGetValue(emotion, out var emotionSymbol))
         {
-            comboBubble.Show(behaviorSymbol + emotionSymbol, defaultComboBubbleDuration);
+            comboBubble.Show(emotion, behaviorSymbol + emotionSymbol, defaultComboBubbleDuration);
         }
         else
         {
