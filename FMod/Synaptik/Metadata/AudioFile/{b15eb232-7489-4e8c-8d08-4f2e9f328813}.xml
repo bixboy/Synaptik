@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{b15eb232-7489-4e8c-8d08-4f2e9f328813}">
+		<property name="assetPath">
+			<value>Voice_P/Scared_Voice_P_OS_004.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.60999999999999999</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{f02725f0-8394-4019-9eef-192b513a7856}</destination>
+		</relationship>
+	</object>
+</objects>
