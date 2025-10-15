@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58f9ab1e10ce5b64b965e1fd1a0a9980, type: 3}
   m_Name: Alien1
   m_EditorClassIdentifier: 
-  alienId: 4
+  alienId: 3
   startEmotion: 4
   animator: {fileID: 0}
   reactions: {fileID: 11400000, guid: 73d53233d08b9ba49be514744243debc, type: 2}
   dialogue: {fileID: 11400000, guid: c610a60b133dc6d42b56d74c2e752b4e, type: 2}
   quests:
   - questId: labubu
-    title: "R\xE9conforter l'alien pr\xE8s du quiosque"
-    description: il semble vouloir un objet
+    title: "R\xE9conforter un alien"
+    description: "celui pr\xE8s du kiosque semble vouloir un objet en particulier"
     autoRegisterMission: 1
     autoCompleteMissionOnQuestEnd: 1
     steps:
