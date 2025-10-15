@@ -24,7 +24,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 1079
+  controlID: 3324
   draggingID: 0
 --- !u!114 &2
 MonoBehaviour:
@@ -151,7 +151,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 1026
+  controlID: 3265
   draggingID: 0
 --- !u!114 &4
 MonoBehaviour:
@@ -177,7 +177,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 1010
+  controlID: 3231
   draggingID: 0
 --- !u!114 &5
 MonoBehaviour:
@@ -246,7 +246,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 38e0ffff3ef6ffff0cfbffff08ce0000dcdc0000
+      m_ExpandedIDs: 20b0ffff38e0ffff3ef6ffff0cfbffff08ce0000dcdc0000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -891,9 +891,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: -0.025606632, y: -0.48897886, z: -19.714182}
+    m_Target: {x: -7.1649866, y: 0.5925088, z: -13.2354555}
     speed: 2
-    m_Value: {x: -0.025606632, y: -0.48897886, z: -19.714182}
+    m_Value: {x: -7.1649866, y: 0.5925088, z: -13.2354555}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -939,9 +939,9 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.025657263, y: 0.9417786, z: -0.32701898, w: -0.07389118}
+    m_Target: {x: -0.1740381, y: 0.72497934, z: -0.1983113, w: -0.636239}
     speed: 2
-    m_Value: {x: -0.02565718, y: 0.94177556, z: -0.32701793, w: -0.07389094}
+    m_Value: {x: -0.17403708, y: 0.7249751, z: -0.19831014, w: -0.6362353}
   m_Size:
     m_Target: 4.8826594
     speed: 2
@@ -1053,7 +1053,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/_Project/Scripts/Gameplay/Alien/SO/Alien1(Labubu enjoyer)
+    - Assets/_Project/Scripts/Gameplay/Player
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1063,15 +1063,15 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/_Project/Scripts/Gameplay/Alien/SO/Alien1(Labubu enjoyer)
+  - Assets/_Project/Scripts/Gameplay/Player
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Apps\Unity\Synaptik
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 79}
-    m_SelectedIDs: 1ce10000
-    m_LastClickedID: 57628
+    scrollPos: {x: 0, y: 135.6}
+    m_SelectedIDs: b2cd0000
+    m_LastClickedID: 52658
     m_ExpandedIDs: 0000000010cd000064cd0000b4cd0000b6cd0000c6cd000018e1000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1127,8 +1127,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: c2df0000e2de00000ee00000
-    m_LastClickedInstanceID: 57282
+    m_SelectedInstanceIDs: 66f60000
+    m_LastClickedInstanceID: 63078
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c6230000
     m_RenameOverlay:
@@ -1263,8 +1263,8 @@ MonoBehaviour:
     m_CachedPref: -160
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
-  m_LastInspectedObjectInstanceID: 57058
-  m_LastVerticalScrollValue: 382.39996
+  m_LastInspectedObjectInstanceID: 63078
+  m_LastVerticalScrollValue: 1034.3999
   m_GlobalObjectId: 
   m_InspectorMode: 0
   m_LockTracker:
