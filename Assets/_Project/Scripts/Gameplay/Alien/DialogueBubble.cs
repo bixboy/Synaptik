@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NaughtyAttributes;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public sealed class DialogueBubble : MonoBehaviour
 {
@@ -13,7 +14,13 @@ public sealed class DialogueBubble : MonoBehaviour
     private TextMeshProUGUI label;
 
     [SerializeField]
-    private EmotionBubbleSettings[] emotionSpecificBubbles;
+    private Image bubbleImage;
+
+    [SerializeField]
+    private Sprite defaultBubbleSprite;
+
+    [SerializeField]
+    private EmotionBubbleSprite[] emotionSpecificSprites;
 
     [SerializeField]
     private bool lookAtCamera = true;
@@ -22,37 +29,33 @@ public sealed class DialogueBubble : MonoBehaviour
     private Camera targetCamera;
 
     private float remainingTime;
-    private readonly Dictionary<Emotion, BubbleInfo> bubbleLookup = new();
-    private readonly List<GameObject> allBubbles = new();
-    private BubbleInfo defaultBubble;
-    private BubbleInfo activeBubble;
+    private readonly Dictionary<Emotion, Sprite> spriteLookup = new();
+    private Sprite activeSprite;
 
     [Serializable]
-    private struct EmotionBubbleSettings
+    private struct EmotionBubbleSprite
     {
         public Emotion emotion;
-        public GameObject bubbleGameObject;
-        public TextMeshProUGUI label;
-    }
-
-    private struct BubbleInfo
-    {
-        public GameObject BubbleObject;
-        public TextMeshProUGUI Label;
-
-        public bool IsValid => BubbleObject != null;
+        public Sprite sprite;
     }
 
     private void Awake()
     {
         targetCamera = Camera.main;
-        CacheBubbles();
+        CacheBubbleComponents();
+        CacheSprites();
         Hide();
+    }
+
+    private void OnValidate()
+    {
+        CacheBubbleComponents();
+        CacheSprites();
     }
 
     private void Update()
     {
-        if (!activeBubble.BubbleObject || !activeBubble.BubbleObject.activeSelf)
+        if (!bubbleGameObject || !bubbleGameObject.activeSelf)
             return;
 
         if (remainingTime <= 0f)
@@ -82,103 +85,73 @@ public sealed class DialogueBubble : MonoBehaviour
         if (string.IsNullOrEmpty(emojiLine) || duration <= 0f)
             return;
 
-        var bubble = GetBubbleFor(emotion);
-        if (!bubble.IsValid)
+        if (!bubbleGameObject)
             return;
 
-        if (activeBubble.BubbleObject && activeBubble.BubbleObject != bubble.BubbleObject)
-            activeBubble.BubbleObject.SetActive(false);
+        var sprite = GetSpriteFor(emotion);
 
-        activeBubble = bubble;
-
-        if (!activeBubble.Label && activeBubble.BubbleObject)
+        if (bubbleImage && sprite && sprite != activeSprite)
         {
-            activeBubble.Label = activeBubble.BubbleObject.GetComponentInChildren<TextMeshProUGUI>(true);
-            UpdateLookupLabel(emotion, activeBubble);
+            bubbleImage.sprite = sprite;
+            activeSprite = sprite;
         }
 
-        if (!activeBubble.Label && defaultBubble.Label)
-            activeBubble.Label = defaultBubble.Label;
+        if (label)
+            label.text = emojiLine;
 
-        if (activeBubble.Label)
-            activeBubble.Label.text = emojiLine;
-
-        activeBubble.BubbleObject.SetActive(true);
+        bubbleGameObject.SetActive(true);
 
         remainingTime = duration;
     }
 
     private void Hide()
     {
-        foreach (var bubble in allBubbles)
-        {
-            if (bubble)
-                bubble.SetActive(false);
-        }
-        activeBubble = default;
+        if (bubbleGameObject)
+            bubbleGameObject.SetActive(false);
+
+        activeSprite = null;
         remainingTime = 0f;
     }
 
-    private void CacheBubbles()
+    private void CacheBubbleComponents()
     {
-        bubbleLookup.Clear();
-        allBubbles.Clear();
+        if (!bubbleGameObject)
+            bubbleGameObject = gameObject;
 
-        defaultBubble = CreateBubbleInfo(bubbleGameObject, label);
-        if (defaultBubble.BubbleObject)
-        {
-            allBubbles.Add(defaultBubble.BubbleObject);
-            if (!defaultBubble.Label)
-            {
-                defaultBubble.Label = defaultBubble.BubbleObject.GetComponentInChildren<TextMeshProUGUI>(true);
-            }
-        }
+        if (!label && bubbleGameObject)
+            label = bubbleGameObject.GetComponentInChildren<TextMeshProUGUI>(true);
 
-        if (emotionSpecificBubbles == null)
+        if (!bubbleImage && bubbleGameObject)
+            bubbleImage = bubbleGameObject.GetComponentInChildren<Image>(true);
+
+        if (!defaultBubbleSprite && bubbleImage)
+            defaultBubbleSprite = bubbleImage.sprite;
+    }
+
+    private void CacheSprites()
+    {
+        spriteLookup.Clear();
+
+        if (emotionSpecificSprites == null)
             return;
 
-        foreach (var setting in emotionSpecificBubbles)
+        foreach (var setting in emotionSpecificSprites)
         {
-            if (!setting.bubbleGameObject)
+            if (!setting.sprite)
                 continue;
 
-            var info = CreateBubbleInfo(setting.bubbleGameObject, setting.label);
-
-            if (!info.Label)
-                info.Label = info.BubbleObject.GetComponentInChildren<TextMeshProUGUI>(true);
-
-            bubbleLookup[setting.emotion] = info;
-            allBubbles.Add(info.BubbleObject);
+            spriteLookup[setting.emotion] = setting.sprite;
         }
     }
 
-    private BubbleInfo GetBubbleFor(Emotion emotion)
+    private Sprite GetSpriteFor(Emotion emotion)
     {
-        if (bubbleLookup.TryGetValue(emotion, out var info))
-        {
-            return info;
-        }
+        if (spriteLookup.TryGetValue(emotion, out var sprite))
+            return sprite;
 
-        if (defaultBubble.IsValid)
-            return defaultBubble;
+        if (defaultBubbleSprite)
+            return defaultBubbleSprite;
 
-        return new BubbleInfo();
-    }
-
-    private void UpdateLookupLabel(Emotion emotion, BubbleInfo info)
-    {
-        if (bubbleLookup.ContainsKey(emotion))
-            bubbleLookup[emotion] = info;
-        else
-            defaultBubble = info;
-    }
-
-    private static BubbleInfo CreateBubbleInfo(GameObject bubble, TextMeshProUGUI bubbleLabel)
-    {
-        return new BubbleInfo
-        {
-            BubbleObject = bubble,
-            Label = bubbleLabel
-        };
+        return bubbleImage ? bubbleImage.sprite : null;
     }
 }
