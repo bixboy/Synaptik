@@ -12,25 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58f9ab1e10ce5b64b965e1fd1a0a9980, type: 3}
   m_Name: Alien2
   m_EditorClassIdentifier: 
-  alienId: 3
-  startEmotion: 3
+  alienId: 4
+  startEmotion: 2
   animator: {fileID: 0}
   reactions: {fileID: 11400000, guid: 1d06e5d260bad71419696ac8b863f75d, type: 2}
   dialogue: {fileID: 11400000, guid: 90629ad42a14118408c4e77c8f0e87e3, type: 2}
   quests:
   - questId: vomi
     title: faites vomir un alien
-    description: "il semblerait \xE7a ne marche pas comme chez nous"
-    autoRegisterMission: 1
-    autoCompleteMissionOnQuestEnd: 1
-    steps:
-    - stepId: 0
-      stepType: 0
-      completesQuest: 0
-      nextStepId: 1
-  - questId: vomi
-    title: faites vomir un alien
-    description: 'trouver ce qui peut les rendre ainsi '
+    description: "trouver ce qui peut les mettres dans cet \xE9tat "
     autoRegisterMission: 1
     autoCompleteMissionOnQuestEnd: 1
     steps:
@@ -40,5 +30,9 @@ MonoBehaviour:
       nextStepId: 1
     - stepId: 1
       stepType: 0
-      completesQuest: 1
+      completesQuest: 0
       nextStepId: 2
+    - stepId: 2
+      stepType: 0
+      completesQuest: 1
+      nextStepId: 3
