@@ -38,6 +38,7 @@ public class PlayerInteraction : MonoBehaviour
     [Header("Combo Feedback")]
     [SerializeField]
     private float defaultComboBubbleDuration = 1.75f;
+    
 
     [SerializeField]
     private ComboSymbolDefinition[] comboSymbolDefinitions =
@@ -118,12 +119,27 @@ public class PlayerInteraction : MonoBehaviour
         { Behavior.Talking, "💬" },
         { Behavior.Action, "✋" }
     };
+    
+    
+    [Header("Player Animation")]
+    [SerializeField] private PlayerAnimation _playerAnimation;
 
+    private void Reset()
+    {
+        _playerAnimation = GetComponent<PlayerAnimation>();
+        if (!_playerAnimation) Debug.LogWarning("PlayerInteraction: pas de PlayerAnimation assigné !", this);
+    }
     public event Action<bool> InteractionZoneChanged;
 
     private void Awake()
     {
         comboBubble = GetComponent<PlayerComboBubble>() ?? gameObject.AddComponent<PlayerComboBubble>();
+        if (!_playerAnimation)
+        {
+            _playerAnimation = GetComponent<PlayerAnimation>();
+            if (!_playerAnimation)
+                Debug.LogWarning("PlayerInteraction: pas de PlayerAnimation assigné !", this);
+        }
         RebuildComboLookup();
         Debug.Log($"{LogPrefix} '{name}' prêt ({comboLookup.Count} combos).");
     }
@@ -133,6 +149,7 @@ public class PlayerInteraction : MonoBehaviour
         if (InputsDetection.Instance)
         {
             InputsDetection.Instance.OnEmotionAction += HandleEmotionAction;
+            InputsDetection.Instance.OnEmotion += HandleEmotion;
             Debug.Log($"{LogPrefix} Abonné aux combos d'InputsDetection.");
         }
         else
@@ -146,6 +163,7 @@ public class PlayerInteraction : MonoBehaviour
         if (InputsDetection.Instance)
         {
             InputsDetection.Instance.OnEmotionAction -= HandleEmotionAction;
+            InputsDetection.Instance.OnEmotion -= HandleEmotion;
             Debug.Log($"{LogPrefix} Désabonné des combos d'InputsDetection.");
         }
     }
@@ -180,10 +198,22 @@ public class PlayerInteraction : MonoBehaviour
 
         Debug.Log($"{LogPrefix} Table de combos reconstruite ({comboLookup.Count} entrées).");
     }
-
+    
+    private void HandleEmotion(Emotion emotion, bool keyReleased)
+    {
+        if (!keyReleased)
+        {
+            _playerAnimation?.SetEmotion(emotion);
+        }
+        else
+        {
+            _playerAnimation?.UnsetEmotion(emotion);
+        }
+    }
     private void HandleEmotionAction(Emotion emotion, Behavior behavior)
     {
         ShowComboFeedback(emotion, behavior);
+        
 
         if (TryFindInteractionTarget(out var interactable))
         {
@@ -193,6 +223,11 @@ public class PlayerInteraction : MonoBehaviour
         else if (emotion == Emotion.Friendly && behavior == Behavior.Action && heldItem)
         {
             DropItem();
+        }
+        
+        if (emotion == Emotion.Anger && behavior == Behavior.Action)
+        {
+            _playerAnimation?.PlayPunch();
         }
     }
 
@@ -243,6 +278,7 @@ public class PlayerInteraction : MonoBehaviour
         bestCandidate.Pick(handSocket ? handSocket : transform);
         heldItem = bestCandidate;
         heldItemId = heldItem.ItemId;
+        _playerAnimation?.OnPickedUpItem();
         Debug.Log($"{LogPrefix} Objet '{heldItem.name}' ramassé (ID: {heldItemId}).");
     }
 
@@ -287,6 +323,7 @@ public class PlayerInteraction : MonoBehaviour
 
         heldItem = null;
         heldItemId = null;
+        _playerAnimation?.OnDroppedItem();
     }
 
     public void OnDrawGizmos()

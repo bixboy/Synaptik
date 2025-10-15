@@ -46,7 +46,7 @@ public sealed class NoteBook : MonoBehaviour
         }
     }
 
-    private void HandleTaskEnd(Mission mission)
+    private void HandleTaskEnd(Mission mission, AlienDefinition alienDefinition)
     {
         SyncMissions();
         RefreshNotebookUI();

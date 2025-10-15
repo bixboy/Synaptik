@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-[RequireComponent(typeof(Animator))]
+
 public class Alien : MonoBehaviour, IInteraction
 {
     [SerializeField] private AlienDefinition _def;
@@ -47,10 +47,15 @@ public class Alien : MonoBehaviour, IInteraction
         public Color color;
     }
 
+    [Header("Animation")]
+    [SerializeField] private AlienAnimation _alienAnimation;
+    [SerializeField] private string _pukeMissionId = "mission_puke";
+    
     private void Awake()
     {
-        _anim = GetComponent<Animator>();
-
+        if (_alienAnimation)
+            _alienAnimation = GetComponent<AlienAnimation>();
+        
         if (!_dialogueBubble)
             _dialogueBubble = GetComponentInChildren<DialogueBubble>(true);
         
@@ -62,11 +67,7 @@ public class Alien : MonoBehaviour, IInteraction
             _dialogueBubble.transform.localRotation = prefabBubble.transform.localRotation;
             _dialogueBubble.transform.localScale = prefabBubble.transform.localScale;
         }
-
-        if (_def && _def.Animator)
-        {
-            _anim.runtimeAnimatorController = _def.Animator;
-        }
+        
 
         CacheEmotionColors();
 
@@ -74,6 +75,7 @@ public class Alien : MonoBehaviour, IInteraction
         ApplyEmotionVisuals();
     }
 
+    
     private void Start()
     {
         if (AlienManager.Instance)
@@ -96,23 +98,30 @@ public class Alien : MonoBehaviour, IInteraction
                 _questRuntimes.Add(quest.QuestId, new AlienQuestRuntime(quest));
             }
         }
+        
+        GameManager.Instance.OnTaskEnd += OnAlienTaskEnd;
     }
 
     private void OnDestroy()
     {
         if (AlienManager.Instance)
             AlienManager.Instance.UnregisterAlien(this);
+        GameManager.Instance.OnTaskEnd -= OnAlienTaskEnd;
     }
-
-    private void ApplyAnimFromEmotion()
+    
+    private void OnAlienTaskEnd(Mission mission, AlienDefinition alienDefinition)
     {
-        if (_anim)
-            _anim.SetInteger(EmotionHash, (int)Emotion);
+        if (alienDefinition != _def)
+            return;
+        Debug.Log("Mission ended for alien " + Definition.name + ": " + mission.MissionID);
+        if (mission.MissionID == _pukeMissionId)
+        {
+            _alienAnimation?.PlayPuke();
+        }
     }
 
     private void ApplyEmotionVisuals(bool immediate = false)
     {
-        ApplyAnimFromEmotion();
         ApplyEmotionColor(immediate);
     }
     
@@ -336,6 +345,7 @@ public class Alien : MonoBehaviour, IInteraction
             return;
 
         Emotion = newEmotion;
+        _alienAnimation?.SetEmotion(newEmotion);
         ApplyEmotionVisuals();
     }
 
@@ -378,7 +388,7 @@ public class Alien : MonoBehaviour, IInteraction
 
         if (allowQuestProgress && !handled && !string.IsNullOrWhiteSpace(rule.QuestId))
         {
-            GameManager.Instance?.SetMissionFinished(rule.QuestId);
+            GameManager.Instance?.SetMissionFinished(rule.QuestId, _def);
         }
     }
 
@@ -409,7 +419,7 @@ public class Alien : MonoBehaviour, IInteraction
 
         if (!handled && !string.IsNullOrWhiteSpace(rule.QuestId))
         {
-            GameManager.Instance?.SetMissionFinished(rule.QuestId);
+            GameManager.Instance?.SetMissionFinished(rule.QuestId, _def);
         }
     }
 
@@ -577,3 +587,4 @@ public class Alien : MonoBehaviour, IInteraction
 
 
 }
+
