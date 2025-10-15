@@ -126,7 +126,7 @@ public sealed class CameraFollow : MonoBehaviour
 
         if (isInteractionZoomActive)
         {
-            targetZoom = Mathf.Clamp(defaultZoom - interactionZoomOffset, minZoom, maxZoom);
+            targetZoom = Mathf.Clamp(defaultZoom + interactionZoomOffset, minZoom, maxZoom);
         }
         else
         {
