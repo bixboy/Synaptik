@@ -36,7 +36,7 @@ public sealed class LoadingScreenManager : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
-        if (currentLoadingInstance != null)
+        if (currentLoadingInstance)
         {
             Debug.LogWarning("Une scène est déjà en cours de chargement.");
             return;

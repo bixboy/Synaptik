@@ -149,10 +149,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9144285521d24d0298849b7fefa4a1c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemId: Animal
-  _respawnDelay: 5
-  _despawnTime: 0.5
-  _despawnAnim:
+  itemId: cadavre
+  respawnDelay: 5
+  despawnTime: 0.5
+  despawnAnim:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -176,4 +176,4 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _despawnVFXPrefab: {fileID: 0}
+  despawnVfxPrefab: {fileID: 0}
