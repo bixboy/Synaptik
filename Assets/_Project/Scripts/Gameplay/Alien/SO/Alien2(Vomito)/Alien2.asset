@@ -20,7 +20,7 @@ MonoBehaviour:
   quests:
   - questId: vomi
     title: faites vomir un alien
-    description: 'trouver ce qui peut les rendre ainsi '
+    description: "trouver ce qui peut les mettres dans cet \xE9tat "
     autoRegisterMission: 1
     autoCompleteMissionOnQuestEnd: 1
     steps:
