@@ -28,7 +28,7 @@ public sealed class GameManager : MonoBehaviour
     [SerializeField]
     private List<Mission> missions = new();
 
-    public delegate void TaskEndHandler(Mission mission);
+    public delegate void TaskEndHandler(Mission mission, AlienDefinition alienDefinition);
     public event TaskEndHandler OnTaskEnd;
 
     private void Awake()
@@ -67,7 +67,7 @@ public sealed class GameManager : MonoBehaviour
         return true;
     }
 
-    public void SetMissionFinished(string missionId)
+    public void SetMissionFinished(string missionId, AlienDefinition alienDefinition)
     {
         for (var i = 0; i < missions.Count; i++)
         {
@@ -87,7 +87,7 @@ public sealed class GameManager : MonoBehaviour
             missions[i] = mission;
 
             Debug.Log($"{LogPrefix} Mission '{missionId}' complétée.");
-            OnTaskEnd?.Invoke(mission);
+            OnTaskEnd?.Invoke(mission, alienDefinition);
             return;
         }
 

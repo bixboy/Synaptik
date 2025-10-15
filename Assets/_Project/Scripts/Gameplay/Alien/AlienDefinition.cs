@@ -34,4 +34,12 @@ public class AlienDefinition : ScriptableObject
     {
         alienId = id;
     }
+    
+    private void OnEnable()
+    {
+        foreach (var quest in Quests)
+        {
+            quest.SetAlien(this);
+        }
+    }
 }

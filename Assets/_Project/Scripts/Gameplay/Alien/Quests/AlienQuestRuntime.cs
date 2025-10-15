@@ -222,7 +222,7 @@ public sealed class AlienQuestRuntime
 
         if (_definition.AutoCompleteMissionOnQuestEnd && GameManager.Instance != null && !string.IsNullOrWhiteSpace(_definition.QuestId))
         {
-            GameManager.Instance.SetMissionFinished(_definition.QuestId);
+            GameManager.Instance.SetMissionFinished(_definition.QuestId, _definition.Alien);
         }
     }
 }
