@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -34,6 +36,16 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
     [SerializeField]
     private TMP_FontAsset fontAsset;
+    
+    [Header("Bubble Sprites")]
+    [SerializeField]
+    private Image bubbleImage;
+
+    [SerializeField]
+    private Sprite defaultBubbleSprite;
+
+    [SerializeField]
+    private EmotionBubbleSprite[] emotionSpecificSprites;
 
     private GameObject bubbleInstance;
     private RectTransform bubbleRect;
@@ -41,11 +53,33 @@ public sealed class PlayerComboBubble : MonoBehaviour
     private TextMeshProUGUI label;
     private float remainingTime;
     private Camera targetCamera;
+    
+    private readonly Dictionary<Emotion, Sprite> spriteLookup = new();
+    private Sprite activeSprite;
+
+    [Serializable]
+    private struct EmotionBubbleSprite
+    {
+        public Emotion emotion;
+        public Sprite sprite;
+    }
 
     private void Awake()
     {
         targetCamera = Camera.main;
         HideImmediate();
+    }
+    
+    private void OnValidate()
+    {
+        CacheSprites();
+
+        if (!bubblePrefab || bubbleImage)
+        {
+            return;
+        }
+
+        bubbleImage = bubblePrefab.GetComponentInChildren<Image>(true);
     }
 
     private void OnDisable()
@@ -70,19 +104,19 @@ public sealed class PlayerComboBubble : MonoBehaviour
         UpdateLookAt();
     }
 
-    public void Show(string text, float duration)
+    public void Show(Emotion emotion, string text, float duration)
     {
         EnsureInstance();
 
-        if (label == null)
-        {
+        if (label)
             return;
-        }
 
         label.text = text ?? string.Empty;
         AdjustBubbleSize();
+        
+        ApplyBubbleSprite(emotion);
 
-        if (bubbleInstance != null && !bubbleInstance.activeSelf)
+        if (bubbleInstance && !bubbleInstance.activeSelf)
         {
             bubbleInstance.SetActive(true);
         }
@@ -94,7 +128,8 @@ public sealed class PlayerComboBubble : MonoBehaviour
     public void HideImmediate()
     {
         remainingTime = 0f;
-        if (bubbleInstance != null)
+        activeSprite = null;
+        if (bubbleInstance)
         {
             bubbleInstance.SetActive(false);
         }
@@ -102,12 +137,12 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
     private void EnsureInstance()
     {
-        if (bubbleInstance != null)
+        if (bubbleInstance)
         {
             return;
         }
 
-        if (bubblePrefab == null)
+        if (!bubblePrefab)
         {
             Debug.LogError("[PlayerComboBubble] No bubble prefab assigned!");
             return;
@@ -123,16 +158,26 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
         label = bubbleInstance.GetComponentInChildren<TextMeshProUGUI>(true);
         backgroundImage = bubbleInstance.GetComponentInChildren<Image>(true);
-
-        if (label != null)
+        
+        if (!bubbleImage)
         {
-            label.color = textColor;
-            label.font = fontAsset != null ? fontAsset : TMP_Settings.defaultFontAsset;
+            bubbleImage = backgroundImage;
         }
 
-        if (backgroundImage != null)
+        if (label)
+        {
+            label.color = textColor;
+            label.font = fontAsset ? fontAsset : TMP_Settings.defaultFontAsset;
+        }
+
+        if (backgroundImage)
         {
             backgroundImage.color = backgroundColor;
+        }
+        
+        if (!defaultBubbleSprite && bubbleImage)
+        {
+            defaultBubbleSprite = bubbleImage.sprite;
         }
 
         bubbleInstance.SetActive(false);
@@ -140,10 +185,8 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
     private void AdjustBubbleSize()
     {
-        if (label == null || bubbleRect == null)
-        {
+        if (!label || !bubbleRect)
             return;
-        }
 
         label.ForceMeshUpdate();
         var textSize = label.GetPreferredValues(label.text);
@@ -158,23 +201,71 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
     private void UpdateLookAt()
     {
-        if (bubbleRect == null)
-        {
+        if (!bubbleRect)
             return;
-        }
 
-        if (targetCamera == null)
+        if (!targetCamera)
         {
             targetCamera = Camera.main;
         }
 
-        if (targetCamera == null)
-        {
+        if (!targetCamera)
             return;
-        }
 
         var forward = targetCamera.transform.rotation * Vector3.forward;
         var up = targetCamera.transform.rotation * Vector3.up;
         bubbleRect.rotation = Quaternion.LookRotation(forward, up);
+    }
+    
+    private void CacheSprites()
+    {
+        spriteLookup.Clear();
+
+        if (emotionSpecificSprites == null)
+        {
+            return;
+        }
+
+        foreach (var setting in emotionSpecificSprites)
+        {
+            if (!setting.sprite)
+            {
+                continue;
+            }
+
+            spriteLookup[setting.emotion] = setting.sprite;
+        }
+    }
+
+    private void ApplyBubbleSprite(Emotion emotion)
+    {
+        if (!bubbleImage)
+        {
+            return;
+        }
+
+        var sprite = GetSpriteFor(emotion);
+        if (!sprite || sprite == activeSprite)
+        {
+            return;
+        }
+
+        bubbleImage.sprite = sprite;
+        activeSprite = sprite;
+    }
+
+    private Sprite GetSpriteFor(Emotion emotion)
+    {
+        if (spriteLookup.TryGetValue(emotion, out var sprite))
+        {
+            return sprite;
+        }
+
+        if (defaultBubbleSprite)
+        {
+            return defaultBubbleSprite;
+        }
+
+        return bubbleImage ? bubbleImage.sprite : null;
     }
 }

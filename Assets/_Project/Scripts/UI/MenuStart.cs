@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using FMODUnity;
 
 public sealed class MenuStart : MonoBehaviour
 {
@@ -28,6 +29,9 @@ public sealed class MenuStart : MonoBehaviour
 
     [Tooltip("Vitesse de retour de l’aiguille à 0 quand la charge descend.")]
     [SerializeField] private float needleReturnSpeed = 3f;
+
+    [Header("SFX")]
+    [SerializeField] private StudioEventEmitter _startEmitter;
 
     private float chargeProgress;
     private bool isCharging;
@@ -129,10 +133,18 @@ public sealed class MenuStart : MonoBehaviour
     private void StartCharging()
     {
         isCharging = true;
+        if (_startEmitter != null)
+            _startEmitter.Play();
+        
         fullyCharged = false;
     }
 
-    private void StopCharging() => isCharging = false;
+    private void StopCharging()
+    {
+        isCharging = false;
+        if (_startEmitter != null)
+            _startEmitter.Stop();
+    }
 
     private void Update()
     {
@@ -147,11 +159,15 @@ public sealed class MenuStart : MonoBehaviour
         if (isCharging && !fullyCharged)
         {
             chargeProgress += Time.deltaTime / chargeTime;
+            
             if (chargeProgress >= 1f)
             {
                 chargeProgress = 1f;
                 fullyCharged = true;
+                
                 onFullyCharged?.Invoke();
+                if (_startEmitter != null)
+                    _startEmitter.Stop();
             }
         }
         else
@@ -161,6 +177,10 @@ public sealed class MenuStart : MonoBehaviour
 
         chargeProgress = Mathf.Clamp01(chargeProgress);
 
+        // ---- SOUND ----
+        // if (_startEmitter != null)
+        //     _startEmitter.SetParameter("fuck", chargeProgress);
+        
         // ---- SHAKE ----
         if (imageToShake)
         {
@@ -203,6 +223,11 @@ public sealed class MenuStart : MonoBehaviour
         panelQuitEnabled = enable;
         if (quitPanel) 
             quitPanel.SetActive(enable);
+        
+        if (enable)
+            SoundManager.Instance.UIValid();
+        else
+            SoundManager.Instance.UIInvalid();
     }
 
     private void ToggleHelpPanel()
@@ -212,6 +237,11 @@ public sealed class MenuStart : MonoBehaviour
         
         panelHelpEnabled = !panelHelpEnabled;
         helpPanel.SetActive(panelHelpEnabled);
+        
+        if (panelHelpEnabled)
+            SoundManager.Instance.UIValid();
+        else
+            SoundManager.Instance.UIInvalid();
     }
 
     private void HandleQuitChoice(bool accept)

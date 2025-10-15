@@ -38,6 +38,7 @@ public class PlayerInteraction : MonoBehaviour
     [Header("Combo Feedback")]
     [SerializeField]
     private float defaultComboBubbleDuration = 1.75f;
+    
 
     [SerializeField]
     private ComboSymbolDefinition[] comboSymbolDefinitions =
@@ -54,6 +55,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private readonly Dictionary<ComboKey, ComboSymbolDefinition> comboLookup = new();
     private PlayerComboBubble comboBubble;
+    private bool isInInteractionZone;
 
     private static readonly Collider[] overlap = new Collider[64];
 
@@ -117,10 +119,27 @@ public class PlayerInteraction : MonoBehaviour
         { Behavior.Talking, "💬" },
         { Behavior.Action, "✋" }
     };
+    
+    
+    [Header("Player Animation")]
+    [SerializeField] private PlayerAnimation _playerAnimation;
+
+    private void Reset()
+    {
+        _playerAnimation = GetComponent<PlayerAnimation>();
+        if (!_playerAnimation) Debug.LogWarning("PlayerInteraction: pas de PlayerAnimation assigné !", this);
+    }
+    public event Action<bool> InteractionZoneChanged;
 
     private void Awake()
     {
         comboBubble = GetComponent<PlayerComboBubble>() ?? gameObject.AddComponent<PlayerComboBubble>();
+        if (!_playerAnimation)
+        {
+            _playerAnimation = GetComponent<PlayerAnimation>();
+            if (!_playerAnimation)
+                Debug.LogWarning("PlayerInteraction: pas de PlayerAnimation assigné !", this);
+        }
         RebuildComboLookup();
         Debug.Log($"{LogPrefix} '{name}' prêt ({comboLookup.Count} combos).");
     }
@@ -130,6 +149,7 @@ public class PlayerInteraction : MonoBehaviour
         if (InputsDetection.Instance)
         {
             InputsDetection.Instance.OnEmotionAction += HandleEmotionAction;
+            InputsDetection.Instance.OnEmotion += HandleEmotion;
             Debug.Log($"{LogPrefix} Abonné aux combos d'InputsDetection.");
         }
         else
@@ -143,6 +163,7 @@ public class PlayerInteraction : MonoBehaviour
         if (InputsDetection.Instance)
         {
             InputsDetection.Instance.OnEmotionAction -= HandleEmotionAction;
+            InputsDetection.Instance.OnEmotion -= HandleEmotion;
             Debug.Log($"{LogPrefix} Désabonné des combos d'InputsDetection.");
         }
     }
@@ -150,6 +171,11 @@ public class PlayerInteraction : MonoBehaviour
     private void OnValidate()
     {
         RebuildComboLookup();
+    }
+
+    private void Update()
+    {
+        UpdateInteractionZoneState();
     }
 
     private void RebuildComboLookup()
@@ -172,15 +198,24 @@ public class PlayerInteraction : MonoBehaviour
 
         Debug.Log($"{LogPrefix} Table de combos reconstruite ({comboLookup.Count} entrées).");
     }
-
+    
+    private void HandleEmotion(Emotion emotion, bool keyReleased)
+    {
+        if (!keyReleased)
+        {
+            _playerAnimation?.SetEmotion(emotion);
+        }
+        else
+        {
+            _playerAnimation?.UnsetEmotion(emotion);
+        }
+    }
     private void HandleEmotionAction(Emotion emotion, Behavior behavior)
     {
         ShowComboFeedback(emotion, behavior);
+        
 
-        var origin = aimZone ? aimZone : transform;
-        var interactable = TargetingUtil.FindInteractionInFront(origin, interactRadius, interactHalfFov, interactMask);
-
-        if (interactable != null)
+        if (TryFindInteractionTarget(out var interactable))
         {
             Debug.Log($"{LogPrefix} Combo {emotion}/{behavior} → interactable '{interactable}'.");
             interactable.Interact(new ActionValues(emotion, behavior), heldItem, this);
@@ -188,6 +223,11 @@ public class PlayerInteraction : MonoBehaviour
         else if (emotion == Emotion.Friendly && behavior == Behavior.Action && heldItem)
         {
             DropItem();
+        }
+        
+        if (emotion == Emotion.Anger && behavior == Behavior.Action)
+        {
+            _playerAnimation?.PlayPunch();
         }
     }
 
@@ -206,13 +246,13 @@ public class PlayerInteraction : MonoBehaviour
         for (var i = 0; i < count; i++)
         {
             var collider = overlap[i];
-            if (collider == null || !collider.gameObject.activeInHierarchy)
+            if (!collider || !collider.gameObject.activeInHierarchy)
             {
                 continue;
             }
 
             var holdable = collider.GetComponentInParent<HoldableItem>();
-            if (holdable == null || !holdable.CanBePicked || holdable == heldItem)
+            if (!holdable || !holdable.CanBePicked || holdable == heldItem)
             {
                 continue;
             }
@@ -225,27 +265,26 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
 
-        if (bestCandidate == null)
-        {
+        if (!bestCandidate)
             return;
-        }
 
-        if (heldItem != null)
+        if (heldItem)
         {
             var velocity = dropForwardSpeed > 0f ? transform.forward * dropForwardSpeed : Vector3.zero;
             heldItem.Drop(velocity);
             heldItem = null;
         }
 
-        bestCandidate.Pick(handSocket != null ? handSocket : transform);
+        bestCandidate.Pick(handSocket ? handSocket : transform);
         heldItem = bestCandidate;
         heldItemId = heldItem.ItemId;
+        _playerAnimation?.OnPickedUpItem();
         Debug.Log($"{LogPrefix} Objet '{heldItem.name}' ramassé (ID: {heldItemId}).");
     }
 
     public void DropItem(bool destroyItem = false)
     {
-        if (heldItem == null)
+        if (!heldItem)
         {
             Debug.Log($"{LogPrefix} Aucun objet à déposer.");
             return;
@@ -255,16 +294,18 @@ public class PlayerInteraction : MonoBehaviour
         {
             Destroy(heldItem.gameObject);
             Debug.Log($"{LogPrefix} Objet '{heldItemId}' détruit.");
+            
             heldItem = null;
             heldItemId = null;
+            
             return;
         }
 
-        var origin = aimZone != null ? aimZone : transform;
+        var origin = aimZone ? aimZone : transform;
         var alien = TargetingUtil.FindAlienInFront(origin, interactRadius, interactHalfFov, interactMask);
 
         var gaveItem = false;
-        if (alien != null && alien.IsWithinReceiveRadius(origin.position))
+        if (alien && alien.IsWithinReceiveRadius(origin.position))
         {
             gaveItem = alien.TryReceiveItem(heldItemId);
             Debug.Log($"{LogPrefix} Don de '{heldItemId}' à '{alien.name}' → succès={gaveItem}.");
@@ -282,6 +323,7 @@ public class PlayerInteraction : MonoBehaviour
 
         heldItem = null;
         heldItemId = null;
+        _playerAnimation?.OnDroppedItem();
     }
 
     public void OnDrawGizmos()
@@ -303,7 +345,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void ShowComboFeedback(Emotion emotion, Behavior behavior)
     {
-        if (comboBubble == null || emotion == Emotion.None || behavior == Behavior.None)
+        if (!comboBubble || emotion == Emotion.None || behavior == Behavior.None)
         {
             return;
         }
@@ -321,18 +363,38 @@ public class PlayerInteraction : MonoBehaviour
         if (comboLookup.TryGetValue(key, out var definition) && !string.IsNullOrWhiteSpace(definition.Symbols))
         {
             var duration = definition.Duration > 0f ? definition.Duration : defaultComboBubbleDuration;
-            comboBubble.Show(definition.Symbols, duration);
+            comboBubble.Show(definition.Emotion, definition.Symbols, duration);
+
             return;
         }
 
         if (DefaultBehaviorSymbols.TryGetValue(behavior, out var behaviorSymbol) &&
             DefaultEmotionSymbols.TryGetValue(emotion, out var emotionSymbol))
         {
-            comboBubble.Show(behaviorSymbol + emotionSymbol, defaultComboBubbleDuration);
+            comboBubble.Show(emotion, behaviorSymbol + emotionSymbol, defaultComboBubbleDuration);
         }
         else
         {
             Debug.LogWarning($"{LogPrefix} Impossible de trouver un feedback pour le combo {behavior}/{emotion}.");
         }
+    }
+
+    private bool TryFindInteractionTarget(out IInteraction interaction)
+    {
+        var origin = aimZone ? aimZone : transform;
+        interaction = TargetingUtil.FindInteractionInFront(origin, interactRadius, interactHalfFov, interactMask);
+        return interaction != null;
+    }
+
+    private void UpdateInteractionZoneState()
+    {
+        var hasInteraction = TryFindInteractionTarget(out _);
+        if (hasInteraction == isInInteractionZone)
+        {
+            return;
+        }
+
+        isInInteractionZone = hasInteraction;
+        InteractionZoneChanged?.Invoke(isInInteractionZone);
     }
 }
