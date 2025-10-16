@@ -7,29 +7,22 @@ using UnityEngine.UI;
 
 public sealed class DialogueBubble : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject bubbleGameObject;
-    
-    [SerializeField]
-    private Transform bubbleAnchor;
+    [SerializeField] private GameObject bubbleGameObject;
+    [SerializeField] private Transform bubbleAnchor;
+    [SerializeField] private TextMeshProUGUI label;
+    [SerializeField] private Image bubbleImage;
+    [SerializeField] private Sprite defaultBubbleSprite;
+    [SerializeField] private EmotionBubbleSprite[] emotionSpecificSprites;
+    [SerializeField] private bool lookAtCamera = true;
+    [SerializeField, ShowIf(nameof(lookAtCamera))] private Camera targetCamera;
 
-    [SerializeField]
-    private TextMeshProUGUI label;
-
-    [SerializeField]
-    private Image bubbleImage;
-
-    [SerializeField]
-    private Sprite defaultBubbleSprite;
-
-    [SerializeField]
-    private EmotionBubbleSprite[] emotionSpecificSprites;
-
-    [SerializeField]
-    private bool lookAtCamera = true;
-
-    [SerializeField, ShowIf(nameof(lookAtCamera))]
-    private Camera targetCamera;
+    // 🟢 --- Nouveau : paramètres du scale selon la distance ---
+    [Header("Distance Scaling")]
+    [SerializeField, Min(0f)] private float minScale = 0.5f;
+    [SerializeField, Min(0f)] private float maxScale = 1.5f;
+    [SerializeField, Min(0f)] private float minDistance = 2f;
+    [SerializeField, Min(0f)] private float maxDistance = 15f;
+    // -----------------------------------------------------------
 
     private float remainingTime;
     private readonly Dictionary<Emotion, Sprite> spriteLookup = new();
@@ -69,18 +62,25 @@ public sealed class DialogueBubble : MonoBehaviour
 
         remainingTime -= Time.deltaTime;
 
-        if (!lookAtCamera)
-            return;
-
         if (!targetCamera)
             targetCamera = Camera.main;
 
         if (!targetCamera)
             return;
 
-        var forward = targetCamera.transform.rotation * Vector3.forward;
-        var up = targetCamera.transform.rotation * Vector3.up;
-        bubbleAnchor?.transform.LookAt(bubbleAnchor.transform.position + forward, up);
+        // 🌀 Look at camera
+        if (lookAtCamera && bubbleAnchor)
+        {
+            var forward = targetCamera.transform.rotation * Vector3.forward;
+            var up = targetCamera.transform.rotation * Vector3.up;
+            bubbleAnchor.transform.LookAt(bubbleAnchor.position + forward, up);
+        }
+
+        // 📏 Scale selon la distance
+        float distance = Vector3.Distance(targetCamera.transform.position, bubbleAnchor.position);
+        float t = Mathf.InverseLerp(minDistance, maxDistance, distance);
+        float scale = Mathf.Lerp(maxScale, minScale, t); // plus proche = plus grand
+        bubbleAnchor.localScale = Vector3.one * scale;
     }
 
     public void ShowFor(Emotion emotion, string emojiLine, float duration)
@@ -103,7 +103,6 @@ public sealed class DialogueBubble : MonoBehaviour
             label.text = emojiLine;
 
         bubbleGameObject.SetActive(true);
-
         remainingTime = duration;
     }
 
