@@ -1681,6 +1681,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemToSpawnOnDeath: {fileID: 1392753307}
+  _soundEmitter: {fileID: 0}
+  _soundReaction:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  _soundDeath:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
 --- !u!54 &336148076
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -8767,7 +8782,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: eac57c760ccd41d4faf8bebd6b8bb8d3, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: ed5a181e1b274a845b503c05802a8ff6, type: 2}
+      objectReference: {fileID: 2100000, guid: 4c0eb0972564e834080fda5f710dcd61, type: 2}
     - target: {fileID: 919132149155446097, guid: eac57c760ccd41d4faf8bebd6b8bb8d3, type: 3}
       propertyPath: m_Name
       value: MESH_Arch_Walls_Destructible
