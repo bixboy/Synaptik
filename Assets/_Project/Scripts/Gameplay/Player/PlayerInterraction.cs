@@ -123,6 +123,11 @@ public class PlayerInteraction : MonoBehaviour
     
     [Header("Player Animation")]
     [SerializeField] private PlayerAnimation _playerAnimation;
+    
+    
+    [Header("Angry Zone")]
+    public bool IsInAngryZone;
+    
 
     private void Reset()
     {
@@ -225,9 +230,12 @@ public class PlayerInteraction : MonoBehaviour
             DropItem();
         }
         
-        if (emotion == Emotion.Anger && behavior == Behavior.Action)
+        if (emotion == Emotion.Anger)
         {
-            _playerAnimation?.PlayPunch();
+            if (behavior == Behavior.Action)
+                _playerAnimation?.PlayPunch();
+            else if (behavior == Behavior.Talking && IsInAngryZone)
+                Debug.Log("Quête de l'Angry Zone déclenchée !");
         }
     }
 
