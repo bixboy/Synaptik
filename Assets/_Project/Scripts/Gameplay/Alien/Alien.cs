@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using FMODUnity;
 
 
 public class Alien : MonoBehaviour, IInteraction
@@ -50,6 +51,11 @@ public class Alien : MonoBehaviour, IInteraction
     [Header("Animation")]
     [SerializeField] private AlienAnimation _alienAnimation;
     [SerializeField] private string _pukeMissionId = "mission_puke";
+    
+    [Header("Sound")]
+    [SerializeField] private VoicesModels _attributedVoice;
+    [SerializeField] private StudioEventEmitter _soundEmitter;
+
     
     private void Awake()
     {
@@ -216,7 +222,7 @@ public class Alien : MonoBehaviour, IInteraction
     {
         Behavior behavior = action._behavior;
         Emotion emotion = action._emotion;
-
+        
         if (behavior == Behavior.Action)
         {
             switch (emotion)
@@ -236,6 +242,7 @@ public class Alien : MonoBehaviour, IInteraction
                     {
                         playerInteraction.DropItem(true);
                         Debug.Log($"Give item {item.ItemId} to alien {Definition.name}");
+                        
                         return;
                     }
 
@@ -267,6 +274,10 @@ public class Alien : MonoBehaviour, IInteraction
             }
         }
 
+        //PLay Sound
+        _soundEmitter.EventReference = SoundManager.Instance.GetVoice(emotion, _attributedVoice);
+        _soundEmitter.Play();
+        
         OnPlayerCombo(action._emotion, action._behavior);
     }
 

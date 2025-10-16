@@ -2200,6 +2200,8 @@ MonoBehaviour:
   zoomSpeed: 5
   minZoom: 5
   maxZoom: 15
+  playerInteraction: {fileID: 0}
+  interactionZoomOffset: 2
 --- !u!114 &356380905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2476,6 +2478,8 @@ MonoBehaviour:
   zoomSpeed: 5
   minZoom: 5
   maxZoom: 15
+  playerInteraction: {fileID: 0}
+  interactionZoomOffset: 2
 --- !u!1 &367012023
 GameObject:
   m_ObjectHideFlags: 0
@@ -3485,6 +3489,8 @@ MonoBehaviour:
   zoomSpeed: 5
   minZoom: 5
   maxZoom: 15
+  playerInteraction: {fileID: 0}
+  interactionZoomOffset: 2
 --- !u!114 &613164051
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6673,7 +6679,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bubbleGameObject: {fileID: 1131406296}
+  bubbleAnchor: {fileID: 0}
   label: {fileID: 349502475}
+  bubbleImage: {fileID: 1131406298}
+  defaultBubbleSprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  emotionSpecificSprites: []
   lookAtCamera: 1
   targetCamera: {fileID: 359247498}
 --- !u!114 &1279067969
@@ -6704,6 +6714,8 @@ MonoBehaviour:
   _colorFadeDuration: 0.5
   _dialogueBubble: {fileID: 1279067968}
   _interactionDelay: 0
+  _alienAnimation: {fileID: 0}
+  _pukeMissionId: mission_puke
 --- !u!95 &1279067970
 Animator:
   serializedVersion: 7
@@ -7643,6 +7655,8 @@ MonoBehaviour:
   _colorFadeDuration: 0.5
   _dialogueBubble: {fileID: 1460663270}
   _interactionDelay: 0
+  _alienAnimation: {fileID: 0}
+  _pukeMissionId: mission_puke
 --- !u!95 &1460663264
 Animator:
   serializedVersion: 7
@@ -7797,7 +7811,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bubbleGameObject: {fileID: 1390055223}
+  bubbleAnchor: {fileID: 0}
   label: {fileID: 1787017529}
+  bubbleImage: {fileID: 1390055225}
+  defaultBubbleSprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  emotionSpecificSprites: []
   lookAtCamera: 1
   targetCamera: {fileID: 359247498}
 --- !u!143 &1460663271
@@ -9113,6 +9131,7 @@ MonoBehaviour:
     Behavior: 2
     Symbols: "\U0001F3C3"
     Duration: 1.75
+  _playerAnimation: {fileID: 0}
 --- !u!114 &1714252163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9134,6 +9153,9 @@ MonoBehaviour:
   backgroundColor: {r: 1, g: 1, b: 1, a: 0.4}
   textColor: {r: 0, g: 0, b: 0, a: 1}
   fontAsset: {fileID: 11400000, guid: 35a8e7bf7ac51ae418bb13bcac301ef6, type: 2}
+  bubbleImage: {fileID: 2866277534391345941, guid: 4263e1fd48922eb4bbaf2025a83e5e5f, type: 3}
+  defaultBubbleSprite: {fileID: 0}
+  emotionSpecificSprites: []
 --- !u!1001 &1716051721
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9412,7 +9434,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bubbleGameObject: {fileID: 1389049234}
+  bubbleAnchor: {fileID: 0}
   label: {fileID: 1589189537}
+  bubbleImage: {fileID: 1389049236}
+  defaultBubbleSprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  emotionSpecificSprites: []
   lookAtCamera: 1
   targetCamera: {fileID: 359247498}
 --- !u!114 &1745018959
@@ -9443,6 +9469,8 @@ MonoBehaviour:
   _colorFadeDuration: 0.5
   _dialogueBubble: {fileID: 1745018958}
   _interactionDelay: 0
+  _alienAnimation: {fileID: 0}
+  _pukeMissionId: mission_puke
 --- !u!95 &1745018960
 Animator:
   serializedVersion: 7
@@ -10327,7 +10355,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bubbleGameObject: {fileID: 1382331912}
+  bubbleAnchor: {fileID: 0}
   label: {fileID: 1462292612}
+  bubbleImage: {fileID: 1382331914}
+  defaultBubbleSprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  emotionSpecificSprites: []
   lookAtCamera: 1
   targetCamera: {fileID: 359247498}
 --- !u!114 &1930495105
@@ -10358,6 +10390,8 @@ MonoBehaviour:
   _colorFadeDuration: 0.5
   _dialogueBubble: {fileID: 1930495104}
   _interactionDelay: 0
+  _alienAnimation: {fileID: 0}
+  _pukeMissionId: mission_puke
 --- !u!95 &1930495106
 Animator:
   serializedVersion: 7

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using FMODUnity;
 
 [DisallowMultipleComponent]
 public sealed class PlayerComboBubble : MonoBehaviour
@@ -63,6 +64,10 @@ public sealed class PlayerComboBubble : MonoBehaviour
         public Emotion emotion;
         public Sprite sprite;
     }
+    
+    [Header("Sound")]
+    [SerializeField] private VoicesModels _attributedVoice;
+    [SerializeField] private StudioEventEmitter _soundEmitter;
 
     private void Awake()
     {
@@ -120,6 +125,10 @@ public sealed class PlayerComboBubble : MonoBehaviour
         {
             bubbleInstance.SetActive(true);
         }
+        
+        //Sound
+        _soundEmitter.EventReference = SoundManager.Instance.GetVoice(emotion, _attributedVoice);
+        _soundEmitter.Play();
 
         remainingTime = duration > 0f ? duration : defaultLifetime;
         UpdateLookAt();
