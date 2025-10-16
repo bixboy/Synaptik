@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using FMODUnity;
 
+#region Struct&Enum
+
 [System.Serializable]
 struct SoundWithEmotion
 {
@@ -25,6 +27,20 @@ public enum VoicesModels
     VOICE_T = 2,
     VOICE_P = 3
 }
+
+[System.Serializable]
+public enum AudioReaction
+{
+    None = 0,
+    
+    Angry = 1,
+    Curious = 2,
+    Friendly = 3,
+    Sad = 4,
+    Scared = 5
+}
+
+#endregion
 
 public class SoundManager : MonoBehaviour
 {

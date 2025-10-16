@@ -111,7 +111,6 @@ public sealed class PlayerComboBubble : MonoBehaviour
         if (bubbleInstance && !bubbleInstance.activeSelf)
             bubbleInstance.SetActive(true);
         
-        
         if (_soundEmitter)
         {
             _soundEmitter.EventReference = SoundManager.Instance.GetVoice(emotion, _attributedVoice);
