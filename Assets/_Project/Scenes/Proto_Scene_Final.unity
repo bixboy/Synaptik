@@ -5473,6 +5473,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1111797172}
+    - target: {fileID: 1513401491640201456, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
+      propertyPath: targetCamera
+      value: 
+      objectReference: {fileID: 613164053}
     - target: {fileID: 1557525714702682687, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
       propertyPath: m_LocalPosition.y
       value: -2.63
@@ -5593,6 +5597,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: -0.31272033
       objectReference: {fileID: 0}
+    - target: {fileID: 3033662889290275031, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
+      propertyPath: targetCamera
+      value: 
+      objectReference: {fileID: 613164053}
     - target: {fileID: 3129142695377916832, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
       propertyPath: player
       value: 
@@ -5601,6 +5609,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1111797172}
+    - target: {fileID: 3303637864712764310, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
+      propertyPath: targetCamera
+      value: 
+      objectReference: {fileID: 613164053}
     - target: {fileID: 3573553263663147495, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
       propertyPath: _soundEmitter
       value: 
@@ -5781,6 +5793,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1111797172}
+    - target: {fileID: 5844445725807320486, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
+      propertyPath: targetCamera
+      value: 
+      objectReference: {fileID: 613164053}
     - target: {fileID: 5882452111730432151, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0.0023684716
@@ -5845,6 +5861,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -0.000000058427588
       objectReference: {fileID: 0}
+    - target: {fileID: 7275067470474743018, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
+      propertyPath: targetCamera
+      value: 
+      objectReference: {fileID: 613164053}
     - target: {fileID: 7314819623844136861, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
       propertyPath: player
       value: 
