@@ -5,7 +5,7 @@
 			<value>Curious_Voice_OS</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{635d84ca-9c3c-4f45-a5b1-2478067b39b7}</destination>
@@ -107,6 +107,7 @@
 	<object class="MixerBusEffectChain" id="{ee188438-5cb8-4f61-bf14-92a47ca131de}">
 		<relationship name="effects">
 			<destination>{b133e2e6-e6ea-4436-b9a4-4159683438e4}</destination>
+			<destination>{ae4b12c9-6aa6-470b-9095-affa58c7464b}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{36eab76e-73a7-494a-806f-cebe96cc4ea4}" />
@@ -197,4 +198,5 @@
 	</object>
 	<object class="MixerBusFader" id="{d5befeb8-aca8-4553-9e7a-3c04b3ef40e1}" />
 	<object class="MixerBusFader" id="{b133e2e6-e6ea-4436-b9a4-4159683438e4}" />
+	<object class="SpatialiserEffect" id="{ae4b12c9-6aa6-470b-9095-affa58c7464b}" />
 </objects>

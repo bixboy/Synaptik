@@ -5,7 +5,7 @@
 			<value>Dispute_Voice_L</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{cf189aef-8b7c-45d1-be3f-02698d61abcb}</destination>
@@ -121,9 +121,11 @@
 	<object class="MixerBusEffectChain" id="{df4dbd74-5426-4a0a-800c-a16ef6f4658d}">
 		<relationship name="effects">
 			<destination>{62ccbafa-0fb6-4104-ba13-ac4dd47ac8e0}</destination>
+			<destination>{bbb00d11-11b6-4e9d-b0a5-52fe21609efd}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{fa3de091-4465-49c0-afaf-03e2fe1edb52}" />
 	<object class="MixerBusFader" id="{aec0b39c-a4c4-4a44-a103-da623b65a6e5}" />
 	<object class="MixerBusFader" id="{62ccbafa-0fb6-4104-ba13-ac4dd47ac8e0}" />
+	<object class="SpatialiserEffect" id="{bbb00d11-11b6-4e9d-b0a5-52fe21609efd}" />
 </objects>
