@@ -5,7 +5,7 @@
 			<value>Input_Feeling_OS</value>
 		</property>
 		<property name="outputFormat">
-			<value>2</value>
+			<value>1</value>
 		</property>
 		<relationship name="folder">
 			<destination>{15df927d-3930-417b-9f2a-34c8d3f94973}</destination>
@@ -116,7 +116,6 @@
 	<object class="MixerBusEffectChain" id="{e6421ba1-0c60-4ee5-82a8-01833be49515}">
 		<relationship name="effects">
 			<destination>{a643fb08-5730-42c5-bb50-fbccbb0e0ef7}</destination>
-			<destination>{22066d0c-987b-402a-89ef-492d6b472a5b}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{cecba4be-2b39-400c-9e7f-099c7a948569}" />
@@ -148,6 +147,5 @@
 	</object>
 	<object class="MixerBusPanner" id="{e1cae1f0-afbb-49ba-b7ab-b430dd3f0f1c}" />
 	<object class="MixerBusFader" id="{a643fb08-5730-42c5-bb50-fbccbb0e0ef7}" />
-	<object class="SpatialiserEffect" id="{22066d0c-987b-402a-89ef-492d6b472a5b}" />
 	<object class="MixerBusFader" id="{13b338fa-3d98-4974-8d76-07c3e1603cc5}" />
 </objects>

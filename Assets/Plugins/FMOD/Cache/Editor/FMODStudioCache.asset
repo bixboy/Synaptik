@@ -48,7 +48,7 @@ MonoBehaviour:
   Banks:
   - {fileID: -251013164964817515}
   IsStream: 0
-  Is3D: 1
+  Is3D: 0
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
@@ -75,7 +75,7 @@ MonoBehaviour:
   Banks:
   - {fileID: 6561511826603034799}
   IsStream: 0
-  Is3D: 0
+  Is3D: 1
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
@@ -129,7 +129,7 @@ MonoBehaviour:
   Banks:
   - {fileID: 6561511826603034799}
   IsStream: 0
-  Is3D: 0
+  Is3D: 1
   IsOneShot: 0
   Parameters: []
   MinDistance: 1
@@ -156,7 +156,7 @@ MonoBehaviour:
   Banks:
   - {fileID: 6561511826603034799}
   IsStream: 0
-  Is3D: 0
+  Is3D: 1
   IsOneShot: 0
   Parameters: []
   MinDistance: 1
@@ -210,7 +210,7 @@ MonoBehaviour:
   Banks:
   - {fileID: 6561511826603034799}
   IsStream: 0
-  Is3D: 0
+  Is3D: 1
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
@@ -237,7 +237,7 @@ MonoBehaviour:
   Banks:
   - {fileID: -251013164964817515}
   IsStream: 0
-  Is3D: 1
+  Is3D: 0
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
@@ -285,7 +285,11 @@ MonoBehaviour:
   Path: FMod/Synaptik/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638961580264655089
+<<<<<<< HEAD
+  lastModified: 638961370329625360
+=======
+  lastModified: 638962078274084557
+>>>>>>> pierre
   FileSizes:
   - Name: Desktop
     Value: 1036
@@ -305,7 +309,11 @@ MonoBehaviour:
   Path: FMod/Synaptik/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638961580264655089
+<<<<<<< HEAD
+  lastModified: 638961370329645360
+=======
+  lastModified: 638962078274084557
+>>>>>>> pierre
   FileSizes:
   - Name: Desktop
     Value: 2818
@@ -331,7 +339,7 @@ MonoBehaviour:
   Banks:
   - {fileID: -251013164964817515}
   IsStream: 0
-  Is3D: 1
+  Is3D: 0
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
@@ -358,7 +366,7 @@ MonoBehaviour:
   Banks:
   - {fileID: 6561511826603034799}
   IsStream: 0
-  Is3D: 0
+  Is3D: 1
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
@@ -460,10 +468,14 @@ MonoBehaviour:
   Path: FMod/Synaptik/Build/Desktop/Ambiant&SFX.bank
   Name: Ambiant&SFX
   StudioPath: bank:/Ambiant&SFX
-  lastModified: 638962117304883763
+<<<<<<< HEAD
+  lastModified: 638961370329455041
+=======
+  lastModified: 638962078274084557
+>>>>>>> pierre
   FileSizes:
   - Name: Desktop
-    Value: 1727968
+    Value: 1726624
   Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
@@ -525,7 +537,11 @@ MonoBehaviour:
   - {fileID: -4240650503881781177}
   StringsBanks:
   - {fileID: -3028363718350553295}
-  cacheTime: 638962117305004545
+<<<<<<< HEAD
+  cacheTime: 638961370343663774
+=======
+  cacheTime: 638962078274201062
+>>>>>>> pierre
   cacheVersion: 131632
 --- !u!114 &367902334603028971
 MonoBehaviour:
@@ -656,7 +672,7 @@ MonoBehaviour:
   Banks:
   - {fileID: 6561511826603034799}
   IsStream: 0
-  Is3D: 0
+  Is3D: 1
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
@@ -737,7 +753,7 @@ MonoBehaviour:
   Banks:
   - {fileID: -251013164964817515}
   IsStream: 0
-  Is3D: 0
+  Is3D: 1
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
@@ -785,10 +801,14 @@ MonoBehaviour:
   Path: FMod/Synaptik/Build/Desktop/Voices.bank
   Name: Voices
   StudioPath: bank:/Voices
-  lastModified: 638962117305004545
+<<<<<<< HEAD
+  lastModified: 638961370343663774
+=======
+  lastModified: 638962078274201062
+>>>>>>> pierre
   FileSizes:
   - Name: Desktop
-    Value: 1717024
+    Value: 1718944
   Exists: 1
 --- !u!114 &6596110578536419551
 MonoBehaviour:
@@ -838,7 +858,7 @@ MonoBehaviour:
   Banks:
   - {fileID: -251013164964817515}
   IsStream: 0
-  Is3D: 1
+  Is3D: 0
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
@@ -919,7 +939,7 @@ MonoBehaviour:
   Banks:
   - {fileID: -251013164964817515}
   IsStream: 0
-  Is3D: 1
+  Is3D: 0
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
@@ -946,7 +966,7 @@ MonoBehaviour:
   Banks:
   - {fileID: -251013164964817515}
   IsStream: 1
-  Is3D: 1
+  Is3D: 0
   IsOneShot: 0
   Parameters: []
   MinDistance: 1
@@ -1108,7 +1128,7 @@ MonoBehaviour:
   Banks:
   - {fileID: 6561511826603034799}
   IsStream: 0
-  Is3D: 0
+  Is3D: 1
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
