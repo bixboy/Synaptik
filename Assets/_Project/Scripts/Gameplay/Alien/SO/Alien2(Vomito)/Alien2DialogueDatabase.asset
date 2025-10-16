@@ -25,7 +25,7 @@ MonoBehaviour:
     questStepId: 0
   - emotion: 3
     behavior: 1
-    emojiLine: "\U0001F4A1: \U0001F642\U0001F601\U0001F92E"
+    emojiLine: "\U0001F4A1: <color=#C7A600>\U0001F642\U0001F601\U0001F92E</color>"
     duration: 3
     questStepId: 
   - emotion: 4
