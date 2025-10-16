@@ -34,7 +34,6 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
     [Header("Sound")]
     [SerializeField] private VoicesModels _attributedVoice;
-    [SerializeField] private StudioEventEmitter _soundEmitter;
 
     [Header("Distance Scaling")]
     [SerializeField, Min(0f)] private float minScale = 0.5f;
@@ -111,13 +110,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
         if (bubbleInstance && !bubbleInstance.activeSelf)
             bubbleInstance.SetActive(true);
         
-        if (_soundEmitter)
-        {
-            _soundEmitter.EventReference = SoundManager.Instance.GetVoice(emotion, _attributedVoice);
-            _soundEmitter.Play();
-        }
-        else
-            Debug.LogError($"Sound Emitter missing : {gameObject.name}", gameObject);
+        FMODUnity.RuntimeManager.PlayOneShot(SoundManager.Instance.GetVoice(emotion, _attributedVoice), transform.position);
 
         remainingTime = duration > 0f ? duration : defaultLifetime;
         UpdateLookAt();

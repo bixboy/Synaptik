@@ -487,8 +487,13 @@ MonoBehaviour:
   randomizeDelay: 1
   showCursor: 1
   cursorSymbol: _
-  _soundEmitter: {fileID: 9149066687439644012}
-  typeSoundVolume: 0.1
+  _soundTipping:
+    Guid:
+      Data1: -279268206
+      Data2: 1109050232
+      Data3: -1648810364
+      Data4: -1549061923
+    Path: event:/UI_FeedBack/Computer_Bip_SFX_OS
   loadingPattern: LOADING
   loadingCycleSpeed: 0.3
   cursorBlinkSpeed: 0.5

@@ -163,37 +163,21 @@ public class SoundManager : MonoBehaviour
 
     public void UIValid()
     {
-        if (_cameraSFXEmitter != null)
-        {
-            _cameraSFXEmitter.EventReference = _UIValid;
-            _cameraSFXEmitter.Play();
-        }
+        FMODUnity.RuntimeManager.PlayOneShot(_UIValid);
     }
     public void UIInvalid()
     {
-        if (_cameraSFXEmitter != null)
-        {
-            _cameraSFXEmitter.EventReference = _UIInvalid;
-            _cameraSFXEmitter.Play();
-        }
+        FMODUnity.RuntimeManager.PlayOneShot(_UIInvalid);
     }
 
     public void PlaySFX(EventReference a_sound)
     {
-        if (_cameraSFXEmitter == null)
-            return;
-        
-        _cameraSFXEmitter.EventReference = a_sound;
-        _cameraSFXEmitter.Play();
+        FMODUnity.RuntimeManager.PlayOneShot(a_sound);
     }
 
     public void ConnectCables()
     {
-        if (_cameraSFXEmitter != null)
-        {
-            _cameraSFXEmitter.EventReference = _connectCables;
-            _cameraSFXEmitter.Play();
-        }
+        FMODUnity.RuntimeManager.PlayOneShot(_connectCables);
     }
     #endregion
     
