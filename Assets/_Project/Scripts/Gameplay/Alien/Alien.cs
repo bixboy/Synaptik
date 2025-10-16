@@ -233,6 +233,7 @@ public class Alien : MonoBehaviour, IInteraction
     {
         if (_alienVFX)
         {
+            Debug.Log("Play VFX");
             _alienVFX.Play();
         }
     }
