@@ -111,7 +111,12 @@ public class Alien : MonoBehaviour, IInteraction
     
     private void OnAlienTaskEnd(Mission mission, AlienDefinition alienDefinition)
     {
-        if (alienDefinition != _def)
+        if (!alienDefinition)
+        {
+            Debug.Log("Mission ended for unknown alien: " + mission.MissionID);
+            return;
+        }
+        if (alienDefinition.AlienId != _def.AlienId)
             return;
         Debug.Log("Mission ended for alien " + Definition.name + ": " + mission.MissionID);
         if (mission.MissionID == _pukeMissionId)

@@ -3,13 +3,16 @@ using UnityEngine;
 
 public class AngryZone : MonoBehaviour
 {
+    
+    [SerializeField] private Alien _angryQuestAlien;
+    
     private void OnTriggerEnter(Collider other)
     {
         PlayerInteraction playerInteraction = other.gameObject.GetComponent<PlayerInteraction>();
         if (playerInteraction != null)
         {
             Debug.Log("Player entered the angry zone!");
-            playerInteraction.IsInAngryZone = true;
+            playerInteraction.AngryQuestAlien = _angryQuestAlien;
         }
     }
     
@@ -18,8 +21,8 @@ public class AngryZone : MonoBehaviour
         PlayerInteraction playerInteraction = other.gameObject.GetComponent<PlayerInteraction>();
         if (playerInteraction != null)
         {
-            Debug.Log("Player entered the angry zone!");
-            playerInteraction.IsInAngryZone = false;
+            Debug.Log("Player exited the angry zone!");
+            playerInteraction.AngryQuestAlien = null;
         }
     }
 }

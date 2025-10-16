@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58f9ab1e10ce5b64b965e1fd1a0a9980, type: 3}
   m_Name: Alien4
   m_EditorClassIdentifier: 
-  alienId: 2
+  alienId: 3
   startEmotion: 1
   animator: {fileID: 0}
   reactions: {fileID: 11400000, guid: 6fccfd4321c17254c9b895fcb1519ffb, type: 2}
   dialogue: {fileID: 11400000, guid: c55aafb374549094db40d76c233f10cd, type: 2}
   quests:
-  - questId: bagarre
+  - alien: {fileID: 11400000}
+    questId: bagarre
     title: "D\xE9clancher une bagarre"
     description: "Les deux \xE9nerv\xE9s semblent irritables, ne vous faites pas
       remarquer"

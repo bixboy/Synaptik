@@ -126,7 +126,10 @@ public class PlayerInteraction : MonoBehaviour
     
     
     [Header("Angry Zone")]
-    public bool IsInAngryZone;
+    public string AngryQuestAlienId;
+
+    [HideInInspector]
+    public Alien AngryQuestAlien;
     
 
     private void Reset()
@@ -234,8 +237,11 @@ public class PlayerInteraction : MonoBehaviour
         {
             if (behavior == Behavior.Action)
                 _playerAnimation?.PlayPunch();
-            else if (behavior == Behavior.Talking && IsInAngryZone)
+            else if (behavior == Behavior.Talking && AngryQuestAlien)
+            {
+                GameManager.Instance.SetMissionFinished(AngryQuestAlienId, AngryQuestAlien.Definition);
                 Debug.Log("Quête de l'Angry Zone déclenchée !");
+            }
         }
     }
 
