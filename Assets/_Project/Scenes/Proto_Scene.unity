@@ -7486,7 +7486,11 @@ MonoBehaviour:
   label: {fileID: 767625170}
   bubbleImage: {fileID: 2041004617}
   defaultBubbleSprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  emotionSpecificSprites: []
+  emotionSpecificSprites:
+  - emotion: 0
+    sprite: {fileID: 0}
+  - emotion: 0
+    sprite: {fileID: 0}
   lookAtCamera: 1
   targetCamera: {fileID: 359247498}
 --- !u!114 &1141889432
@@ -8448,7 +8452,11 @@ MonoBehaviour:
   label: {fileID: 349502475}
   bubbleImage: {fileID: 1131406298}
   defaultBubbleSprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  emotionSpecificSprites: []
+  emotionSpecificSprites:
+  - emotion: 0
+    sprite: {fileID: 0}
+  - emotion: 0
+    sprite: {fileID: 0}
   lookAtCamera: 1
   targetCamera: {fileID: 359247498}
 --- !u!114 &1279067969
@@ -10011,7 +10019,11 @@ MonoBehaviour:
   label: {fileID: 1787017529}
   bubbleImage: {fileID: 1390055225}
   defaultBubbleSprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  emotionSpecificSprites: []
+  emotionSpecificSprites:
+  - emotion: 0
+    sprite: {fileID: 0}
+  - emotion: 0
+    sprite: {fileID: 0}
   lookAtCamera: 1
   targetCamera: {fileID: 359247498}
 --- !u!143 &1460663271
@@ -12378,7 +12390,11 @@ MonoBehaviour:
   label: {fileID: 1589189537}
   bubbleImage: {fileID: 1389049236}
   defaultBubbleSprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  emotionSpecificSprites: []
+  emotionSpecificSprites:
+  - emotion: 0
+    sprite: {fileID: 0}
+  - emotion: 0
+    sprite: {fileID: 0}
   lookAtCamera: 1
   targetCamera: {fileID: 359247498}
 --- !u!114 &1745018959
@@ -13845,7 +13861,11 @@ MonoBehaviour:
   label: {fileID: 1462292612}
   bubbleImage: {fileID: 1382331914}
   defaultBubbleSprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  emotionSpecificSprites: []
+  emotionSpecificSprites:
+  - emotion: 0
+    sprite: {fileID: 0}
+  - emotion: 0
+    sprite: {fileID: 0}
   lookAtCamera: 1
   targetCamera: {fileID: 359247498}
 --- !u!114 &1930495105
