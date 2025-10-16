@@ -43,11 +43,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: c67d4c647bf850b4298aeec750d4aa10, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 5be058aede094a24891f6ef3d57c4f9b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CelCurveTexture:
@@ -176,11 +176,11 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.89433956, g: 0.5795697, b: 0.17380556, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorDim: {r: 0.5018867, g: 0.1247992, b: 0.08617299, a: 1}
+    - _ColorDim: {r: 0.7746726, g: 0.8238993, b: 0.8223671, a: 1}
     - _ColorDimCurve: {r: 0.85023, g: 0.85034, b: 0.8504499, a: 0.85056}
-    - _ColorDimExtra: {r: 0.5924529, g: 0.26027578, b: 0, a: 1}
+    - _ColorDimExtra: {r: 0.08176088, g: 0.044565104, b: 0.015683677, a: 1}
     - _ColorDimSteps: {r: 0.85023, g: 0.85034, b: 0.8504499, a: 0.85056}
     - _ColorGradient: {r: 0.91764706, g: 0.06666663, b: 0.7059424, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
