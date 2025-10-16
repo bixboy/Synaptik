@@ -285,7 +285,7 @@ MonoBehaviour:
   Path: FMod/Synaptik/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638961370329625360
+  lastModified: 638961631714580652
   FileSizes:
   - Name: Desktop
     Value: 1036
@@ -305,7 +305,7 @@ MonoBehaviour:
   Path: FMod/Synaptik/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638961370329645360
+  lastModified: 638961631714590648
   FileSizes:
   - Name: Desktop
     Value: 2818
@@ -460,7 +460,7 @@ MonoBehaviour:
   Path: FMod/Synaptik/Build/Desktop/Ambiant&SFX.bank
   Name: Ambiant&SFX
   StudioPath: bank:/Ambiant&SFX
-  lastModified: 638961370329455041
+  lastModified: 638962057996455739
   FileSizes:
   - Name: Desktop
     Value: 1726624
@@ -525,7 +525,7 @@ MonoBehaviour:
   - {fileID: -4240650503881781177}
   StringsBanks:
   - {fileID: -3028363718350553295}
-  cacheTime: 638961370343663774
+  cacheTime: 638962057996666012
   cacheVersion: 131632
 --- !u!114 &367902334603028971
 MonoBehaviour:
@@ -785,7 +785,7 @@ MonoBehaviour:
   Path: FMod/Synaptik/Build/Desktop/Voices.bank
   Name: Voices
   StudioPath: bank:/Voices
-  lastModified: 638961370343663774
+  lastModified: 638962057996666012
   FileSizes:
   - Name: Desktop
     Value: 1718944
