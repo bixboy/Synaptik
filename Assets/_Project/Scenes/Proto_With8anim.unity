@@ -2866,21 +2866,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemToSpawnOnDeath: {fileID: 1392753307}
-  _soundEmitter: {fileID: 0}
   _soundReaction:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: 485193974
+      Data2: 1171137067
+      Data3: -1767959650
+      Data4: 1474060692
+    Path: event:/Voice_Contextual/Animal/Animal_Reaction_Voice_OS
   _soundDeath:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: -1180069492
+      Data2: 1132221810
+      Data3: -1704144215
+      Data4: -165717634
+    Path: event:/Voice_Contextual/Animal/Animal_Death_Voice_OS
 --- !u!54 &336148076
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5183,8 +5182,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6f0a395b22192e847831321c752d20c4, type: 3}
   m_PrefabInstance: {fileID: 935296021}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &618231786
-MeshCollider:
+--- !u!65 &618231789
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5201,10 +5200,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4064660285849452784, guid: 6f0a395b22192e847831321c752d20c4, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.009743317, y: 0.0000000025804758, z: 0.012025928}
+  m_Center: {x: 9.3132224e-10, y: 0.000009044937, z: 0.006012964}
 --- !u!4 &647202143 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: bb23542eefe8d5741a882cceaa5fe33e, type: 3}
@@ -6829,7 +6827,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: AudioManager
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7803937913064315408, guid: 4a7859fea05faf9459fe970f5bffea78, type: 3}
+      propertyPath: _cameraSFXEmitter
+      value: 
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 2090094838012030099, guid: 4a7859fea05faf9459fe970f5bffea78, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -8253,7 +8256,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6f0a395b22192e847831321c752d20c4, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 618231786}
+      addedObject: {fileID: 618231789}
   m_SourcePrefab: {fileID: 100100000, guid: 6f0a395b22192e847831321c752d20c4, type: 3}
 --- !u!1001 &938422041
 PrefabInstance:
@@ -15577,6 +15580,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7897517086139208988, guid: 86c9a5d29c3505744b562ff25c609abd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2071610085}
+    - targetCorrespondingSourceObject: {fileID: 7897517086139208988, guid: 86c9a5d29c3505744b562ff25c609abd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2071610091}
   m_SourcePrefab: {fileID: 100100000, guid: 86c9a5d29c3505744b562ff25c609abd, type: 3}
 --- !u!1 &1886798089 stripped
 GameObject:
@@ -17238,11 +17244,24 @@ MonoBehaviour:
   - emotion: 2
     sprite: {fileID: 21300000, guid: a6cbe048314ecd2458767e5f6333d6ae, type: 3}
   _attributedVoice: 0
-  _soundEmitter: {fileID: 0}
   minScale: 0.5
   maxScale: 0.6
   minDistance: 2
   maxDistance: 15
+--- !u!114 &2071610091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2071610070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nonRigidbodyVelocity: 0
+  attenuationObject: {fileID: 0}
 --- !u!1 &2073390011 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 6f0a395b22192e847831321c752d20c4, type: 3}

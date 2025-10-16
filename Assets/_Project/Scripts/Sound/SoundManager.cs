@@ -195,17 +195,17 @@ public class SoundManager : MonoBehaviour
                 break;
             case VoicesModels.VOICE_P:
                 if (_voicesP.ContainsKey(a_emotion))
-                    eventRef = _voicesA[a_emotion];
+                    eventRef = _voicesP[a_emotion];
                 break;
             case VoicesModels.VOICE_T:
                 if (_voicesT.ContainsKey(a_emotion))
-                    eventRef = _voicesA[a_emotion];
+                    eventRef = _voicesT[a_emotion];
                 break;
             
             case VoicesModels.RAND:
             default:
                 if (_voicesRand.ContainsKey(a_emotion))
-                    eventRef = _voicesA[a_emotion];
+                    eventRef = _voicesRand[a_emotion];
                 break;
         }
 

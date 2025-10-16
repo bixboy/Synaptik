@@ -7,8 +7,6 @@ public sealed class AnimalItem : MonoBehaviour, IInteraction
     private GameObject itemToSpawnOnDeath;
 
     [Space(7)]
-    [SerializeField] private StudioEventEmitter _soundEmitter;
-    [Space(5)]
     [SerializeField] private EventReference _soundReaction;
     [SerializeField] private EventReference _soundDeath;
 
@@ -16,25 +14,13 @@ public sealed class AnimalItem : MonoBehaviour, IInteraction
     {
         if (action._behavior == Behavior.Action && action._emotion == Emotion.Anger)
         {
-            if (_soundEmitter)
-            {
-                _soundEmitter.EventReference = _soundDeath;
-                _soundEmitter.Play();
-            }
-            else
-                Debug.LogError($"Sound Emitter missing : {gameObject.name}", gameObject);
+            FMODUnity.RuntimeManager.PlayOneShot(_soundDeath, transform.position);
             
             Die();
         }
         else
         {
-            if (_soundEmitter)
-            {
-                _soundEmitter.EventReference = _soundReaction;
-                _soundEmitter.Play();
-            }
-            else
-                Debug.LogError($"Sound Emitter missing : {gameObject.name}", gameObject);
+            FMODUnity.RuntimeManager.PlayOneShot(_soundReaction, transform.position);
         }
     }
 

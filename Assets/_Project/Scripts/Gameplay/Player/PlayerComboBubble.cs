@@ -41,6 +41,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
     [SerializeField, Min(0f)] private float minDistance = 2f;
     [SerializeField, Min(0f)] private float maxDistance = 15f;
 
+    [SerializeField] private Transform bubblePivot;
     private GameObject bubbleInstance;
     private RectTransform bubbleRect;
     private Image backgroundImage;
@@ -184,7 +185,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
     private void UpdateLookAt()
     {
-        if (!bubbleRect)
+        if (!bubblePivot)
             return;
 
         if (!targetCamera)
@@ -195,7 +196,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
         var forward = targetCamera.transform.rotation * Vector3.forward;
         var up = targetCamera.transform.rotation * Vector3.up;
-        bubbleRect.rotation = Quaternion.LookRotation(forward, up);
+        bubblePivot.rotation = Quaternion.LookRotation(forward, up);
     }
 
     private void UpdateScale()
