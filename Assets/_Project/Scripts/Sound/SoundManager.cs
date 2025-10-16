@@ -60,19 +60,19 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private EventReference _connectCables;
     
     [Space(7)]
-    [SerializeField] private List<SoundWithEmotion> _serialVoicesRand;
-    private Dictionary<Emotion, EventReference> _voicesRand;
+    [SerializeField] private List<SoundWithEmotion> _serialVoicesRand = new List<SoundWithEmotion>();
+    private Dictionary<Emotion, EventReference> _voicesRand = new Dictionary<Emotion, EventReference>();
     [Space(5)]
-    [SerializeField] private List<SoundWithEmotion> _serialVoicesA;
-    private Dictionary<Emotion, EventReference> _voicesA;
-    [SerializeField] private List<SoundWithEmotion> _serialVoicesT;
-    private Dictionary<Emotion, EventReference> _voicesT;
-    [SerializeField] private List<SoundWithEmotion> _serialVoicesP;
-    private Dictionary<Emotion, EventReference> _voicesP;
+    [SerializeField] private List<SoundWithEmotion> _serialVoicesA = new List<SoundWithEmotion>();
+    private Dictionary<Emotion, EventReference> _voicesA = new Dictionary<Emotion, EventReference>();
+    [SerializeField] private List<SoundWithEmotion> _serialVoicesT = new List<SoundWithEmotion>();
+    private Dictionary<Emotion, EventReference> _voicesT = new Dictionary<Emotion, EventReference>();
+    [SerializeField] private List<SoundWithEmotion> _serialVoicesP = new List<SoundWithEmotion>();
+    private Dictionary<Emotion, EventReference> _voicesP = new Dictionary<Emotion, EventReference>();
 
     [Space(7)]
-    [SerializeField] private List<SoundWithMission> _serialVoicesMission;
-    private Dictionary<string, EventReference> _voicesMission;
+    [SerializeField] private List<SoundWithMission> _serialVoicesMission = new List<SoundWithMission>();
+    private Dictionary<string, EventReference> _voicesMission = new Dictionary<String, EventReference>();
     
     
     private void Awake()
