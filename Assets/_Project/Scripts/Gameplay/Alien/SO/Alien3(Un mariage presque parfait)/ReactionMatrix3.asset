@@ -23,7 +23,7 @@ MonoBehaviour:
   - channel: 1
     playerEmotion: 2
     questId: mariage
-    questStepId: 0
+    questStepId: 
     suspicionDelta: 0
     setNewEmotion: 1
     newEmotion: 2
@@ -71,7 +71,7 @@ MonoBehaviour:
     newEmotion: 0
   _itemRules:
   - questId: mariage
-    questStepId: 1
+    questStepId: 0
     expectedItemId: cadavre
     suspicionDelta: 20
     expectedItemQuantity: 1
