@@ -61,12 +61,16 @@ public class SoundManager : MonoBehaviour
     public void UIValid()
     {
         if (_UIValid != null)
+        {
             _UIValid.Play();
+        }
     }
     public void UIInvalid()
     {
         if (_UIInvalid != null)
+        {
             _UIInvalid.Play();
+        }
     }
 
     public void ConnectCables()
