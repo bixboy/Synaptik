@@ -107,7 +107,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
         if (bubbleInstance && !bubbleInstance.activeSelf)
             bubbleInstance.SetActive(true);
-        }
+        
         
         if (_soundEmitter)
         {
