@@ -67,3 +67,4 @@ crashlytics-build.properties
 
 # FMOD
 *.log
+fmod_editor.log
