@@ -5263,6 +5263,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1111797172}
+    - target: {fileID: 1474331033987873671, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
+      propertyPath: fearfulSpeedMultiplier
+      value: 1.6
+      objectReference: {fileID: 0}
     - target: {fileID: 1513401491640201456, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
       propertyPath: targetCamera
       value: 
@@ -5395,10 +5399,18 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1111797172}
+    - target: {fileID: 3129142695377916832, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
+      propertyPath: fearfulSpeedMultiplier
+      value: 1.6
+      objectReference: {fileID: 0}
     - target: {fileID: 3219422558769590497, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 1111797172}
+    - target: {fileID: 3219422558769590497, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
+      propertyPath: fearfulSpeedMultiplier
+      value: 1.6
+      objectReference: {fileID: 0}
     - target: {fileID: 3303637864712764310, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
       propertyPath: targetCamera
       value: 
@@ -5607,6 +5619,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1111797172}
+    - target: {fileID: 5795827661215848145, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
+      propertyPath: fearfulSpeedMultiplier
+      value: 1.6
+      objectReference: {fileID: 0}
     - target: {fileID: 5844445725807320486, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
       propertyPath: targetCamera
       value: 
@@ -5683,6 +5699,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1111797172}
+    - target: {fileID: 7314819623844136861, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
+      propertyPath: fearfulSpeedMultiplier
+      value: 1.6
+      objectReference: {fileID: 0}
     - target: {fileID: 7316027839992772479, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 7.1592665
@@ -7331,6 +7351,14 @@ PrefabInstance:
     - target: {fileID: 6717372861038130110, guid: 543f7c6265bd3df4a85de32a24959783, type: 3}
       propertyPath: m_Name
       value: Player (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8317182544908626716, guid: 543f7c6265bd3df4a85de32a24959783, type: 3}
+      propertyPath: pickupRadius
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8317182544908626716, guid: 543f7c6265bd3df4a85de32a24959783, type: 3}
+      propertyPath: dropForwardSpeed
+      value: 0.3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
