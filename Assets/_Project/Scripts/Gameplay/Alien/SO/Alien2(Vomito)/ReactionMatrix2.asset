@@ -45,7 +45,7 @@ MonoBehaviour:
     playerEmotion: 1
     questId: 
     questStepId: 
-    suspicionDelta: -5
+    suspicionDelta: -10
     setNewEmotion: 1
     newEmotion: 4
   - channel: 2

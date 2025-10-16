@@ -24,8 +24,8 @@ MonoBehaviour:
     playerEmotion: 2
     questId: 
     questStepId: 
-    suspicionDelta: 0
-    setNewEmotion: 1
+    suspicionDelta: -5
+    setNewEmotion: 0
     newEmotion: 2
   - channel: 1
     playerEmotion: 3
@@ -45,21 +45,21 @@ MonoBehaviour:
     playerEmotion: 1
     questId: 
     questStepId: 
-    suspicionDelta: -5
-    setNewEmotion: 1
+    suspicionDelta: -15
+    setNewEmotion: 0
     newEmotion: 4
   - channel: 2
     playerEmotion: 2
     questId: 
     questStepId: 
-    suspicionDelta: 0
+    suspicionDelta: -5
     setNewEmotion: 0
     newEmotion: 0
   - channel: 2
     playerEmotion: 3
     questId: 
     questStepId: 
-    suspicionDelta: 0
+    suspicionDelta: -5
     setNewEmotion: 0
     newEmotion: 0
   - channel: 2
@@ -73,6 +73,34 @@ MonoBehaviour:
   - questId: 
     questStepId: 
     expectedItemId: cadavre
+    suspicionDelta: -10
+    expectedItemQuantity: 1
+    setIfGoodItem: 1
+    newEmotionIfGoodItem: 1
+  - questId: 
+    questStepId: 
+    expectedItemId: labubu
+    suspicionDelta: -10
+    expectedItemQuantity: 1
+    setIfGoodItem: 1
+    newEmotionIfGoodItem: 1
+  - questId: 
+    questStepId: 
+    expectedItemId: red
+    suspicionDelta: -10
+    expectedItemQuantity: 1
+    setIfGoodItem: 1
+    newEmotionIfGoodItem: 1
+  - questId: 
+    questStepId: 
+    expectedItemId: blue
+    suspicionDelta: -10
+    expectedItemQuantity: 1
+    setIfGoodItem: 1
+    newEmotionIfGoodItem: 1
+  - questId: 
+    questStepId: 
+    expectedItemId: green
     suspicionDelta: -10
     expectedItemQuantity: 1
     setIfGoodItem: 1
