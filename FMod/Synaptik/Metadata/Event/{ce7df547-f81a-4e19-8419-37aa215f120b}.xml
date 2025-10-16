@@ -5,7 +5,7 @@
 			<value>Friendly_Voice_OS</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{635d84ca-9c3c-4f45-a5b1-2478067b39b7}</destination>
@@ -118,6 +118,7 @@
 	<object class="MixerBusEffectChain" id="{bb9d0737-6e4f-4ea3-a4e0-73a65d304881}">
 		<relationship name="effects">
 			<destination>{9493fcf6-2c2b-4786-8977-0438e24fbd10}</destination>
+			<destination>{6b358eca-91b1-4b69-b865-aa48c89b574b}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{efe1ae98-155e-40e3-87c9-b36e081bd4a3}" />
@@ -263,4 +264,5 @@
 	</object>
 	<object class="MixerBusFader" id="{3e54bbd7-3085-4cc2-949b-bdb194d30ee7}" />
 	<object class="MixerBusFader" id="{9493fcf6-2c2b-4786-8977-0438e24fbd10}" />
+	<object class="SpatialiserEffect" id="{6b358eca-91b1-4b69-b865-aa48c89b574b}" />
 </objects>
