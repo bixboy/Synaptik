@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{b250f83f-292b-423a-a67e-1b3ddaaa3673}">
+		<property name="assetPath">
+			<value>Voice_T/Friendly_Voice_T_OS_006.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>1.25</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{f02725f0-8394-4019-9eef-192b513a7856}</destination>
+		</relationship>
+	</object>
+</objects>

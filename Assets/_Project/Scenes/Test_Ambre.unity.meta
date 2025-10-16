@@ -1,5 +1,9 @@
 fileFormatVersion: 2
-guid: 178910d6aacce3245a7e8a2dedd25a93
+<<<<<<<< HEAD:Assets/_Project/Scenes/Proto_ScenePostProcess.unity.meta
+guid: 6e0d1922c2868864ca0b7b8fb85adc1d
+========
+guid: 23b4cf5ee7711004d892e620f17983a6
+>>>>>>>> d7e880078afc35698f215b8d000e380803d5ef35:Assets/_Project/Scenes/Test_Ambre.unity.meta
 DefaultImporter:
   externalObjects: {}
   userData: 
