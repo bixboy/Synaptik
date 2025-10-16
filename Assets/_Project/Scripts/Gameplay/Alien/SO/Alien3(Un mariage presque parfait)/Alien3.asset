@@ -26,10 +26,6 @@ MonoBehaviour:
     autoCompleteMissionOnQuestEnd: 1
     steps:
     - stepId: 0
-      stepType: 0
-      completesQuest: 0
-      nextStepId: 1
-    - stepId: 1
       stepType: 1
       completesQuest: 1
-      nextStepId: 2
+      nextStepId: 1

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58f9ab1e10ce5b64b965e1fd1a0a9980, type: 3}
   m_Name: Alien4
   m_EditorClassIdentifier: 
-  alienId: 3
+  alienId: 5
   startEmotion: 1
   animator: {fileID: 0}
   reactions: {fileID: 11400000, guid: 6fccfd4321c17254c9b895fcb1519ffb, type: 2}
@@ -24,9 +24,9 @@ MonoBehaviour:
     description: "Les deux \xE9nerv\xE9s semblent irritables, ne vous faites pas
       remarquer"
     autoRegisterMission: 1
-    autoCompleteMissionOnQuestEnd: 1
+    autoCompleteMissionOnQuestEnd: 0
     steps:
     - stepId: 0
       stepType: 0
-      completesQuest: 1
+      completesQuest: 0
       nextStepId: 1

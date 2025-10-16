@@ -240,7 +240,8 @@ public class PlayerInteraction : MonoBehaviour
             else if (behavior == Behavior.Talking && AngryQuestAlien)
             {
                 GameManager.Instance.SetMissionFinished(AngryQuestAlienId, AngryQuestAlien.Definition);
-                Debug.Log("Quête de l'Angry Zone déclenchée !");
+                AngryQuestAlien.PlayVFX();
+                Debug.Log("Quête de l'Angry Zone complétée !");
             }
         }
     }

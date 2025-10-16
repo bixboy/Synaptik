@@ -49,7 +49,16 @@ public class Alien : MonoBehaviour, IInteraction
 
     [Header("Animation")]
     [SerializeField] private AlienAnimation _alienAnimation;
+    
+    
+    
+    [Header("Special Quest ID")]
     [SerializeField] private string _pukeMissionId = "mission_puke";
+    [SerializeField] private string _weddingMissionId = "mission_wedding";
+    
+    
+    [Header("VFX")]
+    [SerializeField] private ParticleSystem _alienVFX;
     
     private void Awake()
     {
@@ -122,6 +131,11 @@ public class Alien : MonoBehaviour, IInteraction
         if (mission.MissionID == _pukeMissionId)
         {
             _alienAnimation?.PlayPuke();
+        }
+        else if (mission.MissionID == _weddingMissionId)
+        {
+            Debug.Log("Happy Wedding!");
+            PlayVFX();
         }
     }
 
@@ -198,7 +212,32 @@ public class Alien : MonoBehaviour, IInteraction
             emotionRenderer.SetPropertyBlock(_emotionPropertyBlock);
         }
     }
-
+    
+#region VFX
+    public void PlayVFX()
+    {
+        if (_alienVFX)
+        {
+            _alienVFX.Play();
+        }
+    }
+    
+    public void StopVFX()
+    {
+        if (_alienVFX)
+        {
+            _alienVFX.Stop();
+        }
+    }
+    
+    public void ClearVFX()
+    {
+        if (_alienVFX)
+        {
+            _alienVFX.Clear();
+        }
+    }
+#endregion
     public void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null)
     {
         if (_interactionDelay <= 0f)
