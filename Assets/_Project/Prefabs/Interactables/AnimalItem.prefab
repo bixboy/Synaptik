@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8984316715863777896}
   - component: {fileID: 7148910492450637072}
   - component: {fileID: 7534918539925765733}
+  - component: {fileID: 3273666896653859949}
   m_Layer: 6
   m_Name: AnimalItem
   m_TagString: Untagged
@@ -150,3 +151,49 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemToSpawnOnDeath: {fileID: 7259804071273900412}
+  _soundEmitter: {fileID: 3273666896653859949}
+  _soundReaction:
+    Guid:
+      Data1: 485193974
+      Data2: 1171137067
+      Data3: -1767959650
+      Data4: 1474060692
+    Path: event:/Voice_Contextual/Animal/Animal_Reaction_Voice_OS
+  _soundDeath:
+    Guid:
+      Data1: -1180069492
+      Data2: 1132221810
+      Data3: -1704144215
+      Data4: -165717634
+    Path: event:/Voice_Contextual/Animal/Animal_Death_Voice_OS
+--- !u!114 &3273666896653859949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7259804071273900412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: -1
+  OverrideMaxDistance: -1

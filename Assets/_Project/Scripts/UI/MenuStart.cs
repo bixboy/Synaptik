@@ -31,10 +31,10 @@ public sealed class MenuStart : MonoBehaviour
     [SerializeField] private float needleReturnSpeed = 3f;
 
     [Header("SFX")]
+    [SerializeField] private StudioEventEmitter _startEmitter;
+    
     [SerializeField] private EventReference _music;
     [SerializeField] private EventReference _ambiant;
-    
-    [SerializeField] private StudioEventEmitter _startEmitter;
 
     private float chargeProgress;
     private bool isCharging;
