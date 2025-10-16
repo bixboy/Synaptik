@@ -17,7 +17,7 @@ MonoBehaviour:
     playerEmotion: 1
     questId: 
     questStepId: 
-    suspicionDelta: -5
+    suspicionDelta: -10
     setNewEmotion: 1
     newEmotion: 4
   - channel: 1
@@ -45,8 +45,8 @@ MonoBehaviour:
     playerEmotion: 1
     questId: 
     questStepId: 
-    suspicionDelta: -5
-    setNewEmotion: 1
+    suspicionDelta: -10
+    setNewEmotion: 0
     newEmotion: 1
   - channel: 2
     playerEmotion: 2
@@ -80,7 +80,7 @@ MonoBehaviour:
   - questId: 
     questStepId: 
     expectedItemId: red
-    suspicionDelta: -5
+    suspicionDelta: -10
     expectedItemQuantity: 1
     setIfGoodItem: 0
     newEmotionIfGoodItem: 4
