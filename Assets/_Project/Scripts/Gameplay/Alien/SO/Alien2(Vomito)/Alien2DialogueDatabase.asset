@@ -17,34 +17,52 @@ MonoBehaviour:
     behavior: 1
     emojiLine: "\U0001F620\U0001F4A2"
     duration: 3
+    questStepId: 
   - emotion: 2
     behavior: 1
-    emojiLine: "\U0001F600"
+    emojiLine: "\U0001F642"
     duration: 3
+    questStepId: 0
   - emotion: 3
     behavior: 1
-    emojiLine: "\U0001F4A1: \U0001F642\U0001F601\U0001F92E"
+    emojiLine: "\U0001F4A1: <color=#C7A600>\U0001F642\U0001F601\U0001F92E</color>"
     duration: 3
+    questStepId: 
   - emotion: 4
     behavior: 1
     emojiLine: "\U0001F928\u2753"
     duration: 3
+    questStepId: 
   - emotion: 4
     behavior: 2
-    emojiLine: "\U0001F62F\u2049"
+    emojiLine: "\U0001F928\u2753"
     duration: 3
+    questStepId: 
   - emotion: 3
     behavior: 2
-    emojiLine: "\U0001FAF4\u2753"
+    emojiLine: "\U0001FAF3\U0001F914\u2753"
     duration: 3
+    questStepId: 
   - emotion: 2
     behavior: 2
-    emojiLine: "\U0001FAF4\u2753"
+    emojiLine: "\U0001FAF4\U0001F914\u2753"
     duration: 3
+    questStepId: 
   - emotion: 1
     behavior: 2
     emojiLine: "\U0001F62F"
     duration: 3
+    questStepId: 
+  - emotion: 2
+    behavior: 1
+    emojiLine: "\U0001F601"
+    duration: 3
+    questStepId: 1
+  - emotion: 2
+    behavior: 1
+    emojiLine: "\U0001F92E"
+    duration: 3
+    questStepId: 2
   itemEntries:
   - itemId: cadavre
     emojiLine: "\U0001F48D\U0001F6AB\U0001F620"
