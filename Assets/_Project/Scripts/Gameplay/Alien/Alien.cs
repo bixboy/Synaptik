@@ -321,8 +321,8 @@ public class Alien : MonoBehaviour, IInteraction
         }
 
         //PLay Sound
-        _soundEmitter.EventReference = SoundManager.Instance.GetVoice(emotion, _attributedVoice);
-        _soundEmitter.Play();
+        //_soundEmitter.EventReference = SoundManager.Instance.GetVoice(emotion, _attributedVoice);
+        //_soundEmitter.Play();
         
         OnPlayerCombo(action._emotion, action._behavior);
     }

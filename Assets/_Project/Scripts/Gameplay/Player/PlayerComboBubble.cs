@@ -127,8 +127,8 @@ public sealed class PlayerComboBubble : MonoBehaviour
         }
         
         //Sound
-        _soundEmitter.EventReference = SoundManager.Instance.GetVoice(emotion, _attributedVoice);
-        _soundEmitter.Play();
+        //_soundEmitter.EventReference = SoundManager.Instance.GetVoice(emotion, _attributedVoice);
+        //_soundEmitter.Play();
 
         remainingTime = duration > 0f ? duration : defaultLifetime;
         UpdateLookAt();
