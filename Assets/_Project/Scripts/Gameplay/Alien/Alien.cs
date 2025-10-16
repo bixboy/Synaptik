@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using FMODUnity;
 
 
 public class Alien : MonoBehaviour, IInteraction
@@ -49,7 +50,21 @@ public class Alien : MonoBehaviour, IInteraction
 
     [Header("Animation")]
     [SerializeField] private AlienAnimation _alienAnimation;
+    
+    
+    
+    [Header("Special Quest ID")]
     [SerializeField] private string _pukeMissionId = "mission_puke";
+    [SerializeField] private string _weddingMissionId = "mission_wedding";
+    
+    
+    [Header("VFX")]
+    [SerializeField] private ParticleSystem _alienVFX;
+    
+    [Header("Sound")]
+    [SerializeField] private VoicesModels _attributedVoice;
+    [SerializeField] private StudioEventEmitter _soundEmitter;
+
     
     private void Awake()
     {
@@ -111,12 +126,24 @@ public class Alien : MonoBehaviour, IInteraction
     
     private void OnAlienTaskEnd(Mission mission, AlienDefinition alienDefinition)
     {
-        if (alienDefinition != _def)
+        if (!alienDefinition)
+        {
+            Debug.Log("Mission ended for unknown alien: " + mission.MissionID);
+            return;
+        }
+        if (alienDefinition.AlienId != _def.AlienId)
             return;
         Debug.Log("Mission ended for alien " + Definition.name + ": " + mission.MissionID);
+        
+        //_soundEmitter.EventReference = SoundManager.Instance.
         if (mission.MissionID == _pukeMissionId)
         {
             _alienAnimation?.PlayPuke();
+        }
+        else if (mission.MissionID == _weddingMissionId)
+        {
+            Debug.Log("Happy Wedding!");
+            PlayVFX();
         }
     }
 
@@ -193,7 +220,32 @@ public class Alien : MonoBehaviour, IInteraction
             emotionRenderer.SetPropertyBlock(_emotionPropertyBlock);
         }
     }
-
+    
+#region VFX
+    public void PlayVFX()
+    {
+        if (_alienVFX)
+        {
+            _alienVFX.Play();
+        }
+    }
+    
+    public void StopVFX()
+    {
+        if (_alienVFX)
+        {
+            _alienVFX.Stop();
+        }
+    }
+    
+    public void ClearVFX()
+    {
+        if (_alienVFX)
+        {
+            _alienVFX.Clear();
+        }
+    }
+#endregion
     public void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null)
     {
         if (_interactionDelay <= 0f)
@@ -216,7 +268,7 @@ public class Alien : MonoBehaviour, IInteraction
     {
         Behavior behavior = action._behavior;
         Emotion emotion = action._emotion;
-
+        
         if (behavior == Behavior.Action)
         {
             switch (emotion)
@@ -236,6 +288,7 @@ public class Alien : MonoBehaviour, IInteraction
                     {
                         playerInteraction.DropItem(true);
                         Debug.Log($"Give item {item.ItemId} to alien {Definition.name}");
+                        
                         return;
                     }
 
@@ -267,6 +320,10 @@ public class Alien : MonoBehaviour, IInteraction
             }
         }
 
+        //PLay Sound
+        _soundEmitter.EventReference = SoundManager.Instance.GetVoice(emotion, _attributedVoice);
+        _soundEmitter.Play();
+        
         OnPlayerCombo(action._emotion, action._behavior);
     }
 

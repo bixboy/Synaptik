@@ -5,7 +5,7 @@
 			<value>Input_Feeling_L</value>
 		</property>
 		<property name="outputFormat">
-			<value>2</value>
+			<value>1</value>
 		</property>
 		<relationship name="folder">
 			<destination>{15df927d-3930-417b-9f2a-34c8d3f94973}</destination>
@@ -130,7 +130,6 @@
 	<object class="MixerBusEffectChain" id="{75c8a567-b700-4bba-b56e-e8572dcf5ef4}">
 		<relationship name="effects">
 			<destination>{102bd1fc-7b72-4b62-8176-90d901aa1a7a}</destination>
-			<destination>{0c71b50c-302d-4e62-a98c-7bdff04a5c77}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{ee75e465-38aa-4002-94c2-9e56d3b41a72}" />
@@ -142,6 +141,5 @@
 	</object>
 	<object class="MixerBusPanner" id="{c7fa5290-b8ca-4256-b99e-52213dc28464}" />
 	<object class="MixerBusFader" id="{102bd1fc-7b72-4b62-8176-90d901aa1a7a}" />
-	<object class="SpatialiserEffect" id="{0c71b50c-302d-4e62-a98c-7bdff04a5c77}" />
 	<object class="MixerBusFader" id="{6bb1578a-67c7-4fb7-888c-d7ea1d65f148}" />
 </objects>

@@ -123,6 +123,14 @@ public class PlayerInteraction : MonoBehaviour
     
     [Header("Player Animation")]
     [SerializeField] private PlayerAnimation _playerAnimation;
+    
+    
+    [Header("Angry Zone")]
+    public string AngryQuestAlienId;
+
+    [HideInInspector]
+    public Alien AngryQuestAlien;
+    
 
     private void Reset()
     {
@@ -225,9 +233,16 @@ public class PlayerInteraction : MonoBehaviour
             DropItem();
         }
         
-        if (emotion == Emotion.Anger && behavior == Behavior.Action)
+        if (emotion == Emotion.Anger)
         {
-            _playerAnimation?.PlayPunch();
+            if (behavior == Behavior.Action)
+                _playerAnimation?.PlayPunch();
+            else if (behavior == Behavior.Talking && AngryQuestAlien)
+            {
+                GameManager.Instance.SetMissionFinished(AngryQuestAlienId, AngryQuestAlien.Definition);
+                AngryQuestAlien.PlayVFX();
+                Debug.Log("Quête de l'Angry Zone complétée !");
+            }
         }
     }
 

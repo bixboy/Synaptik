@@ -5,7 +5,7 @@
 			<value>Angry_Voice_OS</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{635d84ca-9c3c-4f45-a5b1-2478067b39b7}</destination>
@@ -110,6 +110,7 @@
 	<object class="MixerBusEffectChain" id="{da84f0a7-19a0-4da4-b793-04d557598a84}">
 		<relationship name="effects">
 			<destination>{d8ffd453-5a78-4766-98a2-b8fe0820fdad}</destination>
+			<destination>{dd3c5903-fbcb-4f28-86cb-907bc29a3a15}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{da7f5b4d-6791-4229-9ae4-13c26ae07356}" />
@@ -215,4 +216,5 @@
 	</object>
 	<object class="MixerBusFader" id="{ad912dc4-7add-4226-b915-90b531b5d7c0}" />
 	<object class="MixerBusFader" id="{d8ffd453-5a78-4766-98a2-b8fe0820fdad}" />
+	<object class="SpatialiserEffect" id="{dd3c5903-fbcb-4f28-86cb-907bc29a3a15}" />
 </objects>

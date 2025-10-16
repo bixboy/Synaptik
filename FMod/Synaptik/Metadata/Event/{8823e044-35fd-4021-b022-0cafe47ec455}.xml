@@ -5,7 +5,7 @@
 			<value>Computer_Valid_SFX_OS</value>
 		</property>
 		<property name="outputFormat">
-			<value>2</value>
+			<value>1</value>
 		</property>
 		<relationship name="folder">
 			<destination>{66263af8-c4e1-40b1-960a-321f51ba696b}</destination>
@@ -113,7 +113,6 @@
 	<object class="MixerBusEffectChain" id="{fcf98c60-5b84-40ca-a77c-d3361af44425}">
 		<relationship name="effects">
 			<destination>{2da3aec4-c3e1-47dc-b402-4754f76eaab2}</destination>
-			<destination>{62229b7f-54f9-4164-b91f-f1e4ce6a2c07}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{23e08c82-299b-4098-b8c0-490de88f0046}" />
@@ -125,6 +124,5 @@
 	</object>
 	<object class="MixerBusPanner" id="{983e8c5a-a580-4436-bf32-285f903d9e76}" />
 	<object class="MixerBusFader" id="{2da3aec4-c3e1-47dc-b402-4754f76eaab2}" />
-	<object class="SpatialiserEffect" id="{62229b7f-54f9-4164-b91f-f1e4ce6a2c07}" />
 	<object class="MixerBusFader" id="{de77bd31-3747-45fa-8fb4-31287c80ef6e}" />
 </objects>
