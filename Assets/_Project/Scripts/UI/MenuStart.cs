@@ -33,6 +33,8 @@ public sealed class MenuStart : MonoBehaviour
     [Header("SFX")]
     [SerializeField] private EventReference _music;
     [SerializeField] private EventReference _ambiant;
+    
+    [SerializeField] private StudioEventEmitter _startEmitter;
 
     private float chargeProgress;
     private bool isCharging;
