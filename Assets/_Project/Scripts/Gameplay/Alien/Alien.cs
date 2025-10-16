@@ -120,6 +120,8 @@ public class Alien : MonoBehaviour, IInteraction
         if (alienDefinition != _def)
             return;
         Debug.Log("Mission ended for alien " + Definition.name + ": " + mission.MissionID);
+        
+        //_soundEmitter.EventReference = SoundManager.Instance.
         if (mission.MissionID == _pukeMissionId)
         {
             _alienAnimation?.PlayPuke();
