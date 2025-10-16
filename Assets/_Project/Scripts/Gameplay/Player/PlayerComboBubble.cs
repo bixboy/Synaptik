@@ -13,6 +13,10 @@ public sealed class PlayerComboBubble : MonoBehaviour
     [SerializeField] private float verticalOffset = 2.6f;
     [SerializeField] private float worldScale = 0.03f;
 
+    [Header("Position Offset")]
+    [Tooltip("Décale la bulle par rapport à sa position de base (local space)")]
+    [SerializeField] private Vector3 bubbleOffset = Vector3.zero;
+
     [Header("Layout Settings")]
     [SerializeField] private Vector2 minBubbleSize = new(120f, 60f);
     [SerializeField] private Vector2 padding = new(16f, 10f);
@@ -32,13 +36,11 @@ public sealed class PlayerComboBubble : MonoBehaviour
     [SerializeField] private VoicesModels _attributedVoice;
     [SerializeField] private StudioEventEmitter _soundEmitter;
 
-    // 🟢 --- Nouveau : paramètres du scale selon la distance ---
     [Header("Distance Scaling")]
     [SerializeField, Min(0f)] private float minScale = 0.5f;
     [SerializeField, Min(0f)] private float maxScale = 1.5f;
     [SerializeField, Min(0f)] private float minDistance = 2f;
     [SerializeField, Min(0f)] private float maxDistance = 15f;
-    // -----------------------------------------------------------
 
     private GameObject bubbleInstance;
     private RectTransform bubbleRect;
@@ -91,7 +93,8 @@ public sealed class PlayerComboBubble : MonoBehaviour
         }
 
         UpdateLookAt();
-        UpdateScale(); // 🟢 Ajout ici
+        UpdateScale();
+        UpdateOffset(); // 🟢 Nouvelle ligne
     }
 
     public void Show(Emotion emotion, string text, float duration)
@@ -119,7 +122,8 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
         remainingTime = duration > 0f ? duration : defaultLifetime;
         UpdateLookAt();
-        UpdateScale(); // 🟢 Appliquer immédiatement à l’apparition
+        UpdateScale();
+        UpdateOffset(); // 🟢 Application directe à l’apparition
     }
 
     public void HideImmediate()
@@ -145,7 +149,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
         bubbleInstance = Instantiate(bubblePrefab, transform);
         bubbleRect = bubbleInstance.GetComponent<RectTransform>();
-        bubbleRect.localPosition = new Vector3(0f, verticalOffset, 0f);
+        bubbleRect.localPosition = new Vector3(0f, verticalOffset, 0f) + bubbleOffset; // 🟢 offset ajouté ici
         bubbleRect.localScale = Vector3.one * Mathf.Max(0.0001f, worldScale);
         bubbleRect.pivot = new Vector2(0.5f, 0f);
 
@@ -202,7 +206,6 @@ public sealed class PlayerComboBubble : MonoBehaviour
         bubbleRect.rotation = Quaternion.LookRotation(forward, up);
     }
 
-    // 🟢 Fonction ajoutée : Scale selon la distance caméra
     private void UpdateScale()
     {
         if (!bubbleRect || !targetCamera)
@@ -212,6 +215,16 @@ public sealed class PlayerComboBubble : MonoBehaviour
         float t = Mathf.InverseLerp(minDistance, maxDistance, distance);
         float scale = Mathf.Lerp(maxScale, minScale, t);
         bubbleRect.localScale = Vector3.one * scale * worldScale;
+    }
+
+    // 🟢 Fonction ajoutée : applique le décalage défini dans l’inspecteur
+    private void UpdateOffset()
+    {
+        if (!bubbleRect)
+            return;
+
+        // On garde le verticalOffset et on ajoute bubbleOffset
+        bubbleRect.localPosition = new Vector3(0f, verticalOffset, 0f) + bubbleOffset;
     }
 
     private void CacheSprites()
