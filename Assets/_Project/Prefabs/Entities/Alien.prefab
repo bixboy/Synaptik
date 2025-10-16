@@ -184,7 +184,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8213799426386712311
 RectTransform:
   m_ObjectHideFlags: 0
@@ -525,9 +525,21 @@ MonoBehaviour:
   label: {fileID: 5821780497445995589}
   bubbleImage: {fileID: 6210411028760926769}
   defaultBubbleSprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  emotionSpecificSprites: []
+  emotionSpecificSprites:
+  - emotion: 1
+    sprite: {fileID: 21300000, guid: c6d46196590e47e42a05f42a0ef70d78, type: 3}
+  - emotion: 2
+    sprite: {fileID: 21300000, guid: 504b444210ee4d24fb31b3474a93c33e, type: 3}
+  - emotion: 3
+    sprite: {fileID: 0}
+  - emotion: 4
+    sprite: {fileID: 0}
   lookAtCamera: 1
   targetCamera: {fileID: 0}
+  minScale: 0.01
+  maxScale: 0.01
+  minDistance: 1
+  maxDistance: 1
 --- !u!143 &2721376313885555758
 CharacterController:
   m_ObjectHideFlags: 0
