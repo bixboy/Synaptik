@@ -361,6 +361,7 @@ GameObject:
   - component: {fileID: 3481978460637450621}
   - component: {fileID: 3541859103560669706}
   - component: {fileID: 2721376313885555758}
+  - component: {fileID: 5908908985319066768}
   m_Layer: 7
   m_Name: Alien
   m_TagString: Player
@@ -456,7 +457,10 @@ MonoBehaviour:
   _interactionDelay: 1.5
   _alienAnimation: {fileID: 3135110131658064529}
   _pukeMissionId: mission_puke
+  _weddingMissionId: mission_wedding
   _alienVFX: {fileID: 0}
+  _attributedVoice: 0
+  _soundEmitter: {fileID: 5908908985319066768}
 --- !u!114 &3135110131658064529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -549,6 +553,37 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5908908985319066768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8408244215037323692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: -1
+  OverrideMaxDistance: -1
 --- !u!1001 &2648931386213596411
 PrefabInstance:
   m_ObjectHideFlags: 0

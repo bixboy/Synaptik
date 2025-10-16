@@ -126,9 +126,13 @@ public sealed class PlayerComboBubble : MonoBehaviour
             bubbleInstance.SetActive(true);
         }
         
-        //Sound
-        _soundEmitter.EventReference = SoundManager.Instance.GetVoice(emotion, _attributedVoice);
-        _soundEmitter.Play();
+        if (_soundEmitter)
+        {
+            _soundEmitter.EventReference = SoundManager.Instance.GetVoice(emotion, _attributedVoice);
+            _soundEmitter.Play();
+        }
+        else
+            Debug.LogError($"Sound Emitter missing : {gameObject.name}", gameObject);
 
         remainingTime = duration > 0f ? duration : defaultLifetime;
         UpdateLookAt();

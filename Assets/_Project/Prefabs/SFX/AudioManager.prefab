@@ -205,6 +205,31 @@ MonoBehaviour:
         Data3: -1462775927
         Data4: 72787736
       Path: event:/Voice_P/Scared_Voice_P_OS
+  _serialVoicesMission:
+  - missionID: vomit
+    eventReference:
+      Guid:
+        Data1: -462022872
+        Data2: 1123665185
+        Data3: -1695802745
+        Data4: -1148984319
+      Path: event:/Voice_Contextual/Vomit_Voice_OS
+  - missionID: mariage
+    eventReference:
+      Guid:
+        Data1: 501704565
+        Data2: 1094165189
+        Data3: 1108300699
+        Data4: -1830655673
+      Path: event:/Voice_Contextual/Marriage_Voice_OS
+  - missionID: bagarre
+    eventReference:
+      Guid:
+        Data1: 2097661227
+        Data2: 1200370882
+        Data3: 1370898103
+        Data4: 1665427553
+      Path: event:/Voice_Contextual/Dispute_Voice_WPunch_L
 --- !u!114 &4943227876635431635
 MonoBehaviour:
   m_ObjectHideFlags: 0

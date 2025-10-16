@@ -1,11 +1,12 @@
 using UnityEngine;
+using FMODUnity;
 
 public class DestructibleItem : MonoBehaviour, IInteraction
 { 
     [Header("Destruction Settings")]
     [SerializeField] private GameObject destructionEffect;
 
-    [SerializeField] private AudioClip destructionSound;
+    [SerializeField] private StudioEventEmitter _soundEmitter;
 
     [SerializeField] private float destroyDelay = 0.1f;
 
@@ -46,8 +47,8 @@ public class DestructibleItem : MonoBehaviour, IInteraction
         if (destructionEffect)
             Instantiate(destructionEffect, transform.position, Quaternion.identity);
 
-        if (destructionSound)
-            AudioSource.PlayClipAtPoint(destructionSound, transform.position);
+        if (_soundEmitter)
+            _soundEmitter.Play();
 
         yield return new WaitForSeconds(destroyDelay);
 

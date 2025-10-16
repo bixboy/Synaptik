@@ -134,8 +134,15 @@ public class Alien : MonoBehaviour, IInteraction
         if (alienDefinition.AlienId != _def.AlienId)
             return;
         Debug.Log("Mission ended for alien " + Definition.name + ": " + mission.MissionID);
+
+        if (_soundEmitter)
+        {
+            _soundEmitter.EventReference = SoundManager.Instance.GetMissionVoice(mission.MissionID);
+            _soundEmitter.Play();
+        }
+        else
+            Debug.LogError($"Sound Emitter missing : {gameObject.name}", gameObject);
         
-        //_soundEmitter.EventReference = SoundManager.Instance.
         if (mission.MissionID == _pukeMissionId)
         {
             _alienAnimation?.PlayPuke();
@@ -321,8 +328,13 @@ public class Alien : MonoBehaviour, IInteraction
         }
 
         //PLay Sound
-        _soundEmitter.EventReference = SoundManager.Instance.GetVoice(emotion, _attributedVoice);
-        _soundEmitter.Play();
+        if (_soundEmitter)
+        {
+            _soundEmitter.EventReference = SoundManager.Instance.GetVoice(emotion, _attributedVoice);
+            _soundEmitter.Play();
+        }
+        else
+            Debug.LogError($"Sound Emitter missing : {gameObject.name}", gameObject);
         
         OnPlayerCombo(action._emotion, action._behavior);
     }

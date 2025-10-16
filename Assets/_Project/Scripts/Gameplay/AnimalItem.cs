@@ -4,12 +4,18 @@ public sealed class AnimalItem : MonoBehaviour, IInteraction
 {
     [SerializeField]
     private GameObject itemToSpawnOnDeath;
+    
+    [SerializeField]
 
     public void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null)
     {
         if (action._behavior == Behavior.Action && action._emotion == Emotion.Anger)
         {
             Die();
+        }
+        else
+        {
+            
         }
     }
 

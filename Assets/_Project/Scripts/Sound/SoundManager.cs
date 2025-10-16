@@ -9,6 +9,12 @@ struct SoundWithEmotion
     public Emotion emotion;
     public EventReference eventReference;
 }
+[System.Serializable]
+struct SoundWithMission
+{
+    public string missionID;
+    public EventReference eventReference;
+}
 
 [System.Serializable]
 public enum VoicesModels
@@ -47,6 +53,10 @@ public class SoundManager : MonoBehaviour
     private Dictionary<Emotion, EventReference> _voicesT;
     [SerializeField] private List<SoundWithEmotion> _serialVoicesP;
     private Dictionary<Emotion, EventReference> _voicesP;
+
+    [Space(7)]
+    [SerializeField] private List<SoundWithMission> _serialVoicesMission;
+    private Dictionary<string, EventReference> _voicesMission;
     
     
     private void Awake()
@@ -60,7 +70,6 @@ public class SoundManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
-
     private void Start()
     {
         foreach (SoundWithEmotion current in _serialVoicesRand)
@@ -79,6 +88,11 @@ public class SoundManager : MonoBehaviour
         foreach (SoundWithEmotion current in _serialVoicesP)
         {
             _voicesP.Add(current.emotion, current.eventReference);
+        }
+
+        foreach (SoundWithMission current in _serialVoicesMission)
+        {
+            _voicesMission.Add(current.missionID, current.eventReference);
         }
     }
 
@@ -148,6 +162,15 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public void PlaySFX(EventReference a_sound)
+    {
+        if (_cameraSFXEmitter == null)
+            return;
+        
+        _cameraSFXEmitter.EventReference = a_sound;
+        _cameraSFXEmitter.Play();
+    }
+
     public void ConnectCables()
     {
         if (_cameraSFXEmitter != null)
@@ -188,8 +211,16 @@ public class SoundManager : MonoBehaviour
 
         return eventRef;
     }
-    
-    //public EventReference 
+
+    public EventReference GetMissionVoice(string a_missionID)
+    {
+        EventReference eventRef = new EventReference();
+
+        if (_voicesMission.ContainsKey(a_missionID))
+            eventRef = _voicesMission[a_missionID];
+
+        return eventRef;
+    }
     
     #endregion
 }
