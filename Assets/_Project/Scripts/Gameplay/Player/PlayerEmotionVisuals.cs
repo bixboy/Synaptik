@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Renderer))]
+
 public sealed class PlayerEmotionVisuals : MonoBehaviour
 {
     [Header("Renderers")] 

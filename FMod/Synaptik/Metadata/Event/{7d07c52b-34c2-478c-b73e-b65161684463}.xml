@@ -5,7 +5,7 @@
 			<value>Dispute_Voice_WPunch_L</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{cf189aef-8b7c-45d1-be3f-02698d61abcb}</destination>
@@ -121,9 +121,11 @@
 	<object class="MixerBusEffectChain" id="{faee2e3d-47b6-4f3f-a9e9-adbc924b18b8}">
 		<relationship name="effects">
 			<destination>{d847b1f0-1e61-482c-b583-18c9ea394c16}</destination>
+			<destination>{83e432b4-42d5-4aca-8a41-1a59259a5054}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{c297c0a3-7b94-4a08-9164-b569a3878850}" />
 	<object class="MixerBusFader" id="{2e9b3134-ace0-4341-9cf5-cdd20a56ee73}" />
 	<object class="MixerBusFader" id="{d847b1f0-1e61-482c-b583-18c9ea394c16}" />
+	<object class="SpatialiserEffect" id="{83e432b4-42d5-4aca-8a41-1a59259a5054}" />
 </objects>

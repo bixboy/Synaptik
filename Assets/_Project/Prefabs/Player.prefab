@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 3447824962834167596}
   - component: {fileID: 1364330967749873554}
   - component: {fileID: 459477563727920799}
+  - component: {fileID: 2732405807110958115}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -135,6 +136,10 @@ MonoBehaviour:
   maxSpeed: 5
   acceleration: 20
   deceleration: 25
+  fearfulActionSpeedBonus: 3
+  fearfulActionBoostDuration: 2
+  fearfulActionBoostDecayDuration: 1
+  fearfulActionBoostCooldown: 3
   cameraRelative: 1
   targetCamera: {fileID: 0}
   rotationSpeed: 10
@@ -197,6 +202,8 @@ MonoBehaviour:
     Symbols: "\u270B\U0001F631"
     Duration: 1.75
   _playerAnimation: {fileID: 459477563727920799}
+  AngryQuestAlienId: 
+  AngryQuestAlien: {fileID: 0}
 --- !u!114 &1364330967749873554
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,6 +225,11 @@ MonoBehaviour:
   backgroundColor: {r: 1, g: 1, b: 1, a: 0.4}
   textColor: {r: 0, g: 0, b: 0, a: 1}
   fontAsset: {fileID: 11400000, guid: 3944eaaf70beffa4097d8c293604125e, type: 2}
+  bubbleImage: {fileID: 2866277534391345941, guid: 4263e1fd48922eb4bbaf2025a83e5e5f, type: 3}
+  defaultBubbleSprite: {fileID: 0}
+  emotionSpecificSprites: []
+  _attributedVoice: 0
+  _soundEmitter: {fileID: 2732405807110958115}
 --- !u!114 &459477563727920799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -235,13 +247,43 @@ MonoBehaviour:
   _maxReportedSpeed: 8
   _speedDampTime: 0.1
   _paramSpeed: Speed
-  _paramIsGrabbing: IsGrabbing
   _paramIsAngry: IsAngry
   _paramIsCurious: IsCurious
   _paramIsHappy: IsHappy
   _paramIsAfraid: IsAfraid
   _paramHitTrig: Punch
-  _paramPukeTrig: Puke
+  _paramIsGrabbing: IsGrabbing
+--- !u!114 &2732405807110958115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7897517086139208988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: -1
+  OverrideMaxDistance: -1
 --- !u!1001 &786489740003439755
 PrefabInstance:
   m_ObjectHideFlags: 0

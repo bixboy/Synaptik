@@ -1,0 +1,28 @@
+using System;
+using UnityEngine;
+
+public class AngryZone : MonoBehaviour
+{
+    
+    [SerializeField] private Alien _angryQuestAlien;
+    
+    private void OnTriggerEnter(Collider other)
+    {
+        PlayerInteraction playerInteraction = other.gameObject.GetComponent<PlayerInteraction>();
+        if (playerInteraction != null)
+        {
+            Debug.Log("Player entered the angry zone!");
+            playerInteraction.AngryQuestAlien = _angryQuestAlien;
+        }
+    }
+    
+    private void OnTriggerExit(Collider other)
+    {
+        PlayerInteraction playerInteraction = other.gameObject.GetComponent<PlayerInteraction>();
+        if (playerInteraction != null)
+        {
+            Debug.Log("Player exited the angry zone!");
+            playerInteraction.AngryQuestAlien = null;
+        }
+    }
+}

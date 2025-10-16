@@ -5,7 +5,7 @@
 			<value>Computer_Cancel_SFX_OS</value>
 		</property>
 		<property name="outputFormat">
-			<value>2</value>
+			<value>1</value>
 		</property>
 		<relationship name="folder">
 			<destination>{66263af8-c4e1-40b1-960a-321f51ba696b}</destination>
@@ -72,6 +72,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{2854b505-07a7-44fb-9c6e-a177ee3530a4}">
+		<property name="volume">
+			<value>-2</value>
+		</property>
 		<relationship name="effectChain">
 			<destination>{dff37703-2953-46a3-9f21-4c2b6a876751}</destination>
 		</relationship>
@@ -113,7 +116,6 @@
 	<object class="MixerBusEffectChain" id="{dff37703-2953-46a3-9f21-4c2b6a876751}">
 		<relationship name="effects">
 			<destination>{0151e2ba-9c37-429c-88ab-c0099547f1df}</destination>
-			<destination>{8b79aac8-bb79-4271-99de-890442e5cc7c}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{8ae6acce-9f6c-44c3-9064-c0d03d07864e}" />
@@ -125,6 +127,5 @@
 	</object>
 	<object class="MixerBusPanner" id="{238265d9-7f34-4571-9eba-7bca3f2de324}" />
 	<object class="MixerBusFader" id="{0151e2ba-9c37-429c-88ab-c0099547f1df}" />
-	<object class="SpatialiserEffect" id="{8b79aac8-bb79-4271-99de-890442e5cc7c}" />
 	<object class="MixerBusFader" id="{910976d5-4767-4d96-beba-661e7f80b9c5}" />
 </objects>

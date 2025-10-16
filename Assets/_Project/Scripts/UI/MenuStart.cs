@@ -32,6 +32,9 @@ public sealed class MenuStart : MonoBehaviour
 
     [Header("SFX")]
     [SerializeField] private StudioEventEmitter _startEmitter;
+    
+    [SerializeField] private EventReference _music;
+    [SerializeField] private EventReference _ambiant;
 
     private float chargeProgress;
     private bool isCharging;
@@ -42,6 +45,8 @@ public sealed class MenuStart : MonoBehaviour
     private bool panelQuitEnabled;
     private InputsDetection inputsDetection;
     private bool subscribedToInputs;
+
+    private bool windowOpened;
 
     private void Awake()
     {
@@ -102,7 +107,7 @@ public sealed class MenuStart : MonoBehaviour
                 ToggleQuitPanel(!keyUp);
                 break;
             
-            case Emotion.Curious when !keyUp:
+            case Emotion.Curious:
                 ToggleHelpPanel();
                 break;
         }
@@ -118,6 +123,7 @@ public sealed class MenuStart : MonoBehaviour
             case Behavior.Action:
                 HandleQuitChoice(true);
                 break;
+            
             case Behavior.Talking:
                 HandleQuitChoice(false);
                 break;
@@ -126,14 +132,16 @@ public sealed class MenuStart : MonoBehaviour
 
     private void HandleTwoAction(bool towPressed)
     {
-        if (towPressed) StartCharging();
-        else StopCharging();
+        if (towPressed) 
+            StartCharging();
+        else 
+            StopCharging();
     }
 
     private void StartCharging()
     {
         isCharging = true;
-        if (_startEmitter != null)
+        if (_startEmitter)
             _startEmitter.Play();
         
         fullyCharged = false;
@@ -142,7 +150,7 @@ public sealed class MenuStart : MonoBehaviour
     private void StopCharging()
     {
         isCharging = false;
-        if (_startEmitter != null)
+        if (_startEmitter)
             _startEmitter.Stop();
     }
 
@@ -166,7 +174,7 @@ public sealed class MenuStart : MonoBehaviour
                 fullyCharged = true;
                 
                 onFullyCharged?.Invoke();
-                if (_startEmitter != null)
+                if (_startEmitter)
                     _startEmitter.Stop();
             }
         }
@@ -220,33 +228,40 @@ public sealed class MenuStart : MonoBehaviour
 
     private void ToggleQuitPanel(bool enable)
     {
+        if (!quitPanel || panelHelpEnabled)
+            return;
+        
         panelQuitEnabled = enable;
-        if (quitPanel) 
-            quitPanel.SetActive(enable);
         
         if (enable)
             SoundManager.Instance.UIValid();
         else
             SoundManager.Instance.UIInvalid();
+        
+        quitPanel.SetActive(enable);
+        
     }
 
     private void ToggleHelpPanel()
     {
-        if (!helpPanel) 
+        if (!helpPanel || panelQuitEnabled) 
             return;
         
         panelHelpEnabled = !panelHelpEnabled;
-        helpPanel.SetActive(panelHelpEnabled);
         
         if (panelHelpEnabled)
             SoundManager.Instance.UIValid();
         else
             SoundManager.Instance.UIInvalid();
+        
+        helpPanel.SetActive(panelHelpEnabled);
+        
     }
 
     private void HandleQuitChoice(bool accept)
     {
-        if (!panelQuitEnabled) return;
+        if (!panelQuitEnabled) 
+            return;
 
         if (accept)
         {

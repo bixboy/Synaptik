@@ -5,7 +5,7 @@
 			<value>Scared_Voice_OS</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{635d84ca-9c3c-4f45-a5b1-2478067b39b7}</destination>
@@ -107,6 +107,7 @@
 	<object class="MixerBusEffectChain" id="{e4cb8fc5-1d35-40fe-89ed-e20854e29024}">
 		<relationship name="effects">
 			<destination>{0769d2b6-8621-4f77-a134-eee198eca09f}</destination>
+			<destination>{0ae5d1ff-7100-478b-aa44-3e60f9d137f7}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{d7b5e358-ad2e-4e71-bc2f-f210368739cc}" />
@@ -197,4 +198,5 @@
 	</object>
 	<object class="MixerBusFader" id="{23783742-8d64-4954-af2a-1f499b64d750}" />
 	<object class="MixerBusFader" id="{0769d2b6-8621-4f77-a134-eee198eca09f}" />
+	<object class="SpatialiserEffect" id="{0ae5d1ff-7100-478b-aa44-3e60f9d137f7}" />
 </objects>

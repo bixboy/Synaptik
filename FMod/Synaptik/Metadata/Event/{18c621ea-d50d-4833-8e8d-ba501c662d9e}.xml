@@ -5,7 +5,7 @@
 			<value>Sad_Voice_OS</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{635d84ca-9c3c-4f45-a5b1-2478067b39b7}</destination>
@@ -112,6 +112,7 @@
 	<object class="MixerBusEffectChain" id="{39c8e3be-6b80-4069-8afe-31840d8595ad}">
 		<relationship name="effects">
 			<destination>{6feea8e2-6082-43ed-856e-20188726e863}</destination>
+			<destination>{f4226a61-4677-4f45-9b83-1d1886e503e4}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{c98fe066-dbaf-4de1-948d-e6f052dbe337}" />
@@ -227,4 +228,5 @@
 	</object>
 	<object class="MixerBusFader" id="{a6a07021-7d24-4091-88da-d5b430fb9365}" />
 	<object class="MixerBusFader" id="{6feea8e2-6082-43ed-856e-20188726e863}" />
+	<object class="SpatialiserEffect" id="{f4226a61-4677-4f45-9b83-1d1886e503e4}" />
 </objects>

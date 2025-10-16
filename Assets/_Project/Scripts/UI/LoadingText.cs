@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using FMODUnity;
 
-[RequireComponent(typeof(AudioSource))]
 public sealed class LoadingText : MonoBehaviour
 {
     [Header("UI References")]
@@ -19,8 +19,7 @@ public sealed class LoadingText : MonoBehaviour
     [SerializeField] private string cursorSymbol = "_";
 
     [Header("Audio Feedback")]
-    [SerializeField] private AudioClip typeSound;
-    [SerializeField] private float typeSoundVolume = 0.1f;
+    [SerializeField] private EventReference _soundTipping;
 
     [Header("Loading Animation")]
     [SerializeField] private string loadingPattern = "LOADING";
@@ -58,6 +57,7 @@ public sealed class LoadingText : MonoBehaviour
     {
         StopAllCoroutines();
         typingCoroutine = StartCoroutine(DisplayLinesRoutine(lines));
+        loopCoroutine = StartCoroutine(LoadingLoop());
         if (showCursor)
             cursorCoroutine = StartCoroutine(CursorBlinkRoutine());
     }
@@ -78,17 +78,16 @@ public sealed class LoadingText : MonoBehaviour
                 currentText += line[i];
                 UpdateDisplayedText();
 
-                if (typeSound)
-                    audioSource.PlayOneShot(typeSound, typeSoundVolume);
+                if (!_soundTipping.IsNull)
+                    SoundManager.Instance.PlaySFX(_soundTipping);
 
                 float delay = randomizeDelay ? Random.Range(minCharDelay, maxCharDelay) : minCharDelay;
                 yield return new WaitForSeconds(delay);
             }
 
             currentText += "\n";
+            yield return new WaitForSeconds(maxCharDelay * 5f);
         }
-
-        loopCoroutine = StartCoroutine(LoadingLoop());
     }
 
     private IEnumerator LoadingLoop()
@@ -105,7 +104,7 @@ public sealed class LoadingText : MonoBehaviour
             {
                 float progress = Mathf.Clamp01(currentProgress);
                 progress *= 1.2f;
-                progressText.text = $"[{TextFeedBack.ProgressiveDisplayLerp("000000000000000000000000", progress, '-')}]";
+                progressText.text = $"[{TextFeedBack.ProgressiveDisplayLerp("000000000000000000000000", progress, '=')}]";
             }
 
             yield return new WaitForSeconds(loadingCycleSpeed);
