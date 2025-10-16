@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public struct AlienQuest : IEquatable<AlienQuest>
 {
-    
+    [SerializeField]
     private AlienDefinition alien;
     
     [SerializeField]
