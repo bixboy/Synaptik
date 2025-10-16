@@ -9,44 +9,36 @@ using FMODUnity;
 public sealed class PlayerComboBubble : MonoBehaviour
 {
     [Header("Bubble Setup")]
-    [SerializeField]
-    private GameObject bubblePrefab;
-
-    [SerializeField]
-    private float verticalOffset = 2.6f;
-
-    [SerializeField]
-    private float worldScale = 0.03f;
+    [SerializeField] private GameObject bubblePrefab;
+    [SerializeField] private float verticalOffset = 2.6f;
+    [SerializeField] private float worldScale = 0.03f;
 
     [Header("Layout Settings")]
-    [SerializeField]
-    private Vector2 minBubbleSize = new(120f, 60f);
-
-    [SerializeField]
-    private Vector2 padding = new(16f, 10f);
-
-    [SerializeField]
-    private float defaultLifetime = 1.75f;
+    [SerializeField] private Vector2 minBubbleSize = new(120f, 60f);
+    [SerializeField] private Vector2 padding = new(16f, 10f);
+    [SerializeField] private float defaultLifetime = 1.75f;
 
     [Header("Visual Settings")]
-    [SerializeField]
-    private Color backgroundColor = new(1f, 1f, 1f, 0.4f);
+    [SerializeField] private Color backgroundColor = new(1f, 1f, 1f, 0.4f);
+    [SerializeField] private Color textColor = Color.black;
+    [SerializeField] private TMP_FontAsset fontAsset;
 
-    [SerializeField]
-    private Color textColor = Color.black;
-
-    [SerializeField]
-    private TMP_FontAsset fontAsset;
-    
     [Header("Bubble Sprites")]
-    [SerializeField]
-    private Image bubbleImage;
+    [SerializeField] private Image bubbleImage;
+    [SerializeField] private Sprite defaultBubbleSprite;
+    [SerializeField] private EmotionBubbleSprite[] emotionSpecificSprites;
 
-    [SerializeField]
-    private Sprite defaultBubbleSprite;
+    [Header("Sound")]
+    [SerializeField] private VoicesModels _attributedVoice;
+    [SerializeField] private StudioEventEmitter _soundEmitter;
 
-    [SerializeField]
-    private EmotionBubbleSprite[] emotionSpecificSprites;
+    // 🟢 --- Nouveau : paramètres du scale selon la distance ---
+    [Header("Distance Scaling")]
+    [SerializeField, Min(0f)] private float minScale = 0.5f;
+    [SerializeField, Min(0f)] private float maxScale = 1.5f;
+    [SerializeField, Min(0f)] private float minDistance = 2f;
+    [SerializeField, Min(0f)] private float maxDistance = 15f;
+    // -----------------------------------------------------------
 
     private GameObject bubbleInstance;
     private RectTransform bubbleRect;
@@ -54,7 +46,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
     private TextMeshProUGUI label;
     private float remainingTime;
     private Camera targetCamera;
-    
+
     private readonly Dictionary<Emotion, Sprite> spriteLookup = new();
     private Sprite activeSprite;
 
@@ -64,25 +56,19 @@ public sealed class PlayerComboBubble : MonoBehaviour
         public Emotion emotion;
         public Sprite sprite;
     }
-    
-    [Header("Sound")]
-    [SerializeField] private VoicesModels _attributedVoice;
-    [SerializeField] private StudioEventEmitter _soundEmitter;
 
     private void Awake()
     {
         targetCamera = Camera.main;
         HideImmediate();
     }
-    
+
     private void OnValidate()
     {
         CacheSprites();
 
         if (!bubblePrefab || bubbleImage)
-        {
             return;
-        }
 
         bubbleImage = bubblePrefab.GetComponentInChildren<Image>(true);
     }
@@ -95,9 +81,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
     private void LateUpdate()
     {
         if (remainingTime <= 0f)
-        {
             return;
-        }
 
         remainingTime -= Time.deltaTime;
         if (remainingTime <= 0f)
@@ -107,6 +91,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
         }
 
         UpdateLookAt();
+        UpdateScale(); // 🟢 Ajout ici
     }
 
     public void Show(Emotion emotion, string text, float duration)
@@ -118,20 +103,18 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
         label.text = text ?? string.Empty;
         AdjustBubbleSize();
-        
         ApplyBubbleSprite(emotion);
 
         if (bubbleInstance && !bubbleInstance.activeSelf)
-        {
             bubbleInstance.SetActive(true);
-        }
-        
-        //Sound
-        //_soundEmitter.EventReference = SoundManager.Instance.GetVoice(emotion, _attributedVoice);
-        //_soundEmitter.Play();
+
+        // 🔊 Sound
+        _soundEmitter.EventReference = SoundManager.Instance.GetVoice(emotion, _attributedVoice);
+        _soundEmitter.Play();
 
         remainingTime = duration > 0f ? duration : defaultLifetime;
         UpdateLookAt();
+        UpdateScale(); // 🟢 Appliquer immédiatement à l’apparition
     }
 
     public void HideImmediate()
@@ -139,17 +122,13 @@ public sealed class PlayerComboBubble : MonoBehaviour
         remainingTime = 0f;
         activeSprite = null;
         if (bubbleInstance)
-        {
             bubbleInstance.SetActive(false);
-        }
     }
 
     private void EnsureInstance()
     {
         if (bubbleInstance)
-        {
             return;
-        }
 
         if (!bubblePrefab)
         {
@@ -167,11 +146,9 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
         label = bubbleInstance.GetComponentInChildren<TextMeshProUGUI>(true);
         backgroundImage = bubbleInstance.GetComponentInChildren<Image>(true);
-        
+
         if (!bubbleImage)
-        {
             bubbleImage = backgroundImage;
-        }
 
         if (label)
         {
@@ -180,14 +157,10 @@ public sealed class PlayerComboBubble : MonoBehaviour
         }
 
         if (backgroundImage)
-        {
             backgroundImage.color = backgroundColor;
-        }
-        
+
         if (!defaultBubbleSprite && bubbleImage)
-        {
             defaultBubbleSprite = bubbleImage.sprite;
-        }
 
         bubbleInstance.SetActive(false);
     }
@@ -214,9 +187,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
             return;
 
         if (!targetCamera)
-        {
             targetCamera = Camera.main;
-        }
 
         if (!targetCamera)
             return;
@@ -225,22 +196,30 @@ public sealed class PlayerComboBubble : MonoBehaviour
         var up = targetCamera.transform.rotation * Vector3.up;
         bubbleRect.rotation = Quaternion.LookRotation(forward, up);
     }
-    
+
+    // 🟢 Fonction ajoutée : Scale selon la distance caméra
+    private void UpdateScale()
+    {
+        if (!bubbleRect || !targetCamera)
+            return;
+
+        float distance = Vector3.Distance(targetCamera.transform.position, bubbleRect.position);
+        float t = Mathf.InverseLerp(minDistance, maxDistance, distance);
+        float scale = Mathf.Lerp(maxScale, minScale, t);
+        bubbleRect.localScale = Vector3.one * scale * worldScale;
+    }
+
     private void CacheSprites()
     {
         spriteLookup.Clear();
 
         if (emotionSpecificSprites == null)
-        {
             return;
-        }
 
         foreach (var setting in emotionSpecificSprites)
         {
             if (!setting.sprite)
-            {
                 continue;
-            }
 
             spriteLookup[setting.emotion] = setting.sprite;
         }
@@ -249,15 +228,11 @@ public sealed class PlayerComboBubble : MonoBehaviour
     private void ApplyBubbleSprite(Emotion emotion)
     {
         if (!bubbleImage)
-        {
             return;
-        }
 
         var sprite = GetSpriteFor(emotion);
         if (!sprite || sprite == activeSprite)
-        {
             return;
-        }
 
         bubbleImage.sprite = sprite;
         activeSprite = sprite;
@@ -266,14 +241,10 @@ public sealed class PlayerComboBubble : MonoBehaviour
     private Sprite GetSpriteFor(Emotion emotion)
     {
         if (spriteLookup.TryGetValue(emotion, out var sprite))
-        {
             return sprite;
-        }
 
         if (defaultBubbleSprite)
-        {
             return defaultBubbleSprite;
-        }
 
         return bubbleImage ? bubbleImage.sprite : null;
     }
