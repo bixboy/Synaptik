@@ -132,7 +132,7 @@ Material:
     - _FlatRimSize: 0.181
     - _FlatSpecularEdgeSmoothness: 1
     - _FlatSpecularSize: 0.573
-    - _Flatness: 1
+    - _Flatness: 0
     - _FlatnessExtra: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
