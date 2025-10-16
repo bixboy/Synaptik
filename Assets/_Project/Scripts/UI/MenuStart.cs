@@ -232,12 +232,14 @@ public sealed class MenuStart : MonoBehaviour
             return;
         
         panelQuitEnabled = enable;
-        quitPanel.SetActive(enable);
         
         if (enable)
             SoundManager.Instance.UIValid();
         else
             SoundManager.Instance.UIInvalid();
+        
+        quitPanel.SetActive(enable);
+        
     }
 
     private void ToggleHelpPanel()
@@ -246,12 +248,14 @@ public sealed class MenuStart : MonoBehaviour
             return;
         
         panelHelpEnabled = !panelHelpEnabled;
-        helpPanel.SetActive(panelHelpEnabled);
         
         if (panelHelpEnabled)
             SoundManager.Instance.UIValid();
         else
             SoundManager.Instance.UIInvalid();
+        
+        helpPanel.SetActive(panelHelpEnabled);
+        
     }
 
     private void HandleQuitChoice(bool accept)
