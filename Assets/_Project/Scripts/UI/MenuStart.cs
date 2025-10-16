@@ -43,6 +43,8 @@ public sealed class MenuStart : MonoBehaviour
     private InputsDetection inputsDetection;
     private bool subscribedToInputs;
 
+    private bool windowOpened;
+
     private void Awake()
     {
         if (imageToShake != null)
@@ -102,7 +104,7 @@ public sealed class MenuStart : MonoBehaviour
                 ToggleQuitPanel(!keyUp);
                 break;
             
-            case Emotion.Curious when !keyUp:
+            case Emotion.Curious:
                 ToggleHelpPanel();
                 break;
         }
@@ -118,6 +120,7 @@ public sealed class MenuStart : MonoBehaviour
             case Behavior.Action:
                 HandleQuitChoice(true);
                 break;
+            
             case Behavior.Talking:
                 HandleQuitChoice(false);
                 break;
@@ -126,14 +129,16 @@ public sealed class MenuStart : MonoBehaviour
 
     private void HandleTwoAction(bool towPressed)
     {
-        if (towPressed) StartCharging();
-        else StopCharging();
+        if (towPressed) 
+            StartCharging();
+        else 
+            StopCharging();
     }
 
     private void StartCharging()
     {
         isCharging = true;
-        if (_startEmitter != null)
+        if (_startEmitter)
             _startEmitter.Play();
         
         fullyCharged = false;
@@ -142,7 +147,7 @@ public sealed class MenuStart : MonoBehaviour
     private void StopCharging()
     {
         isCharging = false;
-        if (_startEmitter != null)
+        if (_startEmitter)
             _startEmitter.Stop();
     }
 
@@ -166,7 +171,7 @@ public sealed class MenuStart : MonoBehaviour
                 fullyCharged = true;
                 
                 onFullyCharged?.Invoke();
-                if (_startEmitter != null)
+                if (_startEmitter)
                     _startEmitter.Stop();
             }
         }
@@ -220,9 +225,11 @@ public sealed class MenuStart : MonoBehaviour
 
     private void ToggleQuitPanel(bool enable)
     {
+        if (!quitPanel || panelHelpEnabled)
+            return;
+        
         panelQuitEnabled = enable;
-        if (quitPanel) 
-            quitPanel.SetActive(enable);
+        quitPanel.SetActive(enable);
         
         if (enable)
             SoundManager.Instance.UIValid();
@@ -232,7 +239,7 @@ public sealed class MenuStart : MonoBehaviour
 
     private void ToggleHelpPanel()
     {
-        if (!helpPanel) 
+        if (!helpPanel || panelQuitEnabled) 
             return;
         
         panelHelpEnabled = !panelHelpEnabled;
@@ -246,7 +253,8 @@ public sealed class MenuStart : MonoBehaviour
 
     private void HandleQuitChoice(bool accept)
     {
-        if (!panelQuitEnabled) return;
+        if (!panelQuitEnabled) 
+            return;
 
         if (accept)
         {

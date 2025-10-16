@@ -113,7 +113,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
     {
         EnsureInstance();
 
-        if (label)
+        if (!label)
             return;
 
         label.text = text ?? string.Empty;
