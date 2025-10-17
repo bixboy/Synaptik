@@ -26,8 +26,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.193, z: 0.205}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 3140024596084766883}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -299,9 +299,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bubblePrefab: {fileID: 3989471895941643016, guid: 4263e1fd48922eb4bbaf2025a83e5e5f, type: 3}
-  verticalOffset: 1
+  verticalOffset: 1.5
   worldScale: 0.03
-  bubbleOffset: {x: 0, y: -2, z: 0}
+  bubbleOffset: {x: -1.5, y: 0, z: 0}
   minBubbleSize: {x: 120, y: 60}
   padding: {x: 55, y: -25}
   defaultLifetime: 1.75

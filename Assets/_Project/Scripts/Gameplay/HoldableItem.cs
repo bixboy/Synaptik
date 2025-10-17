@@ -153,6 +153,11 @@ public sealed class HoldableItem : MonoBehaviour, IInteraction
             Instantiate(despawnVfxPrefab, transform.position, Quaternion.identity);
         }
 
+        SetAtSpawn();
+    }
+
+    public void SetAtSpawn()
+    {
         rigidbodyComponent.linearVelocity = Vector3.zero;
         rigidbodyComponent.angularVelocity = Vector3.zero;
 

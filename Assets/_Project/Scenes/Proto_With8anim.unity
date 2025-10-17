@@ -15342,6 +15342,22 @@ PrefabInstance:
       propertyPath: verticalOffset
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 4149787047518136254, guid: 86c9a5d29c3505744b562ff25c609abd, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4149787047518136254, guid: 86c9a5d29c3505744b562ff25c609abd, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4149787047518136254, guid: 86c9a5d29c3505744b562ff25c609abd, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4149787047518136254, guid: 86c9a5d29c3505744b562ff25c609abd, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7897517086139208988, guid: 86c9a5d29c3505744b562ff25c609abd, type: 3}
       propertyPath: m_Name
       value: Player (1)
