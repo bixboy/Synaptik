@@ -10,7 +10,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
 {
     [Header("Bubble Setup")]
     [SerializeField] private GameObject bubblePrefab;
-    [SerializeField] private float verticalOffset = 2.6f;
+    [SerializeField] private float verticalOffset = 1;
     [SerializeField] private float worldScale = 0.03f;
 
     [Header("Position Offset")]
@@ -184,7 +184,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
     private void UpdateLookAt()
     {
-        if (!backgroundImage.transform)
+        if (!bubbleRect.transform)
             return;
 
         if (!targetCamera)
@@ -195,7 +195,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
         var forward = targetCamera.transform.rotation * Vector3.forward;
         var up = targetCamera.transform.rotation * Vector3.up;
-        backgroundImage.transform.rotation = Quaternion.LookRotation(forward, up);
+        bubbleRect.transform.rotation = Quaternion.LookRotation(forward, up);
     }
 
     private void UpdateScale()
@@ -216,8 +216,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
             return;
 
         // On garde le verticalOffset et on ajoute bubbleOffset
-        bubbleRect.localPosition = new Vector3(0f, verticalOffset, 0f);
-        bubbleRect.position += bubbleRect.TransformVector(bubbleOffset);
+        bubbleRect.position = transform.position + new Vector3(0f, verticalOffset, 0f) + targetCamera.transform.TransformVector(bubbleOffset);
     }   
 
     private void CacheSprites()

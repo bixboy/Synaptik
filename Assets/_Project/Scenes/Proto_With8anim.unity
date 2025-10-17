@@ -15332,7 +15332,15 @@ PrefabInstance:
       objectReference: {fileID: 613164053}
     - target: {fileID: 1245097717662058500, guid: 86c9a5d29c3505744b562ff25c609abd, type: 3}
       propertyPath: bubbleOffset.x
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1245097717662058500, guid: 86c9a5d29c3505744b562ff25c609abd, type: 3}
+      propertyPath: bubbleOffset.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1245097717662058500, guid: 86c9a5d29c3505744b562ff25c609abd, type: 3}
+      propertyPath: verticalOffset
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 7897517086139208988, guid: 86c9a5d29c3505744b562ff25c609abd, type: 3}
       propertyPath: m_Name
