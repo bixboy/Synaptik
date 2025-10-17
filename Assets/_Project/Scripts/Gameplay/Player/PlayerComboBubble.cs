@@ -60,6 +60,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
     private void Awake()
     {
+        CacheSprites();
         targetCamera = Camera.main;
         HideImmediate();
     }
@@ -231,20 +232,20 @@ public sealed class PlayerComboBubble : MonoBehaviour
             spriteLookup[setting.emotion] = setting.sprite;
         }
     }
-
+    
     private void ApplyBubbleSprite(Emotion emotion)
     {
         if (!backgroundImage)
             return;
 
         var sprite = GetSpriteFor(emotion);
-        if (!sprite || sprite == activeSprite)
+        if (!sprite)
             return;
 
         backgroundImage.sprite = sprite;
         activeSprite = sprite;
     }
-
+    
     private Sprite GetSpriteFor(Emotion emotion)
     {
         if (spriteLookup.TryGetValue(emotion, out var sprite))
