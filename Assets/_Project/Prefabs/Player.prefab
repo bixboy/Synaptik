@@ -44,9 +44,11 @@ GameObject:
   - component: {fileID: 1781832751032665937}
   - component: {fileID: 147415796985034894}
   - component: {fileID: 3447824962834167596}
-  - component: {fileID: 1364330967749873554}
   - component: {fileID: 459477563727920799}
   - component: {fileID: 2732405807110958115}
+  - component: {fileID: 7221474850282425578}
+  - component: {fileID: 1245097717662058500}
+  - component: {fileID: 6422179629804608138}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -62,9 +64,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7897517086139208988}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.008703665, y: -0, z: -0, w: 0.9999622}
+  m_LocalRotation: {x: 0.008700344, y: 0, z: 0, w: 0.99996215}
   m_LocalPosition: {x: 0.48721227, y: -2.116, z: -8.627}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 963934409933296480}
@@ -133,13 +135,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigidbodyComponent: {fileID: 1781832751032665937}
-  maxSpeed: 5
-  acceleration: 20
-  deceleration: 25
-  fearfulActionSpeedBonus: 3
-  fearfulActionBoostDuration: 2
-  fearfulActionBoostDecayDuration: 1
-  fearfulActionBoostCooldown: 3
+  maxSpeed: 15
+  acceleration: 45
+  deceleration: 45
+  fearfulActionSpeedBonus: 0
+  fearfulActionBoostDuration: 0
+  fearfulActionBoostDecayDuration: 0
+  fearfulActionBoostCooldown: 0
   cameraRelative: 1
   targetCamera: {fileID: 0}
   rotationSpeed: 10
@@ -202,34 +204,8 @@ MonoBehaviour:
     Symbols: "\u270B\U0001F631"
     Duration: 1.75
   _playerAnimation: {fileID: 459477563727920799}
-  AngryQuestAlienId: 
+  AngryQuestAlienId: bagarre
   AngryQuestAlien: {fileID: 0}
---- !u!114 &1364330967749873554
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7897517086139208988}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74eea693354e43b0be0532c44d043ed4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bubblePrefab: {fileID: 3989471895941643016, guid: 4263e1fd48922eb4bbaf2025a83e5e5f, type: 3}
-  verticalOffset: 2.6
-  worldScale: 0.03
-  minBubbleSize: {x: 120, y: 60}
-  padding: {x: 16, y: 10}
-  defaultLifetime: 1.75
-  backgroundColor: {r: 1, g: 1, b: 1, a: 0.4}
-  textColor: {r: 0, g: 0, b: 0, a: 1}
-  fontAsset: {fileID: 11400000, guid: 3944eaaf70beffa4097d8c293604125e, type: 2}
-  bubbleImage: {fileID: 2866277534391345941, guid: 4263e1fd48922eb4bbaf2025a83e5e5f, type: 3}
-  defaultBubbleSprite: {fileID: 0}
-  emotionSpecificSprites: []
-  _attributedVoice: 0
-  _soundEmitter: {fileID: 2732405807110958115}
 --- !u!114 &459477563727920799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -284,6 +260,84 @@ MonoBehaviour:
   OverrideAttenuation: 0
   OverrideMinDistance: -1
   OverrideMaxDistance: -1
+--- !u!114 &7221474850282425578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7897517086139208988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92ede64c5bd349f391e90bf1870c2ef7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  emotionRenderers:
+  - {fileID: 6711452259774160920}
+  - {fileID: 2862310326452015775}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  emotionColors:
+  - emotion: 1
+    color: {r: 0.9411765, g: 0.3254902, b: 0.3254902, a: 1}
+  - emotion: 3
+    color: {r: 0.49803922, g: 0.8352941, b: 0.3647059, a: 1}
+  - emotion: 4
+    color: {r: 0.05882353, g: 0.7529412, b: 0.87058824, a: 1}
+  - emotion: 2
+    color: {r: 1, g: 0.8666667, b: 0.38039216, a: 1}
+  colorFadeDuration: 0.3
+--- !u!114 &1245097717662058500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7897517086139208988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 340b948e76f947346a60bd2eff8265f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bubblePrefab: {fileID: 3989471895941643016, guid: 4263e1fd48922eb4bbaf2025a83e5e5f, type: 3}
+  verticalOffset: 1
+  worldScale: 0.03
+  bubbleOffset: {x: 0, y: -2, z: 0}
+  minBubbleSize: {x: 120, y: 60}
+  padding: {x: 55, y: -25}
+  defaultLifetime: 1.75
+  backgroundColor: {r: 1, g: 1, b: 1, a: 0.8352941}
+  textColor: {r: 0, g: 0, b: 0, a: 1}
+  fontAsset: {fileID: 11400000, guid: 1d9475e087986d74a84e0afd2166fdf6, type: 2}
+  bubbleImage: {fileID: 2866277534391345941, guid: 4263e1fd48922eb4bbaf2025a83e5e5f, type: 3}
+  defaultBubbleSprite: {fileID: 0}
+  emotionSpecificSprites:
+  - emotion: 1
+    sprite: {fileID: 21300000, guid: a3a49a1772677a0478137de01b53b985, type: 3}
+  - emotion: 3
+    sprite: {fileID: 21300000, guid: 01207400fc4ae94439f929af6e117852, type: 3}
+  - emotion: 4
+    sprite: {fileID: 21300000, guid: 504b444210ee4d24fb31b3474a93c33e, type: 3}
+  - emotion: 2
+    sprite: {fileID: 21300000, guid: a6cbe048314ecd2458767e5f6333d6ae, type: 3}
+  _attributedVoice: 0
+  minScale: 0.5
+  maxScale: 0.6
+  minDistance: 2
+  maxDistance: 15
+--- !u!114 &6422179629804608138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7897517086139208988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nonRigidbodyVelocity: 0
+  attenuationObject: {fileID: 0}
 --- !u!1001 &786489740003439755
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1021,6 +1075,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 268d526f501315f4eb42e84ef2df5c51, type: 3}
   m_PrefabInstance: {fileID: 786489740003439755}
   m_PrefabAsset: {fileID: 0}
+--- !u!137 &2862310326452015775 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -5957465900864100844, guid: 268d526f501315f4eb42e84ef2df5c51, type: 3}
+  m_PrefabInstance: {fileID: 786489740003439755}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3140024596084766883 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2412161367050800168, guid: 268d526f501315f4eb42e84ef2df5c51, type: 3}
@@ -1029,5 +1088,10 @@ Transform:
 --- !u!95 &6593474267527268634 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 268d526f501315f4eb42e84ef2df5c51, type: 3}
+  m_PrefabInstance: {fileID: 786489740003439755}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &6711452259774160920 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6325853255355077779, guid: 268d526f501315f4eb42e84ef2df5c51, type: 3}
   m_PrefabInstance: {fileID: 786489740003439755}
   m_PrefabAsset: {fileID: 0}
