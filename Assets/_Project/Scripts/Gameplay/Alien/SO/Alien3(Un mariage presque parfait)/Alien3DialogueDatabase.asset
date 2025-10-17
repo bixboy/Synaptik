@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f51f73ad4fe47a418864255c2f02c7c, type: 3}
+  m_Name: Alien3DialogueDatabase
+  m_EditorClassIdentifier: 
+  entries:
+  - emotion: 1
+    behavior: 1
+    emojiLine: "\U0001F620\U0001F4A2"
+    duration: 3
+    questStepId: 
+  - emotion: 2
+    behavior: 1
+    emojiLine: "\U0001F600"
+    duration: 3
+    questStepId: 
+  - emotion: 3
+    behavior: 1
+    emojiLine: "\U0001F4A1: <color=#C90000>\U0001F5E1</color>\U0001F407<color=#CDC600>\U0001F48D</color>"
+    duration: 3
+    questStepId: 
+  - emotion: 4
+    behavior: 1
+    emojiLine: "\U0001F928\u2753"
+    duration: 3
+    questStepId: 
+  - emotion: 4
+    behavior: 2
+    emojiLine: "\U0001F928\u2753"
+    duration: 3
+    questStepId: 
+  - emotion: 3
+    behavior: 2
+    emojiLine: "\U0001FAF3\U0001F914\u2753"
+    duration: 3
+    questStepId: 
+  - emotion: 2
+    behavior: 2
+    emojiLine: "\U0001FAF4\U0001F914\u2753"
+    duration: 3
+    questStepId: 
+  - emotion: 1
+    behavior: 2
+    emojiLine: "\U0001F62F"
+    duration: 3
+    questStepId: 
+  itemEntries:
+  - itemId: cadavre
+    emojiLine: "\U0001F970\U0001F633\U0001F92D"
+    duration: 8
+  - itemId: labubu
+    emojiLine: "\U0001F612\u2753"
+    duration: 4
+  - itemId: blue
+    emojiLine: "\U0001F612\u2753"
+    duration: 4
+  - itemId: red
+    emojiLine: "\U0001F612\u2753"
+    duration: 4
+  - itemId: green
+    emojiLine: "\U0001F612\u2753"
+    duration: 4

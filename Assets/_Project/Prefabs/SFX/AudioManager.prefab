@@ -1,0 +1,344 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6047805232480007515
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1558396988120545183}
+  - component: {fileID: 7803937913064315408}
+  - component: {fileID: 4943227876635431635}
+  - component: {fileID: 4296585198779589191}
+  - component: {fileID: 5952161695246138444}
+  - component: {fileID: 2090094838012030099}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1558396988120545183
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6047805232480007515}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.3854349, y: -11.46206, z: 14.785176}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7803937913064315408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6047805232480007515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 340b7fb584a2df64ea41e84101e3fd41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _Bank: {fileID: 4943227876635431635}
+  _ambiantEmitter: {fileID: 4296585198779589191}
+  _musicEmitter: {fileID: 5952161695246138444}
+  _cameraSFXEmitter: {fileID: 2090094838012030099}
+  _UIValid:
+    Guid:
+      Data1: -2010914748
+      Data2: 1075918333
+      Data3: -1358159184
+      Data4: 1438940900
+    Path: event:/UI_FeedBack/Computer_Valid_SFX_OS
+  _UIInvalid:
+    Guid:
+      Data1: -534403545
+      Data2: 1187679224
+      Data3: 1156269953
+      Data4: 983391559
+    Path: event:/UI_FeedBack/Computer_Cancel_SFX_OS
+  _connectCables:
+    Guid:
+      Data1: -835051529
+      Data2: 1230044428
+      Data3: -113445192
+      Data4: 1297016464
+    Path: event:/Diegetic_FeedBack/Input_Feeling_OS
+  _serialVoicesRand:
+  - emotion: 1
+    eventReference:
+      Guid:
+        Data1: -553853771
+        Data2: 1314521828
+        Data3: 1503538576
+        Data4: 136124824
+      Path: event:/Voice_Rand/Angry_Voice_OS
+  - emotion: 2
+    eventReference:
+      Guid:
+        Data1: -830606009
+        Data2: 1310324762
+        Data3: -1439229564
+        Data4: 185753377
+      Path: event:/Voice_Rand/Friendly_Voice_OS
+  - emotion: 3
+    eventReference:
+      Guid:
+        Data1: 1876694669
+        Data2: 1205003712
+        Data3: 1823375492
+        Data4: -16353594
+      Path: event:/Voice_Rand/Curious_Voice_OS
+  - emotion: 4
+    eventReference:
+      Guid:
+        Data1: -1430038874
+        Data2: 1081096460
+        Data3: 261032585
+        Data4: 894411605
+      Path: event:/Voice_Rand/Scared_Voice_OS
+  _serialVoicesA:
+  - emotion: 1
+    eventReference:
+      Guid:
+        Data1: -1369563923
+        Data2: 1095259660
+        Data3: -648254073
+        Data4: 439211149
+      Path: event:/Voice_A/Angry_Voice_A_OS
+  - emotion: 2
+    eventReference:
+      Guid:
+        Data1: 1542669342
+        Data2: 1095841826
+        Data3: 1059472547
+        Data4: -301246557
+      Path: event:/Voice_A/Friendly_Voice_A_OS
+  - emotion: 3
+    eventReference:
+      Guid:
+        Data1: 1675627372
+        Data2: 1255066868
+        Data3: -38757976
+        Data4: -381445097
+      Path: event:/Voice_A/Curious_Voice_A_OS
+  - emotion: 4
+    eventReference:
+      Guid:
+        Data1: -1555662356
+        Data2: 1136248877
+        Data3: 1425051581
+        Data4: -390277099
+      Path: event:/Voice_A/Scared_Voice_A_OS
+  _serialVoicesT:
+  - emotion: 1
+    eventReference:
+      Guid:
+        Data1: 108822566
+        Data2: 1191271491
+        Data3: 1246970815
+        Data4: 397024970
+      Path: event:/Voice_T/Angry_Voice_T_OS
+  - emotion: 2
+    eventReference:
+      Guid:
+        Data1: 1525442320
+        Data2: 1326362457
+        Data3: 257138829
+        Data4: -1646672272
+      Path: event:/Voice_T/Friendly_Voice_T_OS
+  - emotion: 3
+    eventReference:
+      Guid:
+        Data1: 85691768
+        Data2: 1284269289
+        Data3: 1316676514
+        Data4: 954299542
+      Path: event:/Voice_T/Curious_Voice_T_OS
+  - emotion: 4
+    eventReference:
+      Guid:
+        Data1: 396333960
+        Data2: 1219998641
+        Data3: 1805711528
+        Data4: -479360759
+      Path: event:/Voice_T/Scared_Voice_T_OS
+  _serialVoicesP:
+  - emotion: 1
+    eventReference:
+      Guid:
+        Data1: 1327114979
+        Data2: 1122409439
+        Data3: 338479755
+        Data4: -1767912410
+      Path: event:/Voice_P/Angry_Voice_P_OS
+  - emotion: 2
+    eventReference:
+      Guid:
+        Data1: -863983675
+        Data2: 1296886232
+        Data3: -343203928
+        Data4: -1773883080
+      Path: event:/Voice_P/Friendly_Voice_P_OS
+  - emotion: 3
+    eventReference:
+      Guid:
+        Data1: -1246232562
+        Data2: 1334079490
+        Data3: -234686056
+        Data4: 532926947
+      Path: event:/Voice_P/Curious_Voice_P_OS
+  - emotion: 4
+    eventReference:
+      Guid:
+        Data1: -763040684
+        Data2: 1328753661
+        Data3: -1462775927
+        Data4: 72787736
+      Path: event:/Voice_P/Scared_Voice_P_OS
+  _serialVoicesMission:
+  - missionID: vomit
+    eventReference:
+      Guid:
+        Data1: -462022872
+        Data2: 1123665185
+        Data3: -1695802745
+        Data4: -1148984319
+      Path: event:/Voice_Contextual/Vomit_Voice_OS
+  - missionID: mariage
+    eventReference:
+      Guid:
+        Data1: 501704565
+        Data2: 1094165189
+        Data3: 1108300699
+        Data4: -1830655673
+      Path: event:/Voice_Contextual/Marriage_Voice_OS
+  - missionID: bagarre
+    eventReference:
+      Guid:
+        Data1: 2097661227
+        Data2: 1200370882
+        Data3: 1370898103
+        Data4: 1665427553
+      Path: event:/Voice_Contextual/Dispute_Voice_WPunch_L
+--- !u!114 &4943227876635431635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6047805232480007515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9468c5f457ace64f8d4df6d642b107f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LoadEvent: 1
+  UnloadEvent: 2
+  Banks:
+  - Ambiant&SFX
+  - Voices
+  CollisionTag: 
+  PreloadSamples: 1
+--- !u!114 &4296585198779589191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6047805232480007515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -842931751
+      Data2: 1290928707
+      Data3: -378472783
+      Data4: 254540797
+    Path: event:/Ambiant/Computer_Ambiant_L
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &5952161695246138444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6047805232480007515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: -1
+  OverrideMaxDistance: -1
+--- !u!114 &2090094838012030099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6047805232480007515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -2010914748
+      Data2: 1075918333
+      Data3: -1358159184
+      Data4: 1438940900
+    Path: event:/UI_FeedBack/Computer_Valid_SFX_OS
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20

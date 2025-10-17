@@ -45,6 +45,7 @@ ExportedObj/
 *.mdb
 *.opendb
 *.VC.db
+*.dwlt
 
 # Unity3D generated meta files
 *.pidb.meta
@@ -61,3 +62,9 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# Rider
+.idea
+
+# FMOD
+*.log
+fmod_editor.log

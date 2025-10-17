@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58f9ab1e10ce5b64b965e1fd1a0a9980, type: 3}
+  m_Name: Alien3
+  m_EditorClassIdentifier: 
+  alienId: 1
+  startEmotion: 3
+  animator: {fileID: 0}
+  reactions: {fileID: 11400000, guid: 863bdce90ff9e334681db744bf17d5f5, type: 2}
+  dialogue: {fileID: 11400000, guid: f9548ba81103d824fb6c1cd305cf98b8, type: 2}
+  quests:
+  - alien: {fileID: 11400000}
+    questId: mariage
+    title: Mariez vous avec un alien
+    description: "Celui pr\xE8s de la fontaine cherche un pr\xE9tendant"
+    autoRegisterMission: 1
+    autoCompleteMissionOnQuestEnd: 1
+    steps:
+    - stepId: 0
+      stepType: 1
+      completesQuest: 1
+      nextStepId: 1
