@@ -63,7 +63,6 @@ public class Alien : MonoBehaviour, IInteraction
     
     [Header("Sound")]
     [SerializeField] private VoicesModels _attributedVoice;
-    [SerializeField] private StudioEventEmitter _soundEmitter;
 
     
     private void Awake()
@@ -134,14 +133,8 @@ public class Alien : MonoBehaviour, IInteraction
         if (alienDefinition.AlienId != _def.AlienId)
             return;
         Debug.Log("Mission ended for alien " + Definition.name + ": " + mission.MissionID);
-
-        if (_soundEmitter)
-        {
-            _soundEmitter.EventReference = SoundManager.Instance.GetMissionVoice(mission.MissionID);
-            _soundEmitter.Play();
-        }
-        else
-            Debug.LogError($"Sound Emitter missing : {gameObject.name}", gameObject);
+        
+        FMODUnity.RuntimeManager.PlayOneShot(SoundManager.Instance.GetMissionVoice(mission.MissionID), transform.position);
         
         if (mission.MissionID == _pukeMissionId)
         {
@@ -233,6 +226,7 @@ public class Alien : MonoBehaviour, IInteraction
     {
         if (_alienVFX)
         {
+            Debug.Log("Play VFX");
             _alienVFX.Play();
         }
     }
@@ -328,13 +322,7 @@ public class Alien : MonoBehaviour, IInteraction
         }
 
         //PLay Sound
-        if (_soundEmitter)
-        {
-            _soundEmitter.EventReference = SoundManager.Instance.GetVoice(emotion, _attributedVoice);
-            _soundEmitter.Play();
-        }
-        else
-            Debug.LogError($"Sound Emitter missing : {gameObject.name}", gameObject);
+        FMODUnity.RuntimeManager.PlayOneShot(SoundManager.Instance.GetVoice(emotion, _attributedVoice), transform.position);
         
         OnPlayerCombo(action._emotion, action._behavior);
     }

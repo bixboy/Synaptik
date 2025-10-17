@@ -62,7 +62,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.24528301, g: 0.24528301, b: 0.24528301, a: 1}
+  m_Color: {r: 0.1882353, g: 0.14117648, b: 0.09803922, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -487,8 +487,13 @@ MonoBehaviour:
   randomizeDelay: 1
   showCursor: 1
   cursorSymbol: _
-  _soundEmitter: {fileID: 9149066687439644012}
-  typeSoundVolume: 0.1
+  _soundTipping:
+    Guid:
+      Data1: -279268206
+      Data2: 1109050232
+      Data3: -1648810364
+      Data4: -1549061923
+    Path: event:/UI_FeedBack/Computer_Bip_SFX_OS
   loadingPattern: LOADING
   loadingCycleSpeed: 0.3
   cursorBlinkSpeed: 0.5

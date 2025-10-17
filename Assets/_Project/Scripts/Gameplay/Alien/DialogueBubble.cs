@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public sealed class DialogueBubble : MonoBehaviour
 {
     [SerializeField] private GameObject bubbleGameObject;
-    [SerializeField] private Transform bubbleAnchor;
+    [SerializeField] private RectTransform bubbleAnchor;
     [SerializeField] private TextMeshProUGUI label;
     [SerializeField] private Image bubbleImage;
     [SerializeField] private Sprite defaultBubbleSprite;
@@ -16,6 +16,10 @@ public sealed class DialogueBubble : MonoBehaviour
     [SerializeField] private bool lookAtCamera = true;
     [SerializeField, ShowIf(nameof(lookAtCamera))] private Camera targetCamera;
 
+    [Space(7)]
+    [SerializeField] private float verticalOffset = 1.5f;
+    [SerializeField] private Vector3 bubbleOffset = new Vector3(1.5f, 0, 0);
+    
     // 🟢 --- Nouveau : paramètres du scale selon la distance ---
     [Header("Distance Scaling")]
     [SerializeField, Min(0f)] private float minScale = 0.5f;
@@ -73,7 +77,7 @@ public sealed class DialogueBubble : MonoBehaviour
         {
             var forward = targetCamera.transform.rotation * Vector3.forward;
             var up = targetCamera.transform.rotation * Vector3.up;
-            bubbleAnchor.transform.LookAt(bubbleAnchor.position + forward, up);
+            bubbleAnchor.transform.rotation = Quaternion.LookRotation(forward, up);
         }
 
         // 📏 Scale selon la distance
@@ -81,6 +85,18 @@ public sealed class DialogueBubble : MonoBehaviour
         float t = Mathf.InverseLerp(minDistance, maxDistance, distance);
         float scale = Mathf.Lerp(maxScale, minScale, t); // plus proche = plus grand
         bubbleAnchor.localScale = Vector3.one * scale;
+        
+        label.ForceMeshUpdate();
+        var textSize = label.GetPreferredValues(label.text);
+
+        var finalSize = new Vector2(
+            Mathf.Max(120f, textSize.x + 16 * 2f),
+            Mathf.Max(60, textSize.y + 10 * 2f)
+        );
+
+        bubbleAnchor.sizeDelta = finalSize;
+        
+        bubbleAnchor.position = transform.position + new Vector3(0f, verticalOffset, 0f) + targetCamera.transform.TransformVector(bubbleOffset);
     }
 
     public void ShowFor(Emotion emotion, string emojiLine, float duration)

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using FMODUnity;
 
+#region Struct&Enum
+
 [System.Serializable]
 struct SoundWithEmotion
 {
@@ -26,6 +28,20 @@ public enum VoicesModels
     VOICE_P = 3
 }
 
+[System.Serializable]
+public enum AudioReaction
+{
+    None = 0,
+    
+    Angry = 1,
+    Curious = 2,
+    Friendly = 3,
+    Sad = 4,
+    Scared = 5
+}
+
+#endregion
+
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance;
@@ -44,19 +60,19 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private EventReference _connectCables;
     
     [Space(7)]
-    [SerializeField] private List<SoundWithEmotion> _serialVoicesRand;
-    private Dictionary<Emotion, EventReference> _voicesRand;
+    [SerializeField] private List<SoundWithEmotion> _serialVoicesRand = new List<SoundWithEmotion>();
+    private Dictionary<Emotion, EventReference> _voicesRand = new Dictionary<Emotion, EventReference>();
     [Space(5)]
-    [SerializeField] private List<SoundWithEmotion> _serialVoicesA;
-    private Dictionary<Emotion, EventReference> _voicesA;
-    [SerializeField] private List<SoundWithEmotion> _serialVoicesT;
-    private Dictionary<Emotion, EventReference> _voicesT;
-    [SerializeField] private List<SoundWithEmotion> _serialVoicesP;
-    private Dictionary<Emotion, EventReference> _voicesP;
+    [SerializeField] private List<SoundWithEmotion> _serialVoicesA = new List<SoundWithEmotion>();
+    private Dictionary<Emotion, EventReference> _voicesA = new Dictionary<Emotion, EventReference>();
+    [SerializeField] private List<SoundWithEmotion> _serialVoicesT = new List<SoundWithEmotion>();
+    private Dictionary<Emotion, EventReference> _voicesT = new Dictionary<Emotion, EventReference>();
+    [SerializeField] private List<SoundWithEmotion> _serialVoicesP = new List<SoundWithEmotion>();
+    private Dictionary<Emotion, EventReference> _voicesP = new Dictionary<Emotion, EventReference>();
 
     [Space(7)]
-    [SerializeField] private List<SoundWithMission> _serialVoicesMission;
-    private Dictionary<string, EventReference> _voicesMission;
+    [SerializeField] private List<SoundWithMission> _serialVoicesMission = new List<SoundWithMission>();
+    private Dictionary<string, EventReference> _voicesMission = new Dictionary<String, EventReference>();
     
     
     private void Awake()
@@ -147,37 +163,21 @@ public class SoundManager : MonoBehaviour
 
     public void UIValid()
     {
-        if (_cameraSFXEmitter != null)
-        {
-            _cameraSFXEmitter.EventReference = _UIValid;
-            _cameraSFXEmitter.Play();
-        }
+        FMODUnity.RuntimeManager.PlayOneShot(_UIValid);
     }
     public void UIInvalid()
     {
-        if (_cameraSFXEmitter != null)
-        {
-            _cameraSFXEmitter.EventReference = _UIInvalid;
-            _cameraSFXEmitter.Play();
-        }
+        FMODUnity.RuntimeManager.PlayOneShot(_UIInvalid);
     }
 
     public void PlaySFX(EventReference a_sound)
     {
-        if (_cameraSFXEmitter == null)
-            return;
-        
-        _cameraSFXEmitter.EventReference = a_sound;
-        _cameraSFXEmitter.Play();
+        FMODUnity.RuntimeManager.PlayOneShot(a_sound);
     }
 
     public void ConnectCables()
     {
-        if (_cameraSFXEmitter != null)
-        {
-            _cameraSFXEmitter.EventReference = _connectCables;
-            _cameraSFXEmitter.Play();
-        }
+        FMODUnity.RuntimeManager.PlayOneShot(_connectCables);
     }
     #endregion
     
@@ -195,17 +195,17 @@ public class SoundManager : MonoBehaviour
                 break;
             case VoicesModels.VOICE_P:
                 if (_voicesP.ContainsKey(a_emotion))
-                    eventRef = _voicesA[a_emotion];
+                    eventRef = _voicesP[a_emotion];
                 break;
             case VoicesModels.VOICE_T:
                 if (_voicesT.ContainsKey(a_emotion))
-                    eventRef = _voicesA[a_emotion];
+                    eventRef = _voicesT[a_emotion];
                 break;
             
             case VoicesModels.RAND:
             default:
                 if (_voicesRand.ContainsKey(a_emotion))
-                    eventRef = _voicesA[a_emotion];
+                    eventRef = _voicesRand[a_emotion];
                 break;
         }
 

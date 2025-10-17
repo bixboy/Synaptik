@@ -10,7 +10,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
 {
     [Header("Bubble Setup")]
     [SerializeField] private GameObject bubblePrefab;
-    [SerializeField] private float verticalOffset = 2.6f;
+    [SerializeField] private float verticalOffset = 1;
     [SerializeField] private float worldScale = 0.03f;
 
     [Header("Position Offset")]
@@ -34,14 +34,13 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
     [Header("Sound")]
     [SerializeField] private VoicesModels _attributedVoice;
-    [SerializeField] private StudioEventEmitter _soundEmitter;
 
     [Header("Distance Scaling")]
     [SerializeField, Min(0f)] private float minScale = 0.5f;
     [SerializeField, Min(0f)] private float maxScale = 1.5f;
     [SerializeField, Min(0f)] private float minDistance = 2f;
     [SerializeField, Min(0f)] private float maxDistance = 15f;
-
+    
     private GameObject bubbleInstance;
     private RectTransform bubbleRect;
     private Image backgroundImage;
@@ -111,13 +110,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
         if (bubbleInstance && !bubbleInstance.activeSelf)
             bubbleInstance.SetActive(true);
         
-        if (_soundEmitter)
-        {
-            _soundEmitter.EventReference = SoundManager.Instance.GetVoice(emotion, _attributedVoice);
-            _soundEmitter.Play();
-        }
-        else
-            Debug.LogError($"Sound Emitter missing : {gameObject.name}", gameObject);
+        FMODUnity.RuntimeManager.PlayOneShot(SoundManager.Instance.GetVoice(emotion, _attributedVoice), transform.position);
 
         remainingTime = duration > 0f ? duration : defaultLifetime;
         UpdateLookAt();
@@ -155,9 +148,6 @@ public sealed class PlayerComboBubble : MonoBehaviour
         label = bubbleInstance.GetComponentInChildren<TextMeshProUGUI>(true);
         backgroundImage = bubbleInstance.GetComponentInChildren<Image>(true);
 
-        if (!bubbleImage)
-            bubbleImage = backgroundImage;
-
         if (label)
         {
             label.color = textColor;
@@ -167,8 +157,8 @@ public sealed class PlayerComboBubble : MonoBehaviour
         if (backgroundImage)
             backgroundImage.color = backgroundColor;
 
-        if (!defaultBubbleSprite && bubbleImage)
-            defaultBubbleSprite = bubbleImage.sprite;
+        if (!defaultBubbleSprite && backgroundImage)
+            defaultBubbleSprite = backgroundImage.sprite;
 
         bubbleInstance.SetActive(false);
     }
@@ -191,7 +181,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
     private void UpdateLookAt()
     {
-        if (!bubbleRect)
+        if (!bubbleRect.transform)
             return;
 
         if (!targetCamera)
@@ -202,7 +192,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
         var forward = targetCamera.transform.rotation * Vector3.forward;
         var up = targetCamera.transform.rotation * Vector3.up;
-        bubbleRect.rotation = Quaternion.LookRotation(forward, up);
+        bubbleRect.transform.rotation = Quaternion.LookRotation(forward, up);
     }
 
     private void UpdateScale()
@@ -223,8 +213,8 @@ public sealed class PlayerComboBubble : MonoBehaviour
             return;
 
         // On garde le verticalOffset et on ajoute bubbleOffset
-        bubbleRect.localPosition = new Vector3(0f, verticalOffset, 0f) + bubbleOffset;
-    }
+        bubbleRect.position = transform.position + new Vector3(0f, verticalOffset, 0f) + targetCamera.transform.TransformVector(bubbleOffset);
+    }   
 
     private void CacheSprites()
     {
@@ -244,14 +234,14 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
     private void ApplyBubbleSprite(Emotion emotion)
     {
-        if (!bubbleImage)
+        if (!backgroundImage)
             return;
 
         var sprite = GetSpriteFor(emotion);
         if (!sprite || sprite == activeSprite)
             return;
 
-        bubbleImage.sprite = sprite;
+        backgroundImage.sprite = sprite;
         activeSprite = sprite;
     }
 
@@ -259,10 +249,10 @@ public sealed class PlayerComboBubble : MonoBehaviour
     {
         if (spriteLookup.TryGetValue(emotion, out var sprite))
             return sprite;
-
+            
         if (defaultBubbleSprite)
             return defaultBubbleSprite;
 
-        return bubbleImage ? bubbleImage.sprite : null;
+        return backgroundImage ? backgroundImage.sprite : null;
     }
 }

@@ -57,6 +57,7 @@ public sealed class LoadingText : MonoBehaviour
     {
         StopAllCoroutines();
         typingCoroutine = StartCoroutine(DisplayLinesRoutine(lines));
+        loopCoroutine = StartCoroutine(LoadingLoop());
         if (showCursor)
             cursorCoroutine = StartCoroutine(CursorBlinkRoutine());
     }
@@ -85,9 +86,8 @@ public sealed class LoadingText : MonoBehaviour
             }
 
             currentText += "\n";
+            yield return new WaitForSeconds(maxCharDelay * 5f);
         }
-
-        loopCoroutine = StartCoroutine(LoadingLoop());
     }
 
     private IEnumerator LoadingLoop()
@@ -104,7 +104,7 @@ public sealed class LoadingText : MonoBehaviour
             {
                 float progress = Mathf.Clamp01(currentProgress);
                 progress *= 1.2f;
-                progressText.text = $"[{TextFeedBack.ProgressiveDisplayLerp("000000000000000000000000", progress, '-')}]";
+                progressText.text = $"[{TextFeedBack.ProgressiveDisplayLerp("000000000000000000000000", progress, '=')}]";
             }
 
             yield return new WaitForSeconds(loadingCycleSpeed);

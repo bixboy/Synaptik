@@ -307,12 +307,12 @@ public class PlayerInteraction : MonoBehaviour
 
         if (destroyItem)
         {
-            Destroy(heldItem.gameObject);
-            Debug.Log($"{LogPrefix} Objet '{heldItemId}' détruit.");
+            heldItem.SetAtSpawn();
+            Debug.Log($"{LogPrefix} Objet '{heldItemId}' Reset at spawn.");
             
             heldItem = null;
             heldItemId = null;
-            
+            _playerAnimation?.OnDroppedItem();
             return;
         }
 

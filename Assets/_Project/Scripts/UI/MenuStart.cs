@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using FMODUnity;
+using Unity.VisualScripting;
 
 public sealed class MenuStart : MonoBehaviour
 {
@@ -31,10 +32,10 @@ public sealed class MenuStart : MonoBehaviour
     [SerializeField] private float needleReturnSpeed = 3f;
 
     [Header("SFX")]
+    [SerializeField] private StudioEventEmitter _startEmitter;
+    
     [SerializeField] private EventReference _music;
     [SerializeField] private EventReference _ambiant;
-    
-    [SerializeField] private StudioEventEmitter _startEmitter;
 
     private float chargeProgress;
     private bool isCharging;
@@ -59,6 +60,12 @@ public sealed class MenuStart : MonoBehaviour
     private void OnEnable() => TrySubscribeToInputs();
     private void OnDisable() => UnsubscribeFromInputs();
 
+    private void Start()
+    {
+        SoundManager.Instance.MusicChange(_music);
+        SoundManager.Instance.AmbiantChange(_ambiant);
+    }
+    
     private void InitializePanels()
     {
         if (helpPanel) helpPanel.SetActive(false);
@@ -232,12 +239,14 @@ public sealed class MenuStart : MonoBehaviour
             return;
         
         panelQuitEnabled = enable;
-        quitPanel.SetActive(enable);
         
         if (enable)
             SoundManager.Instance.UIValid();
         else
             SoundManager.Instance.UIInvalid();
+        
+        quitPanel.SetActive(enable);
+        
     }
 
     private void ToggleHelpPanel()
@@ -246,12 +255,14 @@ public sealed class MenuStart : MonoBehaviour
             return;
         
         panelHelpEnabled = !panelHelpEnabled;
-        helpPanel.SetActive(panelHelpEnabled);
         
         if (panelHelpEnabled)
             SoundManager.Instance.UIValid();
         else
             SoundManager.Instance.UIInvalid();
+        
+        helpPanel.SetActive(panelHelpEnabled);
+        
     }
 
     private void HandleQuitChoice(bool accept)
@@ -272,6 +283,6 @@ public sealed class MenuStart : MonoBehaviour
     public void TestStart()
     {
         Debug.Log("TestStart");
-        LoadingScreenManager.Instance?.LoadScene("Test_Shahine");
+        LoadingScreenManager.Instance?.LoadScene("Proto_Scene_Final");
     }
 }
