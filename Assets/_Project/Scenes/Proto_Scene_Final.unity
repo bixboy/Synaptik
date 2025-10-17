@@ -1722,6 +1722,13 @@ MonoBehaviour:
   maxZoom: 15
   playerInteraction: {fileID: 0}
   interactionZoomOffset: 2
+  _music:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
 --- !u!114 &356380905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2107,6 +2114,13 @@ MonoBehaviour:
   maxZoom: 15
   playerInteraction: {fileID: 0}
   interactionZoomOffset: 2
+  _music:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
 --- !u!1 &367012023
 GameObject:
   m_ObjectHideFlags: 0
@@ -3328,6 +3342,13 @@ MonoBehaviour:
   maxZoom: 25
   playerInteraction: {fileID: 1111797171}
   interactionZoomOffset: 7
+  _music:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
 --- !u!114 &613164051
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7710,8 +7731,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f74f57653c808ea489ebe84515e9bb8c, type: 2}
+  m_sharedMaterial: {fileID: 6160231996400298874, guid: f74f57653c808ea489ebe84515e9bb8c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
