@@ -312,7 +312,7 @@ public class PlayerInteraction : MonoBehaviour
             
             heldItem = null;
             heldItemId = null;
-            
+            _playerAnimation?.OnDroppedItem();
             return;
         }
 

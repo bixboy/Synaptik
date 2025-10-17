@@ -21,6 +21,8 @@ public sealed class HoldableItem : MonoBehaviour, IInteraction
     [SerializeField]
     private AnimationCurve despawnAnim = AnimationCurve.Linear(0, 0, 1, 1);
 
+    [SerializeField] private bool respawnAtDrop = false;
+
     [SerializeField]
     private GameObject despawnVfxPrefab;
 
@@ -32,7 +34,7 @@ public sealed class HoldableItem : MonoBehaviour, IInteraction
     private Vector3 spawnScale;
     private Coroutine respawnCoroutine;
     private float currentDelay;
-    private bool canTake = true;
+    [SerializeField] private bool canTake = true;
 
     public bool IsHeld { get; private set; }
     public string ItemId => itemId;
@@ -113,6 +115,15 @@ public sealed class HoldableItem : MonoBehaviour, IInteraction
             return;
         }
 
+        if (respawnAtDrop)
+        {
+            spawnLocation = transform.position;
+            spawnRotation = transform.rotation;
+            spawnScale = transform.localScale;
+
+            respawnAtDrop = false;
+        }
+
         respawnCoroutine = StartCoroutine(Respawn());
 
         transform.SetParent(originalParent, true);
@@ -163,7 +174,16 @@ public sealed class HoldableItem : MonoBehaviour, IInteraction
 
         transform.SetPositionAndRotation(spawnLocation, spawnRotation);
         transform.localScale = spawnScale;
+        
+        transform.SetParent(originalParent, true);
+        foreach (var collider in colliders)
+        {
+            collider.enabled = true;
+        }
+        rigidbodyComponent.isKinematic = false;
+        rigidbodyComponent.useGravity = true;
 
+        IsHeld = false;
         canTake = true;
         Debug.Log($"{LogPrefix} '{name}' réinitialisé et disponible.");
     }
