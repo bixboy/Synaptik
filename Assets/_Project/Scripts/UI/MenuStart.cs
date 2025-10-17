@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using FMODUnity;
+using Unity.VisualScripting;
 
 public sealed class MenuStart : MonoBehaviour
 {
@@ -59,6 +60,12 @@ public sealed class MenuStart : MonoBehaviour
     private void OnEnable() => TrySubscribeToInputs();
     private void OnDisable() => UnsubscribeFromInputs();
 
+    private void Start()
+    {
+        SoundManager.Instance.MusicChange(_music);
+        SoundManager.Instance.AmbiantChange(_ambiant);
+    }
+    
     private void InitializePanels()
     {
         if (helpPanel) helpPanel.SetActive(false);
@@ -276,6 +283,6 @@ public sealed class MenuStart : MonoBehaviour
     public void TestStart()
     {
         Debug.Log("TestStart");
-        LoadingScreenManager.Instance?.LoadScene("Test_Shahine");
+        LoadingScreenManager.Instance?.LoadScene("Proto_Scene_Final");
     }
 }

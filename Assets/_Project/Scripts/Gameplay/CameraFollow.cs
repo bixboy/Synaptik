@@ -1,4 +1,5 @@
 using UnityEngine;
+using FMODUnity;
 
 public sealed class CameraFollow : MonoBehaviour
 {
@@ -41,9 +42,14 @@ public sealed class CameraFollow : MonoBehaviour
     private float defaultZoom;
     private bool isInteractionZoomActive;
     private Quaternion baseRotation;
+    
+    [SerializeField] private EventReference _music;
 
     private void Start()
     {
+        SoundManager.Instance.MusicChange(_music);
+        SoundManager.Instance.AmbiantStop();
+        
         if (player == null)
         {
             Debug.LogWarning("[CameraFollow] Aucun player assigné à la caméra.");
