@@ -148,9 +148,6 @@ public sealed class PlayerComboBubble : MonoBehaviour
         label = bubbleInstance.GetComponentInChildren<TextMeshProUGUI>(true);
         backgroundImage = bubbleInstance.GetComponentInChildren<Image>(true);
 
-        if (!bubbleImage)
-            bubbleImage = backgroundImage;
-
         if (label)
         {
             label.color = textColor;
@@ -160,8 +157,8 @@ public sealed class PlayerComboBubble : MonoBehaviour
         if (backgroundImage)
             backgroundImage.color = backgroundColor;
 
-        if (!defaultBubbleSprite && bubbleImage)
-            defaultBubbleSprite = bubbleImage.sprite;
+        if (!defaultBubbleSprite && backgroundImage)
+            defaultBubbleSprite = backgroundImage.sprite;
 
         bubbleInstance.SetActive(false);
     }
@@ -237,14 +234,14 @@ public sealed class PlayerComboBubble : MonoBehaviour
 
     private void ApplyBubbleSprite(Emotion emotion)
     {
-        if (!bubbleImage)
+        if (!backgroundImage)
             return;
 
         var sprite = GetSpriteFor(emotion);
         if (!sprite || sprite == activeSprite)
             return;
 
-        bubbleImage.sprite = sprite;
+        backgroundImage.sprite = sprite;
         activeSprite = sprite;
     }
 
@@ -252,10 +249,10 @@ public sealed class PlayerComboBubble : MonoBehaviour
     {
         if (spriteLookup.TryGetValue(emotion, out var sprite))
             return sprite;
-
+            
         if (defaultBubbleSprite)
             return defaultBubbleSprite;
 
-        return bubbleImage ? bubbleImage.sprite : null;
+        return backgroundImage ? backgroundImage.sprite : null;
     }
 }
