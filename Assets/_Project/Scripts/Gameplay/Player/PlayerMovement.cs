@@ -200,7 +200,7 @@ public sealed class PlayerMovement : MonoBehaviour
 
     private void UpdateRotation(Vector3 inputDir, Vector3 velocity)
     {
-        Vector3 dir = inputDir.sqrMagnitude > 0.001f ? inputDir : velocity.normalized;
+        Vector3 dir = inputDir.sqrMagnitude > 0.001f ? inputDir : transform.forward;
         if (dir.sqrMagnitude < 0.001f) 
             return;
  
