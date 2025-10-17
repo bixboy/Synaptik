@@ -506,10 +506,16 @@ MonoBehaviour:
   holdDurationBeforeLoad: 5
   holdDurationAfterSceneLoaded: 5
   textFiller:
-  - 'j''aime les bananes '
-  - 'bananes  bananes  bananes '
-  - 'bananes  bananes  bananes  bananes  bananes  bananes '
-  - banana destroyer ...
+  - lancement du Logiciel Synaptik V0.01001
+  - "connexion des \xE9motions"
+  - chargement de la transmition visuelle
+  - "d\xE9compilation des scripts de traductions"
+  - "check de la r\xE9activit\xE9 musculaire"
+  - aled osekour il est 4h du matin svp sauvez moi pls
+  - "Activit\xE9 cerebral : OK"
+  - 'mignonitude de zip zoup : 100%'
+  - "qualit\xE9 du pr\xE9nom de zip zoup : 0%"
+  - minecraft le film le jeu
 --- !u!4 &336193470
 Transform:
   m_ObjectHideFlags: 0
