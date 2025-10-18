@@ -81,14 +81,67 @@ public struct QuestStep
     [SerializeField]
     private string nextStepId;
 
+    [Header("Trigger")]
+    [SerializeField]
+    private string customTriggerId;
+
+    [SerializeField]
+    private string[] additionalTriggerIds;
+
+    [Header("Events")]
+    [SerializeField]
+    private QuestStepEvents events;
+
     public string StepId => stepId;
     public QuestStepType StepType => stepType;
     public bool CompletesQuest => completesQuest;
     public string NextStepId => nextStepId;
+    public string CustomTriggerId => customTriggerId;
+    public bool HasCustomTrigger => !string.IsNullOrWhiteSpace(customTriggerId);
+    public IReadOnlyList<string> AdditionalTriggerIds => additionalTriggerIds ?? Array.Empty<string>();
+    public QuestStepEvents Events => events ?? QuestStepEvents.Empty;
+
+    public string PrimaryTriggerId => string.IsNullOrWhiteSpace(customTriggerId)
+        ? QuestTriggerUtility.GetDefaultTriggerId(stepType)
+        : customTriggerId;
 
     public string ResolveStepId(int index)
     {
         return string.IsNullOrWhiteSpace(stepId) ? $"step_{index}" : stepId;
+    }
+
+    public bool MatchesTrigger(in QuestTrigger trigger)
+    {
+        if (trigger.IsEmpty)
+        {
+            return false;
+        }
+
+        if (!string.IsNullOrEmpty(trigger.TriggerId))
+        {
+            if (QuestTriggerUtility.EqualsTriggerIds(trigger.TriggerId, PrimaryTriggerId))
+            {
+                return true;
+            }
+
+            if (additionalTriggerIds != null)
+            {
+                for (int i = 0; i < additionalTriggerIds.Length; i++)
+                {
+                    if (QuestTriggerUtility.EqualsTriggerIds(trigger.TriggerId, additionalTriggerIds[i]))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        if (trigger.LegacyType.HasValue && trigger.LegacyType.Value == stepType)
+        {
+            return true;
+        }
+
+        return false;
     }
 }
 

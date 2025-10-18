@@ -109,18 +109,35 @@ public class Alien : MonoBehaviour, IInteraction
 
             if (quest.HasSteps && hasQuestId && !_questRuntimes.ContainsKey(quest.QuestId))
             {
-                _questRuntimes.Add(quest.QuestId, new AlienQuestRuntime(quest));
+                var runtime = new AlienQuestRuntime(quest, this);
+                _questRuntimes.Add(quest.QuestId, runtime);
+                QuestRuntimeRegistry.Register(runtime);
+                runtime.Initialize();
             }
         }
-        
-        GameManager.Instance.OnTaskEnd += OnAlienTaskEnd;
+
+        if (GameManager.Instance)
+        {
+            GameManager.Instance.OnTaskEnd += OnAlienTaskEnd;
+        }
     }
 
     private void OnDestroy()
     {
         if (AlienManager.Instance)
             AlienManager.Instance.UnregisterAlien(this);
-        GameManager.Instance.OnTaskEnd -= OnAlienTaskEnd;
+
+        if (GameManager.Instance)
+        {
+            GameManager.Instance.OnTaskEnd -= OnAlienTaskEnd;
+        }
+
+        foreach (var runtime in _questRuntimes.Values)
+        {
+            QuestRuntimeRegistry.Unregister(runtime);
+        }
+
+        _questRuntimes.Clear();
     }
     
     private void OnAlienTaskEnd(Mission mission, AlienDefinition alienDefinition)
