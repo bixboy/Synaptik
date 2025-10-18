@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
+using Synaptik.Gameplay.Quests;
 
 [CreateAssetMenu(menuName = "Synaptik/Alien/Definition", fileName = "AlienDefinition")]
 public class AlienDefinition : ScriptableObject
@@ -21,25 +22,17 @@ public class AlienDefinition : ScriptableObject
     private DialogueDatabase dialogue;
 
     [SerializeField]
-    private List<AlienQuest> quests = new();
+    private List<QuestDefinition> quests = new();
 
     public string AlienId => alienId;
     public Emotion StartEmotion => startEmotion;
     public RuntimeAnimatorController Animator => animator;
     public ReactionMatrix Reactions => reactions;
     public DialogueDatabase Dialogue => dialogue;
-    public List<AlienQuest> Quests => quests;
+    public IReadOnlyList<QuestDefinition> Quests => quests;
 
     public void SetUniqueId(string id)
     {
         alienId = id;
-    }
-    
-    private void OnEnable()
-    {
-        foreach (var quest in Quests)
-        {
-            quest.SetAlien(this);
-        }
     }
 }

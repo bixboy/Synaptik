@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 using FMODUnity;
+using Synaptik.Gameplay.Quests;
 
 
-public class Alien : MonoBehaviour, IInteraction
+[RequireComponent(typeof(QuestAgent))]
+public class Alien : MonoBehaviour, IInteraction, IQuestMissionTarget
 {
     [SerializeField] private AlienDefinition _def;
     public AlienDefinition Definition => _def;
+    public AlienDefinition MissionAlienDefinition => _def;
 
     [SerializeField] private float _receiveRadius = 1.3f;
 
@@ -33,7 +36,7 @@ public class Alien : MonoBehaviour, IInteraction
     private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
     private static readonly int ColorId = Shader.PropertyToID("_Color");
 
-    private readonly Dictionary<string, AlienQuestRuntime> _questRuntimes = new();
+    private QuestAgent _questAgent;
     private readonly Dictionary<string, int> _receivedItemQuantities = new();
     private readonly Dictionary<InteractionLookupKey, InterractionRule> _cachedInteractionRules = new();
     private readonly Dictionary<Emotion, Color> _emotionColorLookup = new();
@@ -67,9 +70,17 @@ public class Alien : MonoBehaviour, IInteraction
     
     private void Awake()
     {
+        _questAgent = GetComponent<QuestAgent>();
+        if (_questAgent == null)
+        {
+            _questAgent = gameObject.AddComponent<QuestAgent>();
+        }
+
+        _questAgent.Initialise(this);
+
         if (_alienAnimation)
             _alienAnimation = GetComponent<AlienAnimation>();
-        
+
         if (!_dialogueBubble)
             _dialogueBubble = GetComponentInChildren<DialogueBubble>(true);
         
@@ -98,29 +109,25 @@ public class Alien : MonoBehaviour, IInteraction
         if (!_def)
             return;
 
-        foreach (AlienQuest quest in _def.Quests)
+        if (_questAgent != null)
         {
-            var hasQuestId = !string.IsNullOrWhiteSpace(quest.QuestId);
-
-            if (hasQuestId && quest.AutoRegisterMission && GameManager.Instance != null)
-            {
-                GameManager.Instance.RegisterMission(new Mission(quest.QuestId, quest.Title, quest.Description));
-            }
-
-            if (quest.HasSteps && hasQuestId && !_questRuntimes.ContainsKey(quest.QuestId))
-            {
-                _questRuntimes.Add(quest.QuestId, new AlienQuestRuntime(quest));
-            }
+            _questAgent.AssignDefinitions(_def.Quests);
         }
-        
-        GameManager.Instance.OnTaskEnd += OnAlienTaskEnd;
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnTaskEnd += OnAlienTaskEnd;
+        }
     }
 
     private void OnDestroy()
     {
         if (AlienManager.Instance)
             AlienManager.Instance.UnregisterAlien(this);
-        GameManager.Instance.OnTaskEnd -= OnAlienTaskEnd;
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnTaskEnd -= OnAlienTaskEnd;
+        }
     }
     
     private void OnAlienTaskEnd(Mission mission, AlienDefinition alienDefinition)
@@ -416,7 +423,8 @@ public class Alien : MonoBehaviour, IInteraction
 
     private void HandleInteractionRule(InterractionRule rule, Behavior channel, Emotion playerEmotion, bool allowQuestProgress = true)
     {
-        var handled = allowQuestProgress && ProcessQuestStep(rule.QuestId, rule.QuestStepId, QuestStepType.Talk);
+        var talkPayload = new TalkSignalPayload("player");
+        var handled = allowQuestProgress && ProcessQuestStep(rule.QuestId, rule.QuestStepId, QuestSignalType.Talk, talkPayload);
 
         if (handled)
         {
@@ -454,12 +462,13 @@ public class Alien : MonoBehaviour, IInteraction
         if (string.IsNullOrWhiteSpace(rule.QuestId))
             return true;
 
-        return IsQuestStepActive(rule.QuestId, rule.QuestStepId, QuestStepType.Talk);
+        return IsQuestStepActive(rule.QuestId, rule.QuestStepId, QuestSignalType.Talk);
     }
 
     private void HandleItemRule(ItemRule rule, string itemId)
     {
-        var handled = ProcessQuestStep(rule.QuestId, rule.QuestStepId, QuestStepType.GiveItem);
+        var itemPayload = new GiveItemSignalPayload(itemId, rule.ExpectedItemQuantity);
+        var handled = ProcessQuestStep(rule.QuestId, rule.QuestStepId, QuestSignalType.GiveItem, itemPayload);
 
         if (handled)
         {
@@ -543,44 +552,45 @@ public class Alien : MonoBehaviour, IInteraction
         }
     }
 
-    private bool ProcessQuestStep(string questId, string questStepId, QuestStepType triggerType)
+    private bool ProcessQuestStep(string questId, string questStepId, QuestSignalType signalType, IQuestSignalPayload payload)
     {
         if (string.IsNullOrWhiteSpace(questId))
         {
-            Debug.Log($"[Alien] {name} processed interaction without quest (trigger {triggerType}).");
+            Debug.Log($"[Alien] {name} processed interaction without quest (signal {signalType}).");
             return false;
         }
 
-        if (_questRuntimes.TryGetValue(questId, out var runtime))
+        if (_questAgent == null)
         {
-            var handled = runtime.TryHandleStep(questStepId, triggerType);
-            Debug.Log($"[Alien] {name} quest '{questId}' step '{questStepId ?? "<current>"}' handled={handled} for trigger {triggerType}.");
-            
-            return handled;
+            Debug.LogWarning($"[Alien] {name} cannot process quest '{questId}' because no quest agent is initialised.");
+            return false;
         }
 
-        Debug.LogWarning($"[Alien] {name} has no runtime for quest '{questId}'.");
-        return false;
+        var signal = new QuestSignal(questId, questStepId, signalType, payload, this);
+        var handled = _questAgent.TryHandleSignal(signal);
+        Debug.Log($"[Alien] {name} quest '{questId}' step '{questStepId ?? "<current>"}' handled={handled} for signal {signalType}.");
+
+        return handled;
     }
 
-    private bool IsQuestStepActive(string questId, string questStepId, QuestStepType triggerType)
+    private bool IsQuestStepActive(string questId, string questStepId, QuestSignalType signalType)
     {
         if (string.IsNullOrWhiteSpace(questId))
         {
-            Debug.Log($"[Alien] {name} checking interaction rule without quest binding (trigger {triggerType}).");
+            Debug.Log($"[Alien] {name} checking interaction rule without quest binding (signal {signalType}).");
             return false;
         }
 
-        if (_questRuntimes.TryGetValue(questId, out var runtime))
+        if (_questAgent == null)
         {
-            var active = runtime.IsStepActive(questStepId, triggerType);
-            Debug.Log($"[Alien] {name} quest '{questId}' step '{questStepId ?? "<current>"}' active={active} for trigger {triggerType}.");
-            
-            return active;
+            Debug.LogWarning($"[Alien] {name} cannot query quest '{questId}' because no quest agent is initialised.");
+            return false;
         }
 
-        Debug.LogWarning($"[Alien] {name} has no runtime for quest '{questId}' while checking rule availability.");
-        return false;
+        var active = _questAgent.IsStepActive(questId, questStepId, signalType);
+        Debug.Log($"[Alien] {name} quest '{questId}' step '{questStepId ?? "<current>"}' active={active} for signal {signalType}.");
+
+        return active;
     }
 
     private int GetUpdatedItemQuantity(string itemId)
