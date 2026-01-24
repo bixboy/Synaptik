@@ -1,26 +1,26 @@
 using UnityEngine;
-using FMODUnity;
+// using FMODUnity;
 
 public sealed class AnimalItem : MonoBehaviour, IInteraction
 {
     [SerializeField]
     private GameObject itemToSpawnOnDeath;
 
-    [Space(7)]
-    [SerializeField] private EventReference _soundReaction;
-    [SerializeField] private EventReference _soundDeath;
+    // [Space(7)]
+    // [SerializeField] private EventReference _soundReaction;
+    // [SerializeField] private EventReference _soundDeath;
 
     public void Interact(ActionValues action, HoldableItem item = null, PlayerInteraction playerInteraction = null)
     {
         if (action._behavior == Behavior.Action && action._emotion == Emotion.Anger)
         {
-            FMODUnity.RuntimeManager.PlayOneShot(_soundDeath, transform.position);
+            // FMODUnity.RuntimeManager.PlayOneShot(_soundDeath, transform.position);
             
             Die();
         }
         else
         {
-            FMODUnity.RuntimeManager.PlayOneShot(_soundReaction, transform.position);
+            // FMODUnity.RuntimeManager.PlayOneShot(_soundReaction, transform.position);
         }
     }
 

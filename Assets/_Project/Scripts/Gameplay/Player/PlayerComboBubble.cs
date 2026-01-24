@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using FMODUnity;
+
 
 [DisallowMultipleComponent]
 public sealed class PlayerComboBubble : MonoBehaviour
@@ -32,8 +32,8 @@ public sealed class PlayerComboBubble : MonoBehaviour
     [SerializeField] private Sprite defaultBubbleSprite;
     [SerializeField] private EmotionBubbleSprite[] emotionSpecificSprites;
 
-    [Header("Sound")]
-    [SerializeField] private VoicesModels _attributedVoice;
+    // [Header("Sound")]
+    // [SerializeField] private VoicesModels _attributedVoice;
 
     [Header("Distance Scaling")]
     [SerializeField, Min(0f)] private float minScale = 0.5f;
@@ -111,7 +111,7 @@ public sealed class PlayerComboBubble : MonoBehaviour
         if (bubbleInstance && !bubbleInstance.activeSelf)
             bubbleInstance.SetActive(true);
         
-        FMODUnity.RuntimeManager.PlayOneShot(SoundManager.Instance.GetVoice(emotion, _attributedVoice), transform.position);
+        // FMODUnity.RuntimeManager.PlayOneShot(SoundManager.Instance.GetVoice(emotion, _attributedVoice), transform.position);
 
         remainingTime = duration > 0f ? duration : defaultLifetime;
         UpdateLookAt();

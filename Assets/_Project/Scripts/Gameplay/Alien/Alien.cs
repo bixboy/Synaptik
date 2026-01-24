@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
-using FMODUnity;
+// using FMODUnity;
 
 
 public class Alien : MonoBehaviour, IInteraction
@@ -61,8 +61,8 @@ public class Alien : MonoBehaviour, IInteraction
     [Header("VFX")]
     [SerializeField] private ParticleSystem _alienVFX;
     
-    [Header("Sound")]
-    [SerializeField] private VoicesModels _attributedVoice;
+    // [Header("Sound")]
+    // [SerializeField] private VoicesModels _attributedVoice;
 
     
     private void Awake()
@@ -134,7 +134,7 @@ public class Alien : MonoBehaviour, IInteraction
             return;
         Debug.Log("Mission ended for alien " + Definition.name + ": " + mission.MissionID);
         
-        FMODUnity.RuntimeManager.PlayOneShot(SoundManager.Instance.GetMissionVoice(mission.MissionID), transform.position);
+        // FMODUnity.RuntimeManager.PlayOneShot(SoundManager.Instance.GetMissionVoice(mission.MissionID), transform.position);
         
         if (mission.MissionID == _pukeMissionId)
         {
@@ -322,7 +322,7 @@ public class Alien : MonoBehaviour, IInteraction
         }
 
         //PLay Sound
-        FMODUnity.RuntimeManager.PlayOneShot(SoundManager.Instance.GetVoice(emotion, _attributedVoice), transform.position);
+        // FMODUnity.RuntimeManager.PlayOneShot(SoundManager.Instance.GetVoice(emotion, _attributedVoice), transform.position);
         
         OnPlayerCombo(action._emotion, action._behavior);
     }

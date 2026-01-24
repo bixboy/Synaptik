@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using FMODUnity;
+// using FMODUnity;
 
 public sealed class LoadingText : MonoBehaviour
 {
@@ -18,8 +18,8 @@ public sealed class LoadingText : MonoBehaviour
     [SerializeField] private bool showCursor = true;
     [SerializeField] private string cursorSymbol = "_";
 
-    [Header("Audio Feedback")]
-    [SerializeField] private EventReference _soundTipping;
+    // [Header("Audio Feedback")]
+    // [SerializeField] private EventReference _soundTipping;
 
     [Header("Loading Animation")]
     [SerializeField] private string loadingPattern = "LOADING";
@@ -78,8 +78,8 @@ public sealed class LoadingText : MonoBehaviour
                 currentText += line[i];
                 UpdateDisplayedText();
 
-                if (!_soundTipping.IsNull)
-                    SoundManager.Instance.PlaySFX(_soundTipping);
+                // if (!_soundTipping.IsNull)
+                //     SoundManager.Instance.PlaySFX(_soundTipping);
 
                 float delay = randomizeDelay ? Random.Range(minCharDelay, maxCharDelay) : minCharDelay;
                 yield return new WaitForSeconds(delay);

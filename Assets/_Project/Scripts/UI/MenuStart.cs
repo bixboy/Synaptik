@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
-using FMODUnity;
+// using FMODUnity;
 using Unity.VisualScripting;
 
 public sealed class MenuStart : MonoBehaviour
@@ -31,11 +31,11 @@ public sealed class MenuStart : MonoBehaviour
     [Tooltip("Vitesse de retour de l’aiguille à 0 quand la charge descend.")]
     [SerializeField] private float needleReturnSpeed = 3f;
 
-    [Header("SFX")]
-    [SerializeField] private StudioEventEmitter _startEmitter;
-    
-    [SerializeField] private EventReference _music;
-    [SerializeField] private EventReference _ambiant;
+    // [Header("SFX")]
+    // [SerializeField] private StudioEventEmitter _startEmitter;
+    //
+    // [SerializeField] private EventReference _music;
+    // [SerializeField] private EventReference _ambiant;
 
     private float chargeProgress;
     private bool isCharging;
@@ -62,8 +62,8 @@ public sealed class MenuStart : MonoBehaviour
 
     private void Start()
     {
-        SoundManager.Instance.MusicChange(_music);
-        SoundManager.Instance.AmbiantChange(_ambiant);
+        // SoundManager.Instance.MusicChange(_music);
+        // SoundManager.Instance.AmbiantChange(_ambiant);
     }
     
     private void InitializePanels()
@@ -148,8 +148,8 @@ public sealed class MenuStart : MonoBehaviour
     private void StartCharging()
     {
         isCharging = true;
-        if (_startEmitter)
-            _startEmitter.Play();
+        // if (_startEmitter)
+        //     _startEmitter.Play();
         
         fullyCharged = false;
     }
@@ -157,8 +157,8 @@ public sealed class MenuStart : MonoBehaviour
     private void StopCharging()
     {
         isCharging = false;
-        if (_startEmitter)
-            _startEmitter.Stop();
+        // if (_startEmitter)
+        //     _startEmitter.Stop();
     }
 
     private void Update()
@@ -181,8 +181,8 @@ public sealed class MenuStart : MonoBehaviour
                 fullyCharged = true;
                 
                 onFullyCharged?.Invoke();
-                if (_startEmitter)
-                    _startEmitter.Stop();
+                // if (_startEmitter)
+                //     _startEmitter.Stop();
             }
         }
         else
@@ -240,10 +240,10 @@ public sealed class MenuStart : MonoBehaviour
         
         panelQuitEnabled = enable;
         
-        if (enable)
-            SoundManager.Instance.UIValid();
-        else
-            SoundManager.Instance.UIInvalid();
+        // if (enable)
+        //     SoundManager.Instance.UIValid();
+        // else
+        //     SoundManager.Instance.UIInvalid();
         
         quitPanel.SetActive(enable);
         
@@ -256,10 +256,10 @@ public sealed class MenuStart : MonoBehaviour
         
         panelHelpEnabled = !panelHelpEnabled;
         
-        if (panelHelpEnabled)
-            SoundManager.Instance.UIValid();
-        else
-            SoundManager.Instance.UIInvalid();
+        // if (panelHelpEnabled)
+        //     SoundManager.Instance.UIValid();
+        // else
+        //     SoundManager.Instance.UIInvalid();
         
         helpPanel.SetActive(panelHelpEnabled);
         

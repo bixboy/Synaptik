@@ -1,5 +1,5 @@
 using UnityEngine;
-using FMODUnity;
+// using FMODUnity;
 
 public sealed class CameraFollow : MonoBehaviour
 {
@@ -43,12 +43,12 @@ public sealed class CameraFollow : MonoBehaviour
     private bool isInteractionZoomActive;
     private Quaternion baseRotation;
     
-    [SerializeField] private EventReference _music;
+    // [SerializeField] private EventReference _music;
 
     private void Start()
     {
-        SoundManager.Instance.MusicChange(_music);
-        SoundManager.Instance.AmbiantStop();
+        // SoundManager.Instance.MusicChange(_music);
+        // SoundManager.Instance.AmbiantStop();
         
         if (player == null)
         {

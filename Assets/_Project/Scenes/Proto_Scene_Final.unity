@@ -241,6 +241,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: AudioManager
       objectReference: {fileID: 0}
+    - target: {fileID: 7803937913064315408, guid: 4a7859fea05faf9459fe970f5bffea78, type: 3}
+      propertyPath: _Bank
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7803937913064315408, guid: 4a7859fea05faf9459fe970f5bffea78, type: 3}
+      propertyPath: _musicEmitter
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7803937913064315408, guid: 4a7859fea05faf9459fe970f5bffea78, type: 3}
+      propertyPath: _ambiantEmitter
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7803937913064315408, guid: 4a7859fea05faf9459fe970f5bffea78, type: 3}
+      propertyPath: _cameraSFXEmitter
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5495,7 +5511,7 @@ PrefabInstance:
     - target: {fileID: 1049018973283697088, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
       propertyPath: _soundEmitter
       value: 
-      objectReference: {fileID: 900436384}
+      objectReference: {fileID: 0}
     - target: {fileID: 1167196277782444139, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 28.155151
@@ -5719,7 +5735,7 @@ PrefabInstance:
     - target: {fileID: 3573553263663147495, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
       propertyPath: _soundEmitter
       value: 
-      objectReference: {fileID: 900436386}
+      objectReference: {fileID: 0}
     - target: {fileID: 3706365310976751154, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.04
@@ -5763,7 +5779,7 @@ PrefabInstance:
     - target: {fileID: 3915478227136613030, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
       propertyPath: _soundEmitter
       value: 
-      objectReference: {fileID: 900436383}
+      objectReference: {fileID: 0}
     - target: {fileID: 4085020656326801838, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: -0.692144
@@ -5871,7 +5887,7 @@ PrefabInstance:
     - target: {fileID: 5374439214197861526, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
       propertyPath: _soundEmitter
       value: 
-      objectReference: {fileID: 900436385}
+      objectReference: {fileID: 0}
     - target: {fileID: 5473444481385219736, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
       propertyPath: m_fontSize
       value: 52.2
@@ -6253,50 +6269,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: af0c5a124a05a714fa0d039af7f45966, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &900436383 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5692407400380951820, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
-  m_PrefabInstance: {fileID: 900436381}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &900436384 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8513828458440926826, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
-  m_PrefabInstance: {fileID: 900436381}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &900436385 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3619833143289350972, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
-  m_PrefabInstance: {fileID: 900436381}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &900436386 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5277694500986654285, guid: 89e9814a68b4bba41a24e0c009e4b526, type: 3}
-  m_PrefabInstance: {fileID: 900436381}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &909348229
@@ -7959,17 +7931,14 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6717372861038130110, guid: 543f7c6265bd3df4a85de32a24959783, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1151195973}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 543f7c6265bd3df4a85de32a24959783, type: 3}
 --- !u!114 &1111797171 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8317182544908626716, guid: 543f7c6265bd3df4a85de32a24959783, type: 3}
   m_PrefabInstance: {fileID: 1111797170}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1151195965}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f17a219a07eaff4d8661351ee4701a5, type: 3}
@@ -8118,25 +8087,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1150179969}
   m_CullTransparentMesh: 1
---- !u!1 &1151195965 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6717372861038130110, guid: 543f7c6265bd3df4a85de32a24959783, type: 3}
-  m_PrefabInstance: {fileID: 1111797170}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1151195973
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1151195965}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nonRigidbodyVelocity: 0
-  attenuationObject: {fileID: 0}
 --- !u!1 &1156317635 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: d6dc28eed13e47e4b9d1e41c94f454d0, type: 3}
@@ -9080,46 +9030,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: eac57c760ccd41d4faf8bebd6b8bb8d3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1296901001}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: eac57c760ccd41d4faf8bebd6b8bb8d3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1296901000}
   m_SourcePrefab: {fileID: 100100000, guid: eac57c760ccd41d4faf8bebd6b8bb8d3, type: 3}
 --- !u!1 &1296900999 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: eac57c760ccd41d4faf8bebd6b8bb8d3, type: 3}
   m_PrefabInstance: {fileID: 1296900997}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1296901000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1296900999}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CollisionTag: 
-  EventReference:
-    Guid:
-      Data1: 1199176342
-      Data2: 1106460611
-      Data3: -1716733035
-      Data4: 638500172
-    Path: event:/Diegetic_FeedBack/Wall_Breaking_OS
-  Event: 
-  EventPlayTrigger: 0
-  EventStopTrigger: 0
-  AllowFadeout: 1
-  TriggerOnce: 0
-  Preload: 0
-  NonRigidbodyVelocity: 0
-  Params: []
-  OverrideAttenuation: 0
-  OverrideMinDistance: 1
-  OverrideMaxDistance: 20
 --- !u!114 &1296901001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9133,7 +9049,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destructionEffect: {fileID: 9157105887711914197, guid: bcb51588651f4f741b4473323a7d1e18, type: 3}
-  _soundEmitter: {fileID: 1296901000}
+  _soundEmitter: {fileID: 0}
   destroyDelay: 0.1
   shakeIntensity: 1
 --- !u!65 &1296901002
