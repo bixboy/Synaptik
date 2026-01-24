@@ -8,12 +8,12 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: BodySuit
-    second: {fileID: 2100000, guid: 7dee17ac27a7cf1429a4b7fd188e7834, type: 2}
+    second: {fileID: 2100000, guid: d21e6b1429d8bda47824a9611376409d, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Skin
-    second: {fileID: 2100000, guid: ab0bfbc909e436b4f8731446abfb5ef8, type: 2}
+    second: {fileID: 2100000, guid: 69db5f31b5fe0374db2d33aa104f4b96, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -27,48 +27,7 @@ ModelImporter:
     removeConstantScaleCurves: 0
     motionNodeName: 
     animationImportErrors: 
-    animationImportWarnings: "\nClip 'Armature|Grab' has import animation warnings
-      that might lower retargeting quality:\nNote: Activate translation DOF on avatar
-      to improve retargeting quality.\n\t'mixamorig:AntRight' has translation animation
-      that will be discarded.\n\t'mixamorig:AntLeft' has translation animation that
-      will be discarded.\n\t'mixamorig:RightHandThumb2' has translation animation
-      that will be discarded.\n\t'mixamorig:RightHandIndex1' has translation animation
-      that will be discarded.\n\t'mixamorig:RightHandMiddle1' has translation animation
-      that will be discarded.\n\t'mixamorig:LeftUpLeg' has translation animation
-      that will be discarded.\n\t'mixamorig:RightUpLeg' has translation animation
-      that will be discarded.\n\nClip 'Armature|Puke' has import animation warnings
-      that might lower retargeting quality:\nNote: Activate translation DOF on avatar
-      to improve retargeting quality.\n\t'mixamorig:LeftHandThumb2' has translation
-      animation that will be discarded.\n\t'mixamorig:LeftHandThumb3' has translation
-      animation that will be discarded.\n\t'mixamorig:LeftHandIndex1' has translation
-      animation that will be discarded.\n\t'mixamorig:LeftHandIndex2' has translation
-      animation that will be discarded.\n\t'mixamorig:LeftHandMiddle1' has translation
-      animation that will be discarded.\n\t'mixamorig:LeftHandMiddle2' has translation
-      animation that will be discarded.\n\t'mixamorig:RightHandThumb2' has translation
-      animation that will be discarded.\n\t'mixamorig:RightHandThumb3' has translation
-      animation that will be discarded.\n\t'mixamorig:RightHandIndex1' has translation
-      animation that will be discarded.\n\t'mixamorig:RightHandIndex2' has translation
-      animation that will be discarded.\n\t'mixamorig:RightHandMiddle1' has translation
-      animation that will be discarded.\n\t'mixamorig:RightHandMiddle2' has translation
-      animation that will be discarded.\n\nClip 'Armature|Punch.001' has import animation
-      warnings that might lower retargeting quality:\nNote: Activate translation
-      DOF on avatar to improve retargeting quality.\n\t'mixamorig:LeftHandThumb2'
-      has translation animation that will be discarded.\n\t'mixamorig:LeftHandThumb3'
-      has translation animation that will be discarded.\n\t'mixamorig:LeftHandIndex1'
-      has translation animation that will be discarded.\n\t'mixamorig:LeftHandIndex2'
-      has translation animation that will be discarded.\n\t'mixamorig:LeftHandIndex3'
-      has translation animation that will be discarded.\n\t'mixamorig:LeftHandMiddle1'
-      has translation animation that will be discarded.\n\t'mixamorig:LeftHandMiddle2'
-      has translation animation that will be discarded.\n\t'mixamorig:LeftHandMiddle3'
-      has translation animation that will be discarded.\n\t'mixamorig:RightHandThumb2'
-      has translation animation that will be discarded.\n\t'mixamorig:RightHandThumb3'
-      has translation animation that will be discarded.\n\t'mixamorig:RightHandIndex1'
-      has translation animation that will be discarded.\n\t'mixamorig:RightHandIndex2'
-      has translation animation that will be discarded.\n\t'mixamorig:RightHandIndex3'
-      has translation animation that will be discarded.\n\t'mixamorig:RightHandMiddle1'
-      has translation animation that will be discarded.\n\t'mixamorig:RightHandMiddle2'
-      has translation animation that will be discarded.\n\t'mixamorig:RightHandMiddle3'
-      has translation animation that will be discarded.\n"
+    animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
