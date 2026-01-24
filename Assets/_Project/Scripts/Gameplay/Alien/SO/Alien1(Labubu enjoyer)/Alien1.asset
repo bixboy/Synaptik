@@ -20,8 +20,8 @@ MonoBehaviour:
   quests:
   - alien: {fileID: 11400000}
     questId: labubu
-    title: "R\xE9conforter un alien"
-    description: "celui pr\xE8s du kiosque semble vouloir un objet en particulier"
+    title: "R\xE9confortez un alien"
+    description: "Celui pr\xE8s du kiosque semble vouloir un objet en particulier"
     autoRegisterMission: 1
     autoCompleteMissionOnQuestEnd: 1
     steps:

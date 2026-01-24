@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58f9ab1e10ce5b64b965e1fd1a0a9980, type: 3}
   m_Name: Alien2
   m_EditorClassIdentifier: 
-  alienId: 4
+  alienId: 3
   startEmotion: 2
   animator: {fileID: 0}
   reactions: {fileID: 11400000, guid: 1d06e5d260bad71419696ac8b863f75d, type: 2}
@@ -20,8 +20,8 @@ MonoBehaviour:
   quests:
   - alien: {fileID: 11400000}
     questId: vomi
-    title: faites vomir un alien
-    description: "trouver ce qui peut les mettres dans cet \xE9tat "
+    title: Faites vomir un alien
+    description: "Trouver ce qui peut les mettre dans cet \xE9tat "
     autoRegisterMission: 1
     autoCompleteMissionOnQuestEnd: 1
     steps:
